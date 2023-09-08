@@ -67,6 +67,11 @@ if [[ -d redhat/patches ]]; then
   git apply redhat/patches/*
 fi
 
+# Move .tekton files to root
+if [[ -d redhat/.tekton ]]; then
+  git mv redhat/.tekton .
+fi
+
 # Move overlays to root
 if [[ -d redhat/overlays ]]; then
   git mv redhat/overlays/* .
