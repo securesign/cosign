@@ -101,7 +101,7 @@ spec:
       description: Build dependencies to be prefetched by Cachi2
       name: prefetch-input
       type: string
-      value: '{"type": "gomod", "path": "."}'
+      value: "gomod"
     - default: "false"
       description: Java build
       name: java
