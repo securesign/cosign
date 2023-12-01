@@ -92,7 +92,13 @@ func GetCert(_ context.Context, sv signature.SignerVerifier, idToken, flow, oidc
 	case flowDevice:
 		c.flow = oauthflow.NewDeviceFlowTokenGetterForIssuer(oidcIssuer)
 	case flowNormal:
-		c.flow = oauthflow.DefaultIDTokenGetter
+		if strings.Contains(oidcIssuer, "keycloak") {
+			c.flow = &oauthflow.InteractiveIDTokenGetter{
+				HTMLPage: ui.KeycloakInteractiveSuccessHTML,
+			}
+		} else {
+			c.flow = oauthflow.DefaultIDTokenGetter
+		}
 	case flowToken:
 		c.flow = &oauthflow.StaticTokenGetter{RawToken: idToken}
 	default:
