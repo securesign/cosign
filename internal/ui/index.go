@@ -1,7 +1,7 @@
 package ui
 
 const (
-	KeycloakInteractiveSuccessHTML = `<!DOCTYPE html>
+	RedHatInteractiveSuccessHTML = `<!DOCTYPE html>
 	<html lang="en">
 	
 	<head>
