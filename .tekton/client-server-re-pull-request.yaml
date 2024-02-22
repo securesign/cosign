@@ -7,7 +7,8 @@ metadata:
     build.appstudio.redhat.com/pull_request_number: '{{pull_request_number}}'
     build.appstudio.redhat.com/target_branch: '{{target_branch}}'
     pipelinesascode.tekton.dev/max-keep-runs: "3"
-    pipelinesascode.tekton.dev/on-cel-expression: event == "pull_request" && target_branch == "main" && ( "Dockerfile.client-server-re.rh".pathChanged() || ".tekton/.tekton/client-server-re-pull-request.yaml".pathChanged())
+    pipelinesascode.tekton.dev/on-cel-expression: event == "pull_request" && target_branch
+      == "main"
   creationTimestamp: null
   labels:
     appstudio.openshift.io/application: cli
@@ -20,23 +21,15 @@ spec:
   - name: dockerfile
     value: Dockerfile.client-server-re.rh
   - name: git-url
-    value: '{{repo_url}}'
+    value: '{{source_url}}'
   - name: image-expires-after
     value: 5d
   - name: output-image
     value: quay.io/redhat-user-workloads/rhtas-tenant/cli/client-server-re:on-pr-{{revision}}
   - name: path-context
-    value: images
+    value: .
   - name: revision
     value: '{{revision}}'
-  - name: prefetch-input
-    value: ''
-  - name: hermetic
-    # Temporary workaround related to https://github.com/securesign/sigstore-ocp/pull/160
-    value: "false"
-    # value: "true"
-  - name: build-source-image
-    value: "true"
   pipelineSpec:
     finally:
     - name: show-sbom
@@ -99,10 +92,6 @@ spec:
     - default: "false"
       description: Skip checks against built image
       name: skip-checks
-      type: string
-    - default: "true"
-      description: Skip optional checks, set false if you want to run optional checks
-      name: skip-optional
       type: string
     - default: "false"
       description: Execute the build with network isolation
