@@ -20,9 +20,9 @@ import (
 	"os"
 
 	"github.com/google/go-containerregistry/pkg/logs"
+	"github.com/securesign/go-version-package/version"
 	"github.com/spf13/cobra"
 	"github.com/spf13/pflag"
-	"sigs.k8s.io/release-utils/version"
 
 	cranecmd "github.com/google/go-containerregistry/cmd/crane/cmd"
 	"github.com/sigstore/cosign/v2/cmd/cosign/cli/options"

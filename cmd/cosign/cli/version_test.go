@@ -23,8 +23,8 @@ import (
 	"regexp"
 	"testing"
 
+	"github.com/securesign/go-version-package/version"
 	"github.com/stretchr/testify/assert"
-	"sigs.k8s.io/release-utils/version"
 )
 
 var (

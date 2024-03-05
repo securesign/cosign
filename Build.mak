@@ -4,7 +4,8 @@ GIT_VERSION ?= $(shell git describe --tags --always --dirty)
 LDFLAGS=-buildid= -X sigs.k8s.io/release-utils/version.gitVersion=$(GIT_VERSION) \
         -X sigs.k8s.io/release-utils/version.gitCommit=$(GIT_HASH) \
         -X sigs.k8s.io/release-utils/version.gitTreeState=$(GIT_TREESTATE) \
-        -X sigs.k8s.io/release-utils/version.buildDate=$(BUILD_DATE)
+        -X sigs.k8s.io/release-utils/version.buildDate=$(BUILD_DATE) \
+		-X sigs.k8s.io/release-utils/version.rhtasVersion="v1.0.0"
 
 .PHONY: 
 cross-platform: cosign-darwin-arm64 cosign-darwin-amd64 cosign-linux-amd64 cosign-linux-arm64 cosign-linux-ppc64le cosign-linux-s390x cosign-windows-amd64 ## Build all distributable (cross-platform) binaries

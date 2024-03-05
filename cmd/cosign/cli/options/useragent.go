@@ -18,7 +18,7 @@ import (
 	"fmt"
 	"runtime"
 
-	"sigs.k8s.io/release-utils/version"
+	"github.com/securesign/go-version-package/version"
 )
 
 var (
