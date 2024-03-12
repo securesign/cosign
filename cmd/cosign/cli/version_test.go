@@ -35,6 +35,7 @@ var (
 	reGoVersion         = regexp.MustCompile(fmt.Sprintf("GoVersion:\\s+%s\n", expectedVersionInfo.GoVersion))
 	reCompiler          = regexp.MustCompile(fmt.Sprintf("Compiler:\\s+%s\n", expectedVersionInfo.Compiler))
 	rePlatform          = regexp.MustCompile(fmt.Sprintf("Platform:\\s+%s\n", expectedVersionInfo.Platform))
+	reRhtas             = regexp.MustCompile(fmt.Sprintf("RhtasVersion:\\s+%s\n", expectedVersionInfo.RhtasVersion))
 )
 
 func getVersionSTDOUT(json bool) (bytes.Buffer, error) {
@@ -73,6 +74,7 @@ func testVersionASCII(t *testing.T) {
 	assert.Regexp(t, reGoVersion, output, "output doesn't contain the Go version")
 	assert.Regexp(t, reCompiler, output, "output doesn't contain the compiler name")
 	assert.Regexp(t, rePlatform, output, "output doesn't contain the platform name")
+	assert.Regexp(t, reRhtas, output, "output doesn't contain the RHTAS version")
 }
 
 func testVersionJSON(t *testing.T) {
@@ -88,6 +90,7 @@ func testVersionJSON(t *testing.T) {
 	assert.Equal(t, expectedVersionInfo.GoVersion, actualVersionInfo.GoVersion)
 	assert.Equal(t, expectedVersionInfo.Compiler, actualVersionInfo.Compiler)
 	assert.Equal(t, expectedVersionInfo.Platform, actualVersionInfo.Platform)
+	assert.Equal(t, expectedVersionInfo.RhtasVersion, actualVersionInfo.RhtasVersion)
 }
 
 func TestVersionOutput(t *testing.T) {
