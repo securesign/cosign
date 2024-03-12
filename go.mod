@@ -30,6 +30,7 @@ require (
 	github.com/open-policy-agent/opa v0.61.0
 	github.com/pkg/errors v0.9.1
 	github.com/secure-systems-lab/go-securesystemslib v0.8.0
+	github.com/securesign/go-version-package v0.0.0-20240307040737-0fc2cb3532e1
 	github.com/sigstore/fulcio v1.4.3
 	github.com/sigstore/rekor v1.3.5
 	github.com/sigstore/sigstore v1.8.1
@@ -223,7 +224,7 @@ require (
 	github.com/sagikazarmark/locafero v0.4.0 // indirect
 	github.com/sagikazarmark/slog-shim v0.1.0 // indirect
 	github.com/sassoftware/relic v7.2.1+incompatible // indirect
-	github.com/securesign/go-version-package v0.0.0-20240307004959-5b2960b3ebe9
+	//	github.com/securesign/go-version-package
 	github.com/segmentio/ksuid v1.0.4 // indirect
 	github.com/shibumi/go-pathspec v1.3.0 // indirect
 	github.com/sirupsen/logrus v1.9.3 // indirect

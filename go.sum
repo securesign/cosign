@@ -602,8 +602,8 @@ github.com/sassoftware/relic/v7 v7.6.1 h1:O5s8ewCgq5QYNpv45dK4u6IpBmDM9RIcsbf/G1
 github.com/sassoftware/relic/v7 v7.6.1/go.mod h1:NxwtWxWxlUa9as2qZi635Ye6bBT/tGnMALLq7dSfOOU=
 github.com/secure-systems-lab/go-securesystemslib v0.8.0 h1:mr5An6X45Kb2nddcFlbmfHkLguCE9laoZCUzEEpIZXA=
 github.com/secure-systems-lab/go-securesystemslib v0.8.0/go.mod h1:UH2VZVuJfCYR8WgMlCU1uFsOUU+KeyrTWcSS73NBOzU=
-github.com/securesign/go-version-package v0.0.0-20240307004959-5b2960b3ebe9 h1:sV7QFS10MXI3A+LmUTL2DZcVy/BVKxVOiP2gDChjuGk=
-github.com/securesign/go-version-package v0.0.0-20240307004959-5b2960b3ebe9/go.mod h1:FuAqZ07CDt2mRhR2CeIiVQkbOfV8ibFBVYGt0osEzAI=
+github.com/securesign/go-version-package v0.0.0-20240307040737-0fc2cb3532e1 h1:QxVdeJbz+5eEhY/nbWcted83BWsrcTUDPSQPEIWzY00=
+github.com/securesign/go-version-package v0.0.0-20240307040737-0fc2cb3532e1/go.mod h1:FuAqZ07CDt2mRhR2CeIiVQkbOfV8ibFBVYGt0osEzAI=
 github.com/segmentio/ksuid v1.0.4 h1:sBo2BdShXjmcugAMwjugoGUdUV0pcxY5mW4xKRn3v4c=
 github.com/segmentio/ksuid v1.0.4/go.mod h1:/XUiZBD3kVx5SmUOl55voK5yeAbBNNIed+2O73XgrPE=
 github.com/shibumi/go-pathspec v1.3.0 h1:QUyMZhFo0Md5B8zV8x2tesohbb5kfbpTi9rBnKh5dkI=
