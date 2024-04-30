@@ -17,7 +17,7 @@ COPY --from=cosign /usr/local/bin/cosign-linux-amd64.gz   $APP_ROOT/src/clients/
 COPY --from=cosign /usr/local/bin/cosign-linux-arm64.gz   $APP_ROOT/src/clients/linux/cosign-arm64.gz
 COPY --from=cosign /usr/local/bin/cosign-linux-ppc64le.gz $APP_ROOT/src/clients/linux/cosign-ppc64le.gz
 COPY --from=cosign /usr/local/bin/cosign-linux-s390x.gz   $APP_ROOT/src/clients/linux/cosign-s390x.gz
-COPY --from=cosign /usr/local/bin/cosign-windows-amd64.exe.gz $APP_ROOT/src/clients/windows/cosign-amd64.gz
+COPY --from=cosign /usr/local/bin/cosign-windows-amd64.exe.gz $APP_ROOT/src/clients/windows/cosign-amd64.exe.gz
 
 COPY --from=gitsign /usr/local/bin/gitsign_cli_darwin_amd64.gz      $APP_ROOT/src/clients/darwin/gitsign-amd64.gz
 COPY --from=gitsign /usr/local/bin/gitsign_cli_darwin_arm64.gz      $APP_ROOT/src/clients/darwin/gitsign-arm64.gz
@@ -25,7 +25,7 @@ COPY --from=gitsign /usr/local/bin/gitsign_cli_linux_amd64.gz       $APP_ROOT/sr
 COPY --from=gitsign /usr/local/bin/gitsign_cli_linux_arm64.gz       $APP_ROOT/src/clients/linux/gitsign-arm64.gz
 COPY --from=gitsign /usr/local/bin/gitsign_cli_linux_ppc64le.gz     $APP_ROOT/src/clients/linux/gitsign-ppc64le.gz
 COPY --from=gitsign /usr/local/bin/gitsign_cli_linux_s390x.gz       $APP_ROOT/src/clients/linux/gitsign-s390x.gz
-COPY --from=gitsign /usr/local/bin/gitsign_cli_windows_amd64.exe.gz $APP_ROOT/src/clients/windows/gitsign-amd64.gz
+COPY --from=gitsign /usr/local/bin/gitsign_cli_windows_amd64.exe.gz $APP_ROOT/src/clients/windows/gitsign-amd64.exe.gz
 
 
 LABEL \

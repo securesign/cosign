@@ -19,7 +19,7 @@ COPY --from=rekor /usr/local/bin/rekor_cli_linux_amd64.gz       $APP_ROOT/src/cl
 COPY --from=rekor /usr/local/bin/rekor_cli_linux_arm64.gz       $APP_ROOT/src/clients/linux/rekor-cli-arm64.gz
 COPY --from=rekor /usr/local/bin/rekor_cli_linux_ppc64le.gz     $APP_ROOT/src/clients/linux/rekor-cli-ppc64le.gz
 COPY --from=rekor /usr/local/bin/rekor_cli_linux_s390x.gz       $APP_ROOT/src/clients/linux/rekor-cli-s390x.gz
-COPY --from=rekor /usr/local/bin/rekor_cli_windows_amd64.exe.gz $APP_ROOT/src/clients/windows/rekor-cli-amd64.gz
+COPY --from=rekor /usr/local/bin/rekor_cli_windows_amd64.exe.gz $APP_ROOT/src/clients/windows/rekor-cli-amd64.exe.gz
 
 COPY --from=ec /usr/local/bin/ec_darwin_amd64.gz      $APP_ROOT/src/clients/darwin/ec-amd64.gz
 COPY --from=ec /usr/local/bin/ec_darwin_arm64.gz      $APP_ROOT/src/clients/darwin/ec-arm64.gz
@@ -27,7 +27,7 @@ COPY --from=ec /usr/local/bin/ec_linux_amd64.gz       $APP_ROOT/src/clients/linu
 COPY --from=ec /usr/local/bin/ec_linux_arm64.gz       $APP_ROOT/src/clients/linux/ec-arm64.gz
 COPY --from=ec /usr/local/bin/ec_linux_ppc64le.gz     $APP_ROOT/src/clients/linux/ec-ppc64le.gz
 COPY --from=ec /usr/local/bin/ec_linux_s390x.gz       $APP_ROOT/src/clients/linux/ec-s390x.gz
-COPY --from=ec /usr/local/bin/ec_windows_amd64.exe.gz $APP_ROOT/src/clients/windows/ec-amd64.gz
+COPY --from=ec /usr/local/bin/ec_windows_amd64.exe.gz $APP_ROOT/src/clients/windows/ec-amd64.exe.gz
 
 LABEL \
       com.redhat.component="trusted-artifact-signer-serve-cli-container-re" \
