@@ -224,7 +224,7 @@ spec:
         - name: name
           value: buildah
         - name: bundle
-          value: quay.io/konflux-ci/tekton-catalog/task-buildah:0.2@sha256:2c3426a2a7ff46a413c56f8f18055f9385eb323d41e6e8cf1b9dd9d10013daaf
+          value: quay.io/konflux-ci/tekton-catalog/task-buildah:0.2@sha256:e107cfdf4ee68741ad366b2768cd33e2d5f99569b639f95f50df8b9835c2d144
         - name: kind
           value: task
         resolver: bundles
@@ -298,7 +298,7 @@ spec:
         - name: name
           value: clair-scan
         - name: bundle
-          value: quay.io/redhat-appstudio-tekton-catalog/task-clair-scan:0.2@sha256:c19b631df88bdc1099aef127916f440fff933f9616c5177731d12c919bcc76a6
+          value: quay.io/redhat-appstudio-tekton-catalog/task-clair-scan:0.2@sha256:cf9edf8ae0dbf7597a9d47bd1865f84d1e900f033057ecd7e2946ac5fce351d3
         - name: kind
           value: task
         resolver: bundles
