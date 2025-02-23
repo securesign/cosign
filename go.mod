@@ -30,32 +30,32 @@ require (
 	github.com/nozzle/throttler v0.0.0-20180817012639-2ea982251481
 	github.com/open-policy-agent/opa v0.68.0
 	github.com/pkg/errors v0.9.1
-	github.com/secure-systems-lab/go-securesystemslib v0.8.0
+	github.com/secure-systems-lab/go-securesystemslib v0.9.0
 	github.com/sigstore/fulcio v1.6.3
-	github.com/sigstore/protobuf-specs v0.3.2
+	github.com/sigstore/protobuf-specs v0.4.0
 	github.com/sigstore/rekor v1.3.6
 	github.com/sigstore/sigstore v1.8.9
 	github.com/sigstore/sigstore-go v0.6.1
 	github.com/sigstore/sigstore/pkg/signature/kms/aws v1.8.8
 	github.com/sigstore/sigstore/pkg/signature/kms/azure v1.8.8
 	github.com/sigstore/sigstore/pkg/signature/kms/gcp v1.8.8
-	github.com/sigstore/sigstore/pkg/signature/kms/hashivault v1.8.8
+	github.com/sigstore/sigstore/pkg/signature/kms/hashivault v1.8.15
 	github.com/sigstore/timestamp-authority v1.2.2
 	github.com/spf13/cobra v1.8.1
 	github.com/spf13/pflag v1.0.5
 	github.com/spf13/viper v1.19.0
 	github.com/spiffe/go-spiffe/v2 v2.3.0
-	github.com/stretchr/testify v1.9.0
+	github.com/stretchr/testify v1.10.0
 	github.com/transparency-dev/merkle v0.0.2
 	github.com/withfig/autocomplete-tools/integrations/cobra v1.2.1
 	github.com/xanzy/go-gitlab v0.109.0
 	go.step.sm/crypto v0.51.1
-	golang.org/x/crypto v0.31.0
+	golang.org/x/crypto v0.32.0
 	golang.org/x/oauth2 v0.24.0
 	golang.org/x/sync v0.10.0
-	golang.org/x/term v0.27.0
+	golang.org/x/term v0.28.0
 	google.golang.org/api v0.214.0
-	google.golang.org/protobuf v1.35.2
+	google.golang.org/protobuf v1.36.4
 	k8s.io/api v0.28.3
 	k8s.io/apimachinery v0.28.3
 	k8s.io/client-go v0.28.3
@@ -128,7 +128,7 @@ require (
 	github.com/buildkite/go-pipeline v0.13.1 // indirect
 	github.com/buildkite/interpolate v0.1.3 // indirect
 	github.com/buildkite/roko v1.2.0 // indirect
-	github.com/cenkalti/backoff/v3 v3.2.2 // indirect
+	github.com/cenkalti/backoff/v4 v4.3.0 // indirect
 	github.com/cespare/xxhash/v2 v2.3.0 // indirect
 	github.com/chzyer/readline v1.5.1 // indirect
 	github.com/clbanning/mxj/v2 v2.7.0 // indirect
@@ -187,12 +187,12 @@ require (
 	github.com/hashicorp/go-secure-stdlib/strutil v0.1.2 // indirect
 	github.com/hashicorp/go-sockaddr v1.0.5 // indirect
 	github.com/hashicorp/hcl v1.0.1-vault-5 // indirect
-	github.com/hashicorp/vault/api v1.14.0 // indirect
+	github.com/hashicorp/vault/api v1.16.0 // indirect
 	github.com/imdario/mergo v0.3.16 // indirect
 	github.com/in-toto/attestation v1.1.0 // indirect
 	github.com/inconshreveable/mousetrap v1.1.0 // indirect
 	github.com/jedisct1/go-minisign v0.0.0-20230811132847-661be99b8267 // indirect
-	github.com/jellydator/ttlcache/v3 v3.2.0 // indirect
+	github.com/jellydator/ttlcache/v3 v3.3.0 // indirect
 	github.com/jmespath/go-jmespath v0.4.0 // indirect
 	github.com/josharian/intern v1.0.0 // indirect
 	github.com/json-iterator/go v1.1.12 // indirect
@@ -260,8 +260,8 @@ require (
 	go.uber.org/zap v1.27.0 // indirect
 	golang.org/x/exp v0.0.0-20240909161429-701f63a606c0 // indirect
 	golang.org/x/mod v0.22.0 // indirect
-	golang.org/x/net v0.33.0 // indirect
-	golang.org/x/sys v0.28.0 // indirect
+	golang.org/x/net v0.34.0 // indirect
+	golang.org/x/sys v0.29.0 // indirect
 	golang.org/x/text v0.21.0 // indirect
 	golang.org/x/time v0.8.0 // indirect
 	golang.org/x/tools v0.27.0 // indirect
