@@ -1,7 +1,7 @@
 # Provides the Trusted Artifact Signer CLI binaries, rekor-cli and ec
 
 
-FROM quay.io/securesign/rekor-cli@sha256:0f874a33e5ee36ed6cdb080e1774a6d66d3c095458f8a138b5c0f95fd8f32944 as rekor
+FROM quay.io/securesign/rekor-cli@sha256:c7ad324d1a72a25b27195baab57c1f6979e09b2cdefbeeea71f0ced603ab37f8 as rekor
 FROM registry.redhat.io/rhtas/ec-rhel9:0.5@sha256:3d330b4c742f584be63cf11e451f7822863a5960976a721e18bd8b2e9f1c0038 as ec
 
 FROM registry.access.redhat.com/ubi9/ubi-minimal@sha256:fb77e447ab97f3fecd15d2fa5361a99fe2f34b41422e8ebb3612eecd33922fa0
