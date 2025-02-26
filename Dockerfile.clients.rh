@@ -1,5 +1,5 @@
 # Provides the Trusted Artifact Signer CLI binaries, cosign and gitsign
-FROM quay.io/securesign/cli-cosign@sha256:3cd261cd4fed03688c6fd3c6161ae1ec69e908bbb6593ec279415414c7422535 AS cosign
+FROM quay.io/securesign/cli-cosign@sha256:0602e2a23bb507bd3e13bf81b64a17a71ffa6387eb028b15ae6b806f297adc29 AS cosign
 FROM quay.io/securesign/gitsign@sha256:7a4a1a6a0ad0bb4e8358e5b2a8858ed5919dd1050b620af73d6293ccabe0d236 AS gitsign
 
 # Provides the Trusted Artifact Signer CLI binary, fetch-tsa-certs
