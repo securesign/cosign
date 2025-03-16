@@ -4,7 +4,7 @@ go 1.22.7
 
 require (
 	cuelang.org/go v0.9.2
-	github.com/ThalesIgnite/crypto11 v1.2.5
+	github.com/ThalesIgnite/crypto11 v1.4.1
 	github.com/awslabs/amazon-ecr-credential-helper/ecr-login v0.0.0-20231024185945-8841054dbdb8
 	github.com/buildkite/agent/v3 v3.81.0
 	github.com/chrismellard/docker-credential-acr-env v0.0.0-20230304212654-82a0ddb27589
