@@ -1,6 +1,8 @@
 module github.com/sigstore/cosign/v2
 
-go 1.22.7
+go 1.22.11
+
+toolchain go1.23.7
 
 require (
 	cuelang.org/go v0.9.2
@@ -44,8 +46,8 @@ require (
 	github.com/spf13/cobra v1.8.1
 	github.com/spf13/pflag v1.0.5
 	github.com/spf13/viper v1.19.0
-	github.com/spiffe/go-spiffe/v2 v2.3.0
-	github.com/stretchr/testify v1.9.0
+	github.com/spiffe/go-spiffe/v2 v2.5.0
+	github.com/stretchr/testify v1.10.0
 	github.com/transparency-dev/merkle v0.0.2
 	github.com/withfig/autocomplete-tools/integrations/cobra v1.2.1
 	github.com/xanzy/go-gitlab v0.109.0
@@ -55,7 +57,7 @@ require (
 	golang.org/x/sync v0.10.0
 	golang.org/x/term v0.27.0
 	google.golang.org/api v0.214.0
-	google.golang.org/protobuf v1.35.2
+	google.golang.org/protobuf v1.36.1
 	k8s.io/api v0.28.3
 	k8s.io/apimachinery v0.28.3
 	k8s.io/client-go v0.28.3
@@ -248,14 +250,14 @@ require (
 	github.com/xeipuuv/gojsonpointer v0.0.0-20190905194746-02993c407bfb // indirect
 	github.com/xeipuuv/gojsonreference v0.0.0-20180127040603-bd5ef7bd5415 // indirect
 	github.com/yashtewari/glob-intersection v0.2.0 // indirect
-	github.com/zeebo/errs v1.3.0 // indirect
+	github.com/zeebo/errs v1.4.0 // indirect
 	go.mongodb.org/mongo-driver v1.14.0 // indirect
 	go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc v0.55.0 // indirect
 	go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp v0.55.0 // indirect
-	go.opentelemetry.io/otel v1.30.0 // indirect
-	go.opentelemetry.io/otel/metric v1.30.0 // indirect
-	go.opentelemetry.io/otel/sdk v1.29.0 // indirect
-	go.opentelemetry.io/otel/trace v1.30.0 // indirect
+	go.opentelemetry.io/otel v1.32.0 // indirect
+	go.opentelemetry.io/otel/metric v1.32.0 // indirect
+	go.opentelemetry.io/otel/sdk v1.32.0 // indirect
+	go.opentelemetry.io/otel/trace v1.32.0 // indirect
 	go.uber.org/multierr v1.11.0 // indirect
 	go.uber.org/zap v1.27.0 // indirect
 	golang.org/x/exp v0.0.0-20240909161429-701f63a606c0 // indirect
@@ -266,9 +268,9 @@ require (
 	golang.org/x/time v0.8.0 // indirect
 	golang.org/x/tools v0.27.0 // indirect
 	google.golang.org/genproto v0.0.0-20241118233622-e639e219e697 // indirect
-	google.golang.org/genproto/googleapis/api v0.0.0-20241113202542-65e8d215514f // indirect
+	google.golang.org/genproto/googleapis/api v0.0.0-20241202173237-19429a94021a // indirect
 	google.golang.org/genproto/googleapis/rpc v0.0.0-20241209162323-e6fa225c2576 // indirect
-	google.golang.org/grpc v1.68.0 // indirect
+	google.golang.org/grpc v1.70.0 // indirect
 	gopkg.in/inf.v0 v0.9.1 // indirect
 	gopkg.in/ini.v1 v1.67.0 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
