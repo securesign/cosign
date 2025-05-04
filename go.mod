@@ -56,9 +56,9 @@ require (
 	golang.org/x/term v0.31.0
 	google.golang.org/api v0.227.0
 	google.golang.org/protobuf v1.36.6
-	k8s.io/api v0.28.3
-	k8s.io/apimachinery v0.28.3
-	k8s.io/client-go v0.28.3
+	k8s.io/api v0.33.0
+	k8s.io/apimachinery v0.33.0
+	k8s.io/client-go v0.33.0
 	k8s.io/utils v0.0.0-20250321185631-1f6e0b77f77e
 	sigs.k8s.io/release-utils v0.11.0
 )
