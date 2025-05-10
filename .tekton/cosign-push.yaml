@@ -6,7 +6,11 @@ metadata:
     build.appstudio.redhat.com/commit_sha: '{{revision}}'
     build.appstudio.redhat.com/target_branch: '{{target_branch}}'
     pipelinesascode.tekton.dev/max-keep-runs: "3"
-    pipelinesascode.tekton.dev/on-cel-expression: event == "push" && target_branch == "main" && ( "Dockerfile.cosign.rh".pathChanged() || ".tekton/cosign-push.yaml".pathChanged() || "cmd/***".pathChanged() || "internal/***".pathChanged() || "pkg/***".pathChanged() || "Build.mak".pathChanged() || "Makefile".pathChanged() || "trigger-konflux-builds.txt".pathChanged() || "go.mod".pathChanged() || "go.sum".pathChanged() )
+    pipelinesascode.tekton.dev/on-cel-expression: event == "push" && target_branch
+      == "main" && ( "Dockerfile.cosign.rh".pathChanged() || ".tekton/cosign-push.yaml".pathChanged()
+      || "cmd/***".pathChanged() || "internal/***".pathChanged() || "pkg/***".pathChanged()
+      || "Build.mak".pathChanged() || "Makefile".pathChanged() || "trigger-konflux-builds.txt".pathChanged()
+      || "go.mod".pathChanged() || "go.sum".pathChanged() )
   creationTimestamp: null
   labels:
     appstudio.openshift.io/application: cli
@@ -33,17 +37,18 @@ spec:
   - name: build-source-image
     value: "true"
   - name: go_unit_test
-    value: true
+    value: "true"
   pipelineRef:
-    resolver: git
     params:
-      - name: url
-        value: 'https://github.com/securesign/pipelines.git'
-      - name: revision
-        value: 'main'
-      - name: pathInRepo
-        value: 'pipelines/docker-build-oci-ta.yaml'
-  taskRunTemplate: {}
+    - name: url
+      value: https://github.com/securesign/pipelines.git
+    - name: revision
+      value: main
+    - name: pathInRepo
+      value: pipelines/docker-build-oci-ta.yaml
+    resolver: git
+  taskRunTemplate:
+    serviceAccountName: build-pipeline-cosign
   workspaces:
   - name: git-auth
     secret:
