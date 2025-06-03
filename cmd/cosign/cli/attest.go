@@ -18,11 +18,10 @@ package cli
 import (
 	"fmt"
 
-	"github.com/spf13/cobra"
-
 	"github.com/sigstore/cosign/v2/cmd/cosign/cli/attest"
 	"github.com/sigstore/cosign/v2/cmd/cosign/cli/generate"
 	"github.com/sigstore/cosign/v2/cmd/cosign/cli/options"
+	"github.com/spf13/cobra"
 )
 
 func Attest() *cobra.Command {
@@ -86,7 +85,12 @@ func Attest() *cobra.Command {
 				OIDCRedirectURL:          o.OIDC.RedirectURL,
 				OIDCProvider:             o.OIDC.Provider,
 				SkipConfirmation:         o.SkipConfirmation,
+				TSAClientCACert:          o.TSAClientCACert,
+				TSAClientKey:             o.TSAClientKey,
+				TSAClientCert:            o.TSAClientCert,
+				TSAServerName:            o.TSAServerName,
 				TSAServerURL:             o.TSAServerURL,
+				NewBundleFormat:          o.NewBundleFormat,
 			}
 			attestCommand := attest.AttestCommand{
 				KeyOpts:                 ko,

@@ -26,14 +26,14 @@ jobs:
   check-signature:
     runs-on: ubuntu-latest
     container:
-      image: ghcr.io/sigstore/cosign/cosign:v2.4.2-dev@sha256:b69af124cb744c22eba955ebaf9514b42b1556811211e1cd744331350ccd815a
+      image: ghcr.io/sigstore/cosign/cosign:v2.5.0-dev@sha256:d6786d0b31f9577ed6cc1f7fb5080f2335f0cbff2cfceffef5043ee83ebc3a6e
 
     steps:
       - name: Check Signature
         run: |
-          cosign verify ghcr.io/gythialy/golang-cross:v1.23.6-0@sha256:6e8da612570af388b204b833c0925c669d00f7654cf964e5bc3e808013234c05 \
+          cosign verify ghcr.io/gythialy/golang-cross:v1.24.3-0@sha256:b0e66440a1dc4216c45d9df95ac9c34b9cb2e7de1d9e55a94914eb38c2ec2249 \
           --certificate-oidc-issuer https://token.actions.githubusercontent.com \
-          --certificate-identity "https://github.com/gythialy/golang-cross/.github/workflows/release-golang-cross.yml@refs/tags/v1.23.6-0"
+          --certificate-identity "https://github.com/gythialy/golang-cross/.github/workflows/release-golang-cross.yml@refs/tags/v1.24.3-0"
         env:
           TUF_ROOT: /tmp
 
@@ -43,7 +43,7 @@ jobs:
       - check-signature
 
     container:
-      image: ghcr.io/gythialy/golang-cross:v1.23.6-0@sha256:6e8da612570af388b204b833c0925c669d00f7654cf964e5bc3e808013234c05
+      image: ghcr.io/gythialy/golang-cross:v1.24.3-0@sha256:b0e66440a1dc4216c45d9df95ac9c34b9cb2e7de1d9e55a94914eb38c2ec2249
       volumes:
         - /usr:/host_usr
         - /opt:/host_opt

@@ -45,7 +45,7 @@ jobs:
         with:
           persist-credentials: false
       # https://github.com/mvdan/github-actions-golang#how-do-i-set-up-caching-between-builds
-      - uses: actions/cache@1bd1e32a3bdc45362d1e726936510720a7c30a57 # v4.2.0
+      - uses: actions/cache@5a3ec84eff668545956fd18022155c47e93e2684 # v4.2.3
         with:
           # In order:
           # * Module download cache
@@ -60,25 +60,19 @@ jobs:
           key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
           restore-keys: |
             ${{ runner.os }}-go-
-      - uses: actions/setup-go@f111f3307d8850f501ac008e886eec1fd1932a34 # v5.3.0
+      - uses: actions/setup-go@d35c59abb061a4a6fb18e82ac0862c26744d6ab5 # v5.5.0
         with:
           go-version-file: 'go.mod'
           check-latest: true
       - name: Run Go tests
-        env:
-          # See #2091 for the issue describing this temp workaround.
-          GODEBUG: x509sha1=1
-        run: go test -tags=sct -covermode atomic -coverprofile coverage.txt $(go list ./... | grep -v third_party/)
+        run: go test -covermode atomic -coverprofile coverage.txt $(go list ./... | grep -v third_party/)
       - name: Upload Coverage Report
-        uses: codecov/codecov-action@13ce06bfc6bbe3ecf90edbbf1bc32fe5978ca1d3 # v5.3.1
+        uses: codecov/codecov-action@18283e04ce6e62d37312384ff67231eb8fd56d24 # v5.4.3
         with:
           env_vars: OS
       - name: Run Go tests w/ `-race`
-        env:
-          # See #2091 for the issue describing this temp workaround.
-          GODEBUG: x509sha1=1
         if: ${{ runner.os == 'Linux' }}
-        run: go test -tags=sct -race $(go list ./... | grep -v third_party/)
+        run: go test -race $(go list ./... | grep -v third_party/)
 
   e2e-tests:
     name: Run e2e tests
@@ -144,7 +138,7 @@ jobs:
       - name: check disk space
         run: df -h
       # https://github.com/mvdan/github-actions-golang#how-do-i-set-up-caching-between-builds
-      - uses: actions/cache@1bd1e32a3bdc45362d1e726936510720a7c30a57 # v4.2.0
+      - uses: actions/cache@5a3ec84eff668545956fd18022155c47e93e2684 # v4.2.3
         with:
           # In order:
           # * Module download cache
@@ -159,15 +153,15 @@ jobs:
           key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
           restore-keys: |
             ${{ runner.os }}-go-
-      - uses: actions/setup-go@f111f3307d8850f501ac008e886eec1fd1932a34 # v5.3.0
+      - uses: actions/setup-go@d35c59abb061a4a6fb18e82ac0862c26744d6ab5 # v5.5.0
         with:
           go-version-file: 'go.mod'
           check-latest: true
-      - uses: ko-build/setup-ko@d982fec422852203cfb2053a8ec6ad302280d04d # v0.8
+      - uses: ko-build/setup-ko@d006021bd0c28d1ce33a07e7943d48b079944c8d # v0.9
       - name: setup kind cluster
         run: |
           # Used to test: cosign generate-key-pair k8s://...
-          go install sigs.k8s.io/kind@v0.20.0
+          go install sigs.k8s.io/kind@v0.27.0
           kind create cluster
 
       - name: Run end-to-end tests
@@ -175,7 +169,7 @@ jobs:
 
       - name: Collect diagnostics
         if: ${{ failure() }}
-        uses: chainguard-dev/actions/kind-diag@9ba949ac63357c725a9438f3e05a1e33d313498e # main
+        uses: chainguard-dev/actions/kind-diag@5363dd9eb48083bbf7674a4bbe62d71c3b230edd # v1.1.2
 
   e2e-windows-powershell-tests:
     name: Run PowerShell E2E tests
@@ -186,13 +180,13 @@ jobs:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
         with:
           persist-credentials: false
-      - uses: actions/setup-go@f111f3307d8850f501ac008e886eec1fd1932a34 # v5.3.0
+      - uses: actions/setup-go@d35c59abb061a4a6fb18e82ac0862c26744d6ab5 # v5.5.0
         with:
           go-version-file: 'go.mod'
           check-latest: true
 
       # https://github.com/mvdan/github-actions-golang#how-do-i-set-up-caching-between-builds
-      - uses: actions/cache@1bd1e32a3bdc45362d1e726936510720a7c30a57 # v4.2.0
+      - uses: actions/cache@5a3ec84eff668545956fd18022155c47e93e2684 # v4.2.3
         with:
           # In order:
           # * Module download cache
@@ -216,7 +210,7 @@ jobs:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
         with:
           persist-credentials: false
-      - uses: actions/setup-go@f111f3307d8850f501ac008e886eec1fd1932a34 # v5.3.0
+      - uses: actions/setup-go@d35c59abb061a4a6fb18e82ac0862c26744d6ab5 # v5.5.0
         with:
           go-version-file: 'go.mod'
           check-latest: true

@@ -1,3 +1,63 @@
+# v2.5.0
+
+v2.5.0 includes an implementation of the new bundle specification,
+attesting and verifying OCI image attestations uploaded as OCI artifacts.
+This feature is currently gated behind the `--new-bundle-format` flag
+when running `cosign attest`.
+
+## Features
+
+* Add support for new bundle specification for attesting/verifying OCI image attestations (#3889)
+* Feat/non filename completions (#4115)
+* Add TSA certificate related flags and fields for cosign attest (#4079)
+
+## Fixes
+
+* cmd/cosign/cli: fix typo in ignoreTLogMessage (#4111)
+* Fix replace with compliant image mediatype (#4077)
+
+## Contributors
+
+* Bob Callaway
+* Carlos Tadeu Panato Junior
+* Cody Soyland
+* Dmitry Savintsev
+* Hayden B
+* Ramon Petgrave
+* Riccardo Schirone
+* Stef Graces
+* Ville Skyttä
+
+# v2.4.3
+
+## Features
+
+* Bump sigstore/sigstore to support KMS plugins (#4073)
+* Enable fetching signatures without remote get. (#4047)
+* Feat/file flag completion improvements (#4028)
+* Update builder to use go1.23.6 (#4052)
+
+## Bug Fixes
+
+* fix parsing error in --only for cosign copy (#4049)
+
+## Cleanup
+
+* Refactor verifyNewBundle into library function (#4013)
+* fix comment typo and imports order (#4061)
+* sync comment with parameter name in function signature (#4063)
+* sort properly Go imports (#4071)
+
+## Contributors
+
+* Bob Callaway
+* Carlos Tadeu Panato Junior
+* Cody Soyland
+* Dmitry Savintsev
+* Hayden B
+* Tomasz Janiszewski
+* Ville Skyttä
+
 # v2.4.2
 
 ## Features
