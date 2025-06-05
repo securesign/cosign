@@ -32,7 +32,6 @@ import (
 	"github.com/google/go-containerregistry/pkg/name"
 	v1 "github.com/google/go-containerregistry/pkg/v1"
 	"github.com/google/go-containerregistry/pkg/v1/remote"
-
 	"github.com/sigstore/cosign/v2/cmd/cosign/cli/fulcio"
 	"github.com/sigstore/cosign/v2/cmd/cosign/cli/fulcio/fulcioverifier"
 	"github.com/sigstore/cosign/v2/cmd/cosign/cli/options"
@@ -123,8 +122,7 @@ func ParseOCIReference(ctx context.Context, refStr string, opts ...name.Option) 
 		return nil, fmt.Errorf("parsing reference: %w", err)
 	}
 	if _, ok := ref.(name.Digest); !ok {
-		msg := fmt.Sprintf(ui.TagReferenceMessage, refStr)
-		ui.Warnf(ctx, msg)
+		ui.Warnf(ctx, ui.TagReferenceMessage, refStr)
 	}
 	return ref, nil
 }
@@ -599,7 +597,6 @@ func (c *SignerVerifier) Close() {
 
 func (c *SignerVerifier) Bytes(ctx context.Context) ([]byte, error) {
 	if c.Cert != nil {
-		ui.Infof(ctx, "using ephemeral certificate:\n%s", string(c.Cert))
 		return c.Cert, nil
 	}
 
