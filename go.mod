@@ -49,18 +49,18 @@ require (
 	github.com/theupdateframework/go-tuf/v2 v2.0.2
 	github.com/transparency-dev/merkle v0.0.2
 	github.com/withfig/autocomplete-tools/integrations/cobra v1.2.1
-	gitlab.com/gitlab-org/api/client-go v0.128.0
-	golang.org/x/crypto v0.46.0
-	golang.org/x/oauth2 v0.33.0
-	golang.org/x/sync v0.19.0
-	golang.org/x/term v0.38.0
-	google.golang.org/api v0.257.0
-	google.golang.org/protobuf v1.36.11
-	k8s.io/api v0.28.3
-	k8s.io/apimachinery v0.28.3
-	k8s.io/client-go v0.28.3
-	k8s.io/utils v0.0.0-20250820121507-0af2bda4dd1d
-	sigs.k8s.io/release-utils v0.12.2
+	gitlab.com/gitlab-org/api/client-go v0.129.0
+	golang.org/x/crypto v0.38.0
+	golang.org/x/oauth2 v0.30.0
+	golang.org/x/sync v0.15.0
+	golang.org/x/term v0.32.0
+	google.golang.org/api v0.234.0
+	google.golang.org/protobuf v1.36.6
+	k8s.io/api v0.32.2
+	k8s.io/apimachinery v0.32.2
+	k8s.io/client-go v0.32.2
+	k8s.io/utils v0.0.0-20241210054802-24370beab758
+	sigs.k8s.io/release-utils v0.11.1
 )
 
 require (
