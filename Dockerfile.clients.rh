@@ -1,17 +1,17 @@
 # Provides the Trusted Artifact Signer CLI binaries, cosign and gitsign
-FROM quay.io/securesign/cli-cosign@sha256:67fbd561673c325536ff6db236061c8b8d95356e98e83f31b6d5f4f95e4e5ab6 AS cosign
-FROM quay.io/securesign/gitsign@sha256:c55a7ed7ed45ae427c558077760c03af5e8d699673ebfad85b28720878337411 AS gitsign
+FROM quay.io/securesign/cli-cosign@sha256:ec67f0b89460b9d864ff7c6879679594c65ec8f89bc13468f13dc1aaedb19e58 AS cosign
+FROM quay.io/securesign/gitsign@sha256:fc06db5562770ce0a3fc5b7020551ad7bd611d96dca9e89e36956008387115ba AS gitsign
 
 # Provides the Trusted Artifact Signer CLI binary, fetch-tsa-certs
-FROM quay.io/securesign/fetch-tsa-certs@sha256:4d2db7c41a04609d0d6eec1e75a56388937723aa35f9f4084e57dc1467b0fb24 as fetch_tsa_certs
+FROM quay.io/securesign/fetch-tsa-certs@sha256:c4e91df17c7c608db8dcc138e3a29153b1229405c55e29f8eff90d099fef7d15 as fetch_tsa_certs
 
 # Provides the Trusted Artifact Signer CLI binaries, rekor-cli and ec
-FROM quay.io/securesign/rekor-cli@sha256:25fcaf5ffdec3d9f261db61d5c7851227b187a5a63c29e5db65d88537806a7d1 as rekor
+FROM quay.io/securesign/rekor-cli@sha256:6e2114eeb0309fae082f2d2b2166ad51ecba1dc719a3b74af6d79bcb6b6b0ef5 as rekor
 FROM registry.redhat.io/rhtas/ec-rhel9:0.6@sha256:bccef7e286a29ba7661b8fec1c68f5f426912d975334be8498d66427a2f24b72 as ec
 
 # Provides the Trusted Artifact Signer CLI binaries trillian-createtree and trillian-updatetree
-FROM quay.io/securesign/trillian-createtree@sha256:aa0b9e5efa950a2ea4e6be442912d6a9f0fe419c0eefceca343db0884543de16 as trillian-createtree
-FROM quay.io/securesign/trillian-updatetree@sha256:46ddbab7a5eff50ff4dbe9ece64e4630b38fc70e9e21c49856799618bd0de6a8 as trillian-updatetree
+FROM quay.io/securesign/trillian-createtree@sha256:1d4bb1524b06ec0b24920a04ce78a14a9b0da342042428e82852e7b2a07a9c1f as trillian-createtree
+FROM quay.io/securesign/trillian-updatetree@sha256:74c09e77079f8ea610f748c6d3b0cfe256505b47486268d45681731e7daa2fa6 as trillian-updatetree
 
 FROM quay.io/securesign/cli-tuftool@sha256:f234fb75e79741ed234c9b0d06868c8be783eed72de7e159499a0e5b919c2b65 as tuf-tool
 
