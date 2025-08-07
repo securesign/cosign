@@ -15,7 +15,7 @@ FROM quay.io/securesign/trillian-updatetree@sha256:806b0084c5b2ce9882ee7af03b9b1
 
 FROM quay.io/securesign/cli-tuftool@sha256:54009d9fae1ad27c4ecb078265bd198d36f6e44d50add09d9574930f0810bc7d as tuf-tool
 
-FROM registry.redhat.io/ubi9/httpd-24@sha256:edaf7e87333dfe16cbaeb572d12bc45692e54f37d59ead572b6da9165d29d3ff
+FROM registry.redhat.io/ubi9/httpd-24@sha256:badeee0aa3477e61de64f6a2b93e8a3673edd38fc860125f7536506f3d592132
 ENV APP_ROOT=/opt/app-root
 WORKDIR $APP_ROOT/src/
 
