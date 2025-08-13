@@ -1,19 +1,19 @@
 # Provides the Trusted Artifact Signer CLI binaries, cosign and gitsign
-FROM quay.io/securesign/cli-cosign@sha256:749dbe41b5c670341841d1f22edd5d2480d38c5f6fefc15a30163297f3cb7eb4 AS cosign
+FROM quay.io/securesign/cli-cosign@sha256:ecce6eaef3f83d58defae9bcd0da3339648a3e3f23ff428dc1b66a0dc9055dc3 AS cosign
 FROM quay.io/securesign/gitsign@sha256:70383a80149c6ae8190ae078802392b10150b3ccd4a52a7458f9536de20bee1c AS gitsign
 
 # Provides the Trusted Artifact Signer CLI binary, fetch-tsa-certs
-FROM quay.io/securesign/fetch-tsa-certs@sha256:125f8b4943b877ef78ba4bce111f001f97e598651e69a1a9e35eeb0209ddf9a0 as fetch_tsa_certs
+FROM quay.io/securesign/fetch-tsa-certs@sha256:cc077f81a48efb4dfa1c881612554239324d6d71e52284335fad077b8dd3a2be as fetch_tsa_certs
 
 # Provides the Trusted Artifact Signer CLI binaries, rekor-cli and ec
-FROM quay.io/securesign/rekor-cli@sha256:7b4fa1dac527802a8fb26bacf4c86040a2b865350e3c9b1f0238a2db223e45cc as rekor
+FROM quay.io/securesign/rekor-cli@sha256:e419d9d90bc96392caaf9e360a4a91beb0d08c131782aaf368a3b23ddc47b4c8 as rekor
 FROM registry.redhat.io/rhtas/ec-rhel9:0.6@sha256:c18452e9884d5f7f7e51adfb3dd5bf1c5b842f6bc28543cb4d084bb3ab02d88b as ec
 
 # Provides the Trusted Artifact Signer CLI binaries trillian-createtree and trillian-updatetree
-FROM quay.io/securesign/trillian-createtree@sha256:7f7f685f1fb26e21dc836570054ecf829205a8d180f5683ac92b89b891feb922 as trillian-createtree
-FROM quay.io/securesign/trillian-updatetree@sha256:4013d634c503a3c0ad376cb55ed36a5dd82d8d834da6ee5ec0601f3dd8802df3 as trillian-updatetree
+FROM quay.io/securesign/trillian-createtree@sha256:0362260f2d4c0de2832f47df01ab85540fbfa8c0be77941bcb79c49d8901c510 as trillian-createtree
+FROM quay.io/securesign/trillian-updatetree@sha256:424646cbf719bae5c91e62524dc83e99699eda8b268007db4acd7cc4baf78885 as trillian-updatetree
 
-FROM quay.io/securesign/cli-tuftool@sha256:1e4dc914846d71943eae96fd4002bf144652d9a588e49f120eabca07ad195886 as tuf-tool
+FROM quay.io/securesign/cli-tuftool@sha256:1808218fb13b823ead9da42b52dd153e744048ade16200ec918c64adf7486fc4 as tuf-tool
 
 FROM registry.redhat.io/ubi9/httpd-24@sha256:badeee0aa3477e61de64f6a2b93e8a3673edd38fc860125f7536506f3d592132
 ENV APP_ROOT=/opt/app-root
