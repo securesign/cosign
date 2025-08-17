@@ -1,19 +1,19 @@
 # Provides the Trusted Artifact Signer CLI binaries, cosign and gitsign
-FROM quay.io/securesign/cli-cosign@sha256:ecce6eaef3f83d58defae9bcd0da3339648a3e3f23ff428dc1b66a0dc9055dc3 AS cosign
-FROM quay.io/securesign/gitsign@sha256:2a866b57ab12f4071368528190d91b4625a145d7e8cf7b18eb450ea4dbf94c36 AS gitsign
+FROM quay.io/securesign/cli-cosign@sha256:2c3be51e9d813495c554bdddf696011375c9ded93473094090f83d8694597824 AS cosign
+FROM quay.io/securesign/gitsign@sha256:cb4f5354efa17c1ca6c974ae2aea629e8dc635a55ced1f702cb9e2e365789002 AS gitsign
 
 # Provides the Trusted Artifact Signer CLI binary, fetch-tsa-certs
-FROM quay.io/securesign/fetch-tsa-certs@sha256:cc077f81a48efb4dfa1c881612554239324d6d71e52284335fad077b8dd3a2be as fetch_tsa_certs
+FROM quay.io/securesign/fetch-tsa-certs@sha256:acb15dc04a3cfbb0431ac237fe3e27120c0d15061e77921a1576bb04d351dc1d as fetch_tsa_certs
 
 # Provides the Trusted Artifact Signer CLI binaries, rekor-cli and ec
-FROM quay.io/securesign/rekor-cli@sha256:e419d9d90bc96392caaf9e360a4a91beb0d08c131782aaf368a3b23ddc47b4c8 as rekor
+FROM quay.io/securesign/rekor-cli@sha256:7a47b37bfeebe2e95b90333869fda68d87587ff65aac7ce1c777ae75e882450a as rekor
 FROM registry.redhat.io/rhtas/ec-rhel9:0.6@sha256:c18452e9884d5f7f7e51adfb3dd5bf1c5b842f6bc28543cb4d084bb3ab02d88b as ec
 
 # Provides the Trusted Artifact Signer CLI binaries trillian-createtree and trillian-updatetree
-FROM quay.io/securesign/trillian-createtree@sha256:0362260f2d4c0de2832f47df01ab85540fbfa8c0be77941bcb79c49d8901c510 as trillian-createtree
-FROM quay.io/securesign/trillian-updatetree@sha256:424646cbf719bae5c91e62524dc83e99699eda8b268007db4acd7cc4baf78885 as trillian-updatetree
+FROM quay.io/securesign/trillian-createtree@sha256:812315ab0ef006799ebe158dff67773b56d5d5e86d07dee9341214d1b49f4542 as trillian-createtree
+FROM quay.io/securesign/trillian-updatetree@sha256:bfa0cd62454f67ab94aa0d8fe58f8c624fccb8abd91e7d968725ee412ecde07a as trillian-updatetree
 
-FROM quay.io/securesign/cli-tuftool@sha256:1808218fb13b823ead9da42b52dd153e744048ade16200ec918c64adf7486fc4 as tuf-tool
+FROM quay.io/securesign/cli-tuftool@sha256:66b4e4de5185331ceb94fb9941a196a0d4664a0b6cbe6e4507a2305a29c523c1 as tuf-tool
 
 FROM registry.redhat.io/ubi9/httpd-24@sha256:badeee0aa3477e61de64f6a2b93e8a3673edd38fc860125f7536506f3d592132
 ENV APP_ROOT=/opt/app-root
