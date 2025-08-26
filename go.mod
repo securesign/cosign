@@ -48,7 +48,7 @@ require (
 	github.com/spf13/viper v1.20.1
 	github.com/spiffe/go-spiffe/v2 v2.6.0
 	github.com/stretchr/testify v1.11.1
-	github.com/theupdateframework/go-tuf/v2 v2.0.2
+	github.com/theupdateframework/go-tuf/v2 v2.0.2#4362))
 	github.com/transparency-dev/merkle v0.0.2
 	github.com/withfig/autocomplete-tools/integrations/cobra v1.2.1
 	gitlab.com/gitlab-org/api/client-go v0.140.0
