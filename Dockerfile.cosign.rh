@@ -35,7 +35,6 @@ LABEL io.openshift.tags="cosign trusted-signer"
 LABEL summary="Provides the cosign CLI binary for signing and verifying container images."
 LABEL com.redhat.component="cosign"
 LABEL name="rhtas/cosign-rhel9"
-LABEL cpe="cpe:/a:redhat:trusted_artifact_signer:1.3::el9"
 
 COPY --from=build-env /cosign/cosign-darwin-amd64.gz /usr/local/bin/cosign-darwin-amd64.gz
 COPY --from=build-env /cosign/cosign-windows-amd64.exe.gz /usr/local/bin/cosign-windows-amd64.exe.gz
