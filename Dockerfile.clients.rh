@@ -13,7 +13,7 @@ FROM registry.redhat.io/rhtas/ec-rhel9:0.7@sha256:78158d37f70af60043e6ad87cddc98
 FROM quay.io/securesign/trillian-createtree@sha256:244758721aa1c63adfffbae31df58059ff8a06311f6cb60515eeae14b20e78ce as trillian-createtree
 FROM quay.io/securesign/trillian-updatetree@sha256:009bd24835bc7caef38b03bb82d4626f3346ee1524c544ba69f929fc820c55ae as trillian-updatetree
 
-FROM quay.io/securesign/cli-tuftool@sha256:b15cf88387be400045301a3e14ac87bcc4afebff3c76b520a34630418138670b as tuf-tool
+FROM quay.io/securesign/cli-tuftool@sha256:e5d5f791ff4161a46a7b7b639f4a6af4d344a42d4078a0e74ff40fadf77b7762 as tuf-tool
 
 FROM registry.redhat.io/ubi9/httpd-24@sha256:f246cd462bd549cdb5f1ccf93e150db024962bc364048f0b8c06a9e0c2dc6a38
 ENV APP_ROOT=/opt/app-root
