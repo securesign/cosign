@@ -89,6 +89,8 @@ COPY --from=trillian-updatetree /usr/local/bin/updatetree-windows-amd64.exe.gz /
 COPY --from=tuf-tool /usr/bin/tuftool /var/www/html/clients/linux/tuftool-amd64
 RUN gzip /var/www/html/clients/linux/tuftool-amd64
 
+COPY LICENSE /licenses/license.txt
+
 LABEL \
       com.redhat.component="trusted-artifact-signer-serve-cli-container" \
       name="rhtas/client-server-rhel9" \

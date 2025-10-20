@@ -44,6 +44,7 @@ COPY --from=build-env /cosign/cosign-linux-ppc64le.gz /usr/local/bin/cosign-linu
 COPY --from=build-env /cosign/cosign-linux-s390x.gz /usr/local/bin/cosign-linux-s390x.gz
 COPY --from=build-env /cosign/cosign-linux-amd64.gz /usr/local/bin/cosign-linux-amd64.gz
 COPY --from=build-env /cosign/cosign /usr/local/bin/cosign
+COPY LICENSE /licenses/license.txt
 
 RUN chown root:0 /usr/local/bin/cosign && \
     chmod g+wx /usr/local/bin/cosign && \
@@ -60,6 +61,8 @@ ENV HOME=/home
 RUN chgrp -R 0 /${HOME} && chmod -R g=u /${HOME}
 
 WORKDIR ${HOME}
+
+USER 65532:65532
 
 # Makes sure the container stays running
 CMD ["tail", "-f", "/dev/null"]
