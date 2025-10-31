@@ -30,6 +30,8 @@ spec:
     value: "true"
   - name: build-source-image
     value: "true"
+  - name: fips-check
+    value: "true"
   pipelineRef:
     params:
     - name: url
