@@ -50,6 +50,13 @@ spec:
     - name: pathInRepo
       value: pipelines/docker-build-oci-ta.yaml
     resolver: git
+  taskRunSpecs:
+  - pipelineTaskName: run-unit-test
+    stepSpecs:
+    - computeResources:
+        limits:
+          memory: 5Gi
+      name: run-tests
   taskRunTemplate:
     serviceAccountName: build-pipeline-cosign
   workspaces:
