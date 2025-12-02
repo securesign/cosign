@@ -27,12 +27,13 @@ import (
 	"time"
 
 	"github.com/secure-systems-lab/go-securesystemslib/encrypted"
-	"github.com/sigstore/cosign/v2/cmd/cosign/cli/options"
-	"github.com/sigstore/cosign/v2/cmd/cosign/cli/sign"
-	cliverify "github.com/sigstore/cosign/v2/cmd/cosign/cli/verify"
-	"github.com/sigstore/cosign/v2/pkg/cosign"
-	tsaclient "github.com/sigstore/timestamp-authority/pkg/client"
-	tsaserver "github.com/sigstore/timestamp-authority/pkg/server"
+	"github.com/sigstore/cosign/v3/cmd/cosign/cli/options"
+	"github.com/sigstore/cosign/v3/cmd/cosign/cli/sign"
+	cliverify "github.com/sigstore/cosign/v3/cmd/cosign/cli/verify"
+	cert_test "github.com/sigstore/cosign/v3/internal/test"
+	"github.com/sigstore/cosign/v3/pkg/cosign"
+	tsaclient "github.com/sigstore/timestamp-authority/v2/pkg/client"
+	tsaserver "github.com/sigstore/timestamp-authority/v2/pkg/server"
 	"github.com/spf13/viper"
 )
 
