@@ -431,15 +431,15 @@ func TestImportPrivateKey(t *testing.T) {
 			expected: errors.New("unsupported private key"),
 		},
 		{
-		fileName: "invalidrsasmallkey.key",
-		pemData:  invalidrsasmallkey,
-		expected: errors.New("error validating rsa key: rsa key size 1024 is not supported supported, modulus size must be 2048, 3072, or 4096"),
-	},
-	{
-		fileName: "invalidrsalargekey.key",
-		pemData:  invalidrsalargekey,
-		expected: errors.New("error validating rsa key: rsa key size 5120 is not supported supported, modulus size must be 2048, 3072, or 4096"),
-	},
+			fileName: "invalidrsasmallkey.key",
+			pemData:  invalidrsasmallkey,
+			expected: errors.New("error validating rsa key: key size not supported: 1024"),
+		},
+		{
+			fileName: "invalidrsalargekey.key",
+			pemData:  invalidrsalargekey,
+			expected: errors.New("error validating rsa key: key size not supported: 5120"),
+		},
 		// EC tests
 		{
 			fileName: "validecp256.key",
@@ -462,10 +462,10 @@ func TestImportPrivateKey(t *testing.T) {
 			expected: nil,
 		},
 		{
-		fileName: "invalidecp224.key",
-		pemData:  invalidecp224,
-		expected: errors.New("error validating ecdsa key: ecdsa curve *elliptic.nistCurve[*crypto/internal/fips140/nistec.P224Point] is not supported, must be NIST P-256, P-384 or P-521"),
-	},
+			fileName: "invalidecp224.key",
+			pemData:  invalidecp224,
+			expected: errors.New("error validating ecdsa key: ECDSA curve P-224 not allowed"),
+		},
 		{
 			fileName: "invalidecunsupported.key",
 			pemData:  invalidecunsupported,
