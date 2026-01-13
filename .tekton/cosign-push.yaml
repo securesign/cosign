@@ -7,7 +7,7 @@ metadata:
     build.appstudio.redhat.com/target_branch: '{{target_branch}}'
     pipelinesascode.tekton.dev/max-keep-runs: "3"
     pipelinesascode.tekton.dev/on-cel-expression: event == "push" && target_branch
-      == "main" && ( "Dockerfile.cosign.rh".pathChanged() || ".tekton/cosign-push.yaml".pathChanged()
+      == "release-1.3" && ( "Dockerfile.cosign.rh".pathChanged() || ".tekton/cosign-push.yaml".pathChanged()
       || "cmd/***".pathChanged() || "internal/***".pathChanged() || "pkg/***".pathChanged()
       || "Build.mak".pathChanged() || "Makefile".pathChanged() || "trigger-konflux-builds.txt".pathChanged()
       || "go.mod".pathChanged() || "go.sum".pathChanged() )
@@ -16,7 +16,7 @@ metadata:
     appstudio.openshift.io/application: tas-tools-v1-3
     appstudio.openshift.io/component: cosign-v1-3
     pipelines.appstudio.openshift.io/type: build
-  name: cosign-on-push
+  name: cosign-v1-3-on-push
   namespace: rhtas-tenant
 spec:
   params:
