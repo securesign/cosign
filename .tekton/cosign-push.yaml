@@ -13,8 +13,8 @@ metadata:
       || "go.mod".pathChanged() || "go.sum".pathChanged() )
   creationTimestamp: null
   labels:
-    appstudio.openshift.io/application: cli
-    appstudio.openshift.io/component: cosign
+    appstudio.openshift.io/application: tas-tools-v1-3
+    appstudio.openshift.io/component: cosign-v1-3
     pipelines.appstudio.openshift.io/type: build
   name: cosign-on-push
   namespace: rhtas-tenant
@@ -55,7 +55,7 @@ spec:
           memory: 5Gi
       name: run-tests
   taskRunTemplate:
-    serviceAccountName: build-pipeline-cosign
+    serviceAccountName: build-pipeline-cosign-v1-3
   workspaces:
   - name: git-auth
     secret:
