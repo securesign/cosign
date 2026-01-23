@@ -18,10 +18,13 @@ package cli
 import (
 	"fmt"
 	"os"
+	"strings"
 
-	"github.com/sigstore/cosign/v2/cmd/cosign/cli/generate"
-	"github.com/sigstore/cosign/v2/cmd/cosign/cli/options"
-	"github.com/sigstore/cosign/v2/cmd/cosign/cli/sign"
+	"github.com/sigstore/cosign/v3/cmd/cosign/cli/generate"
+	"github.com/sigstore/cosign/v3/cmd/cosign/cli/options"
+	"github.com/sigstore/cosign/v3/cmd/cosign/cli/sign"
+	"github.com/sigstore/cosign/v3/cmd/cosign/cli/signcommon"
+	"github.com/sigstore/cosign/v3/pkg/cosign"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )
@@ -61,13 +64,29 @@ func SignBlob() *cobra.Command {
 			if options.NOf(o.Key, o.SecurityKey.Use) > 1 {
 				return &options.KeyParseError{}
 			}
+
+			// Check if the algorithm is in the list of supported algorithms
+			supportedAlgorithms := cosign.GetSupportedAlgorithms()
+			isValid := false
+			for _, algo := range supportedAlgorithms {
+				if algo == o.SigningAlgorithm {
+					isValid = true
+					break
+				}
+			}
+			if !isValid {
+				return fmt.Errorf("invalid signing algorithm: %s. Supported algorithms are: %s",
+					o.SigningAlgorithm, strings.Join(supportedAlgorithms, ", "))
+			}
+
 			return nil
 		},
-		RunE: func(_ *cobra.Command, args []string) error {
+		RunE: func(cmd *cobra.Command, args []string) error {
 			oidcClientSecret, err := o.OIDC.ClientSecret()
 			if err != nil {
 				return err
 			}
+
 			ko := options.KeyOpts{
 				KeyRef:                         o.Key,
 				PassFunc:                       generate.GetPass,
@@ -93,6 +112,13 @@ func SignBlob() *cobra.Command {
 				TSAServerURL:                   o.TSAServerURL,
 				RFC3161TimestampPath:           o.RFC3161TimestampPath,
 				IssueCertificateForExistingKey: o.IssueCertificate,
+				SigningAlgorithm:               o.SigningAlgorithm,
+			}
+			if err := signcommon.LoadTrustedMaterialAndSigningConfig(cmd.Context(), &ko, o.UseSigningConfig, o.SigningConfigPath,
+				o.Rekor.URL, o.Fulcio.URL, o.OIDC.Issuer, o.TSAServerURL, o.TrustedRootPath, o.TlogUpload,
+				o.NewBundleFormat, o.BundlePath, o.Key, o.IssueCertificate,
+				o.Output, "", o.OutputCertificate, "", o.OutputSignature); err != nil {
+				return err
 			}
 
 			for _, blob := range args {
@@ -102,7 +128,7 @@ func SignBlob() *cobra.Command {
 					o.OutputSignature = o.Output
 				}
 
-				if _, err := sign.SignBlobCmd(ro, ko, blob, o.Base64Output, o.OutputSignature, o.OutputCertificate, o.TlogUpload); err != nil {
+				if _, err := sign.SignBlobCmd(cmd.Context(), ro, ko, blob, o.Cert, o.CertChain, o.Base64Output, o.OutputSignature, o.OutputCertificate, o.TlogUpload); err != nil {
 					return fmt.Errorf("signing %s: %w", blob, err)
 				}
 			}

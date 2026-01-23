@@ -21,8 +21,8 @@ import (
 	"os"
 	"testing"
 
-	"github.com/sigstore/cosign/v2/pkg/blob"
-	"github.com/sigstore/cosign/v2/pkg/cosign"
+	"github.com/sigstore/cosign/v3/pkg/blob"
+	"github.com/sigstore/cosign/v3/pkg/cosign"
 	sigsignature "github.com/sigstore/sigstore/pkg/signature"
 	"github.com/sigstore/sigstore/pkg/signature/kms"
 )
@@ -135,7 +135,7 @@ func TestSignerVerifierFromEnvVar(t *testing.T) {
 
 	os.Setenv("MY_ENV_VAR", string(keys.PrivateBytes))
 	defer os.Unsetenv("MY_ENV_VAR")
-	if _, err := SignerVerifierFromKeyRef(ctx, "env://MY_ENV_VAR", passFunc); err != nil {
+	if _, err := SignerVerifierFromKeyRef(ctx, "env://MY_ENV_VAR", passFunc, nil); err != nil {
 		t.Fatalf("SignerVerifierFromKeyRef returned error: %v", err)
 	}
 }

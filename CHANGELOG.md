@@ -1,3 +1,205 @@
+# v3.0.3
+
+Thank you for all of your feedback on Cosign v3! v3.0.3 fixes a number of bugs reported by
+the community along with adding compatibility for the new bundle format and attestation
+storage in OCI to additional commands. We're continuing to work on compatibility with
+the remaining commands and will have a new release shortly. If you run into any problems,
+please [file an issue](https://github.com/sigstore/cosign/issues)
+
+## Changes
+
+* 4554: Closes 4554 - Add warning when --output* is used (#4556)
+* Protobuf bundle support for subcommand `clean` (#4539)
+* Add staging flag to initialize with staging TUF metadata
+* Updating sign-blob to also support signing with a certificate (#4547)
+* Protobuf bundle support for subcommands `save` and `load` (#4538)
+* Fix cert attachment for new bundle with signing config
+* Fix OCI verification with local cert - old bundle
+* Deprecate tlog-upload flag (#4458)
+* fix: Use signal context for `sign` cli package.
+* update offline verification directions (#4526)
+* Fix signing/verifying annotations for new bundle
+* Add support to download and attach for protobuf bundles (#4477)
+* Add --signing-algorithm flag (#3497)
+* Refactor signcommon bundle helpers
+* Add --bundle and fix --upload for new bundle
+* Pass insecure registry flags through to referrers
+* Add protobuf bundle support for tree subcommand (#4491)
+* Remove stale embed import (#4492)
+* Support multiple container identities
+* Fix segfault when no attestations are found (#4472)
+* Use overridden repository for new bundle format (#4473)
+* Remove --out flag from `cosign initialize` (#4462)
+* Deprecate offline flag (#4457)
+* Deduplicate code in sign/attest* and verify* commands (#4449)
+* Cache signing config when calling initialize (#4456)
+
+# v3.0.2
+
+v3.0.2 is a functionally equivalent release to v3.0.0 and v3.0.1, with a fix for CI to publish signed releases in the new bundle format.
+
+* Note that the `--bundle` flag specifying an output file to write the Sigstore bundle (which contains all relevant verification material) has moved from optional to required in v3.
+
+## Changes
+
+* choose different signature filename for KMS-signed release signatures (#4448)
+* Update rekor-tiles version path (#4450)
+
+# v3.0.1
+
+v3.0.1 is an equivalent release to v3.0.0, which was never published due to a failure in our CI workflows.
+
+* Note that the `--bundle` flag specifying an output file to write the Sigstore bundle (which contains all relevant verification material) has moved from optional to required in v3.
+
+## Changes
+
+* update goreleaser config for v3.0.0 release (#4446)
+
+# v3.0.0
+
+Announcing the next major release of Cosign!
+
+Cosign v3 is a minor change from Cosign v2.6.x, with all of the new capabilities of recent
+releases **on by default**, but will still allow you to disable them if you need the older functionality.
+These new features include support for the standardized bundle format (`--new-bundle-fomat`), providing roots
+of trust for verification and service URLs for signing via one file (`--trusted-root`, `--signing-config`),
+and container signatures stored as an OCI Image 1.1 referring artifact.
+
+Learn more on our [v3 announcement blog post](https://blog.sigstore.dev/cosign-3-0-available/)! See
+the changelogs for [v2.6.0](#v260), [v2.5.0](#v250), and [v2.4.0](#v240) for more information on recent
+changes.
+
+If you have any feedback, please reach out on Slack or file an issue on GitHub.
+
+## Changes
+
+* Default to using the new protobuf format (#4318)
+* Fetch service URLs from the TUF PGI signing config by default (#4428)
+* Bump module version to v3 for Cosign v3.0 (#4427)
+
+# v2.6.1
+
+## Bug Fixes
+
+* Partially populate the output of cosign verify when working with new bundles (#4416)
+* Bump sigstore-go, move conformance back to tagged release (#4426)
+
+# v2.6.0
+
+v2.6.0 introduces a number of new features, including:
+
+* Signing an in-toto statement rather than Cosign constructing one from a predicate, along with verifying a statement's subject using a digest and digest algorithm rather than providing a file reference (#4306)
+* Uploading a signature and its verification material (a ["bundle"](https://github.com/sigstore/protobuf-specs/blob/main/protos/sigstore_bundle.proto)) as an OCI Image 1.1 referring artifact, completing [#3927](https://github.com/sigstore/cosign/issues/3927) (#4316)
+* Providing service URLs for signing and attesting using a [SigningConfig](https://github.com/sigstore/protobuf-specs/blob/4df5baadcdb582a70c2bc032e042c0a218eb3841/protos/sigstore_trustroot.proto#L185). Note that this is required when using a [Rekor v2](https://github.com/sigstore/rekor-tiles) instance (#4319)
+
+Example generation and verification of a signed in-toto statement:
+
+```
+cosign attest-blob --new-bundle-format=true --bundle="digest-key-test.sigstore.json" --key="cosign.key" --statement="../sigstore-go/examples/sigstore-go-signing/intoto.txt"
+cosign verify-blob-attestation --bundle="digest-key-test.sigstore.json" --key=cosign.pub --type=unused --digest="b94d27b9934d3e08a52e52d7da7dabfac484efe37a5380ee9088f7ace2efcde9" --digestAlg="sha256"
+```
+
+Example container signing and verification using the new bundle format and referring artifacts:
+
+```
+cosign sign --new-bundle-format=true ghcr.io/user/alpine@sha256:a19367999603840546b8612572e338ec076c6d1f2fec61760a9e11410f546733
+cosign verify --new-bundle-format=true ghcr.io/user/alpine@sha256:a19367999603840546b8612572e338ec076c6d1f2fec61760a9e11410f546733
+```
+
+Example usage of a signing config provided by the public good instance's TUF repository:
+
+```
+cosign sign-blob --use-signing-config --bundle sigstore.json README.md
+cosign verify-blob --new-bundle-format --bundle sigstore.json --certificate-identity $EMAIL --certificate-oidc-issuer $ISSUER --use-signed-timestamps README.md
+```
+
+v2.6.0 leverages sigstore-go's signing and verification APIs gated behind these new flags. In an upcoming major release, we will be
+updating Cosign to default to producing and consuming bundles to align with all other Sigstore SDKs.
+
+## Features
+
+* Add to `attest-blob` the ability to supply a complete in-toto statement, and add to `verify-blob-attestation` the ability to verify with just a digest (#4306)
+* Have cosign sign support bundle format (#4316)
+* Add support for SigningConfig for sign-blob/attest-blob, support Rekor v2 (#4319)
+* Add support for SigningConfig in sign/attest (#4371)
+* Support self-managed keys when signing with sigstore-go (#4368)
+* Don't require timestamps when verifying with a key (#4337)
+* Don't load content from TUF if trusted root path is specified (#4347)
+* Add a terminal spinner while signing with sigstore-go (#4402)
+* Require exclusively a SigningConfig or service URLs when signing (#4403)
+* Remove SHA256 assumption in sign-blob/verify-blob (#4050)
+* Bump sigstore-go, support alternative hash algorithms with keys (#4386)
+
+## Breaking API Changes
+
+* `sign.SignerFromKeyOpts` no longer generates a key. Instead, it returns whether or not the client needs to generate a key, and if so, clients
+should call `sign.KeylessSigner`. This allows clients to more easily manage key generation.
+
+## Bug Fixes
+
+* Verify subject with bundle only when checking claims (#4320)
+* Fixes to cosign sign / verify for the new bundle format (#4346)
+
+# v2.5.3
+
+## Features
+
+* Add signing-config create command (#4280)
+* Allow multiple services to be specified for trusted-root create (#4285)
+* feat: Add OCI 1.1+ experimental support to tree (#4205)
+* Add validity period end for trusted-root create (#4271)
+
+## Bug Fixes
+
+* Fix cert verification logic for trusted-root/SCTs (#4294)
+* force when copying the latest image to overwrite (#4298)
+* avoid double-loading trustedroot from file (#4264)
+
+# v2.5.2
+
+## Bug Fixes
+
+* Do not load trusted root when CT env key is set
+
+## Documentation
+
+* docs: improve doc for --no-upload option (#4206)
+
+# v2.5.1
+
+## Features
+
+* Add Rekor v2 support for trusted-root create (#4242)
+* Add baseUrl and Uri to trusted-root create command
+* Upgrade to TUF v2 client with trusted root
+* Don't verify SCT for a private PKI cert (#4225)
+* Bump TSA library to relax EKU chain validation rules (#4219)
+
+## Bug Fixes
+
+* Bump sigstore-go to pick up log index=0 fix (#4162)
+* remove unused recursive flag on attest command (#4187)
+
+## Docs
+
+* Fix indentation in `verify-blob` cmd examples (#4160)
+
+## Releases
+
+* ensure we copy the latest tags on each release (#4157)
+
+## Contributors
+
+* arthurus-rex
+* Babak K. Shandiz
+* Bob Callaway
+* Carlos Tadeu Panato Junior
+* Colleen Murphy
+* Dmitry Savintsev
+* Emmanuel Ferdman
+* Hayden B
+* Ville Skyttä
+
 # v2.5.0
 
 v2.5.0 includes an implementation of the new bundle specification,

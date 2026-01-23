@@ -22,7 +22,7 @@ import (
 	"github.com/in-toto/in-toto-golang/in_toto"
 	slsa02 "github.com/in-toto/in-toto-golang/in_toto/slsa_provenance/v0.2"
 	slsa1 "github.com/in-toto/in-toto-golang/in_toto/slsa_provenance/v1"
-	"github.com/sigstore/cosign/v2/pkg/cosign/attestation"
+	"github.com/sigstore/cosign/v3/pkg/cosign/attestation"
 	"github.com/spf13/cobra"
 )
 
@@ -81,7 +81,8 @@ func ParsePredicateType(t string) (string, error) {
 // PredicateLocalOptions is the wrapper for predicate related options.
 type PredicateLocalOptions struct {
 	PredicateOptions
-	Path string
+	Path      string
+	Statement string
 }
 
 var _ Interface = (*PredicateLocalOptions)(nil)
@@ -92,8 +93,11 @@ func (o *PredicateLocalOptions) AddFlags(cmd *cobra.Command) {
 
 	cmd.Flags().StringVar(&o.Path, "predicate", "",
 		"path to the predicate file.")
-	_ = cmd.MarkFlagFilename("predicate", sbomExts...)
-	_ = cmd.MarkFlagRequired("predicate")
+
+	cmd.Flags().StringVar(&o.Statement, "statement", "",
+		"path to the statement file.")
+
+	cmd.MarkFlagsOneRequired("predicate", "statement")
 }
 
 // PredicateRemoteOptions is the wrapper for remote predicate related options.

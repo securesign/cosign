@@ -29,6 +29,7 @@ type SignOptions struct {
 	OutputSignature         string // TODO: this should be the root output file arg.
 	OutputPayload           string
 	OutputCertificate       string
+	BundlePath              string
 	PayloadPath             string
 	Recursive               bool
 	Attachment              string
@@ -40,8 +41,12 @@ type SignOptions struct {
 	TSAServerName           string
 	TSAServerURL            string
 	IssueCertificate        bool
-	SignContainerIdentity   string
+	SignContainerIdentities []string
 	RecordCreationTimestamp bool
+	NewBundleFormat         bool
+	UseSigningConfig        bool
+	SigningConfigPath       string
+	TrustedRootPath         string
 
 	Rekor       RekorOptions
 	Fulcio      FulcioOptions
@@ -93,6 +98,10 @@ func (o *SignOptions) AddFlags(cmd *cobra.Command) {
 		"write the certificate to FILE")
 	_ = cmd.MarkFlagFilename("output-certificate", certificateExts...)
 
+	cmd.Flags().StringVar(&o.BundlePath, "bundle", "",
+		"write everything required to verify the image to FILE")
+	_ = cmd.MarkFlagFilename("bundle", bundleExts...)
+
 	cmd.Flags().StringVar(&o.PayloadPath, "payload", "",
 		"path to a payload file to use rather than generating one")
 	// _ = cmd.MarkFlagFilename("payload") // no typical extensions
@@ -109,6 +118,7 @@ func (o *SignOptions) AddFlags(cmd *cobra.Command) {
 
 	cmd.Flags().BoolVar(&o.TlogUpload, "tlog-upload", true,
 		"whether or not to upload to the tlog")
+	_ = cmd.Flags().MarkDeprecated("tlog-upload", "prefer using a --signing-config file with no transparency log services")
 
 	cmd.Flags().StringVar(&o.TSAClientCACert, "timestamp-client-cacert", "",
 		"path to the X.509 CA certificate file in PEM format to be used for the connection to the TSA Server")
@@ -133,8 +143,21 @@ func (o *SignOptions) AddFlags(cmd *cobra.Command) {
 	cmd.Flags().BoolVar(&o.IssueCertificate, "issue-certificate", false,
 		"issue a code signing certificate from Fulcio, even if a key is provided")
 
-	cmd.Flags().StringVar(&o.SignContainerIdentity, "sign-container-identity", "",
-		"manually set the .critical.docker-reference field for the signed identity, which is useful when image proxies are being used where the pull reference should match the signature")
+	cmd.Flags().StringSliceVar(&o.SignContainerIdentities, "sign-container-identity", nil,
+		"manually set the .critical.docker-reference field for the signed identity, which is useful when image proxies are being used where the pull reference should match the signature, this flag is comma delimited. ex: --sign-container-identity=identity1,identity2")
 
 	cmd.Flags().BoolVar(&o.RecordCreationTimestamp, "record-creation-timestamp", false, "set the createdAt timestamp in the signature artifact to the time it was created; by default, cosign sets this to the zero value")
+
+	cmd.Flags().BoolVar(&o.NewBundleFormat, "new-bundle-format", true, "expect the signature/attestation to be packaged in a Sigstore bundle")
+
+	cmd.Flags().BoolVar(&o.UseSigningConfig, "use-signing-config", true,
+		"whether to use a TUF-provided signing config for the service URLs. Must set --new-bundle-format, which will store verification material in the new format")
+
+	cmd.Flags().StringVar(&o.SigningConfigPath, "signing-config", "",
+		"path to a signing config file. Must provide --new-bundle-format, which will store verification material in the new format")
+
+	cmd.MarkFlagsMutuallyExclusive("use-signing-config", "signing-config")
+
+	cmd.Flags().StringVar(&o.TrustedRootPath, "trusted-root", "",
+		"optional path to a TrustedRoot JSON file to verify a signature after signing")
 }

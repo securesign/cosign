@@ -20,9 +20,9 @@ import (
 	"fmt"
 
 	"github.com/google/go-containerregistry/pkg/name"
-	"github.com/sigstore/cosign/v2/cmd/cosign/cli/options"
-	"github.com/sigstore/cosign/v2/cmd/cosign/cli/verify"
-	"github.com/sigstore/cosign/v2/internal/ui"
+	"github.com/sigstore/cosign/v3/cmd/cosign/cli/options"
+	"github.com/sigstore/cosign/v3/cmd/cosign/cli/verify"
+	"github.com/sigstore/cosign/v3/internal/ui"
 	"github.com/spf13/cobra"
 )
 
@@ -109,6 +109,7 @@ against the transparency log.`,
 			v := &verify.VerifyCommand{
 				RegistryOptions:              o.Registry,
 				CertVerifyOptions:            o.CertVerify,
+				CommonVerifyOptions:          o.CommonVerifyOptions,
 				CheckClaims:                  o.CheckClaims,
 				KeyRef:                       o.Key,
 				CertRef:                      o.CertVerify.Cert,
@@ -138,6 +139,7 @@ against the transparency log.`,
 				MaxWorkers:                   o.CommonVerifyOptions.MaxWorkers,
 				ExperimentalOCI11:            o.CommonVerifyOptions.ExperimentalOCI11,
 				UseSignedTimestamps:          o.CommonVerifyOptions.UseSignedTimestamps,
+				NewBundleFormat:              o.CommonVerifyOptions.NewBundleFormat,
 			}
 
 			if o.CommonVerifyOptions.MaxWorkers == 0 {
@@ -216,6 +218,11 @@ against the transparency log.`,
 				o.CommonVerifyOptions.IgnoreTlog = true
 			}
 
+			hashAlgorithm, err := o.SignatureDigest.HashAlgorithm()
+			if err != nil {
+				return err
+			}
+
 			v := &verify.VerifyAttestationCommand{
 				RegistryOptions:              o.Registry,
 				CommonVerifyOptions:          o.CommonVerifyOptions,
@@ -245,6 +252,7 @@ against the transparency log.`,
 				TSACertChainPath:             o.CommonVerifyOptions.TSACertChainPath,
 				IgnoreTlog:                   o.CommonVerifyOptions.IgnoreTlog,
 				MaxWorkers:                   o.CommonVerifyOptions.MaxWorkers,
+				HashAlgorithm:                hashAlgorithm,
 				UseSignedTimestamps:          o.CommonVerifyOptions.UseSignedTimestamps,
 			}
 
@@ -328,6 +336,11 @@ The blob may be specified as a path to a file or - for stdin.`,
 				o.CommonVerifyOptions.IgnoreTlog = true
 			}
 
+			hashAlgorithm, err := o.SignatureDigest.HashAlgorithm()
+			if err != nil {
+				return err
+			}
+
 			ko := options.KeyOpts{
 				KeyRef:               o.Key,
 				Sk:                   o.SecurityKey.Use,
@@ -357,6 +370,7 @@ The blob may be specified as a path to a file or - for stdin.`,
 				IgnoreTlog:                   o.CommonVerifyOptions.IgnoreTlog,
 				UseSignedTimestamps:          o.CommonVerifyOptions.UseSignedTimestamps,
 				TrustedRootPath:              o.CommonVerifyOptions.TrustedRootPath,
+				HashAlgorithm:                hashAlgorithm,
 			}
 
 			ctx, cancel := context.WithTimeout(cmd.Context(), ro.Timeout)
@@ -399,6 +413,11 @@ The blob may be specified as a path to a file.`,
 				o.CommonVerifyOptions.IgnoreTlog = true
 			}
 
+			hashAlgorithm, err := o.SignatureDigest.HashAlgorithm()
+			if err != nil {
+				return err
+			}
+
 			ko := options.KeyOpts{
 				KeyRef:               o.Key,
 				Sk:                   o.SecurityKey.Use,
@@ -430,10 +449,13 @@ The blob may be specified as a path to a file.`,
 				IgnoreTlog:                   o.CommonVerifyOptions.IgnoreTlog,
 				UseSignedTimestamps:          o.CommonVerifyOptions.UseSignedTimestamps,
 				TrustedRootPath:              o.CommonVerifyOptions.TrustedRootPath,
+				Digest:                       o.Digest,
+				DigestAlg:                    o.DigestAlg,
+				HashAlgorithm:                hashAlgorithm,
 			}
 			// We only use the blob if we are checking claims.
-			if len(args) == 0 && o.CheckClaims {
-				return fmt.Errorf("no path to blob passed in, run `cosign verify-blob-attestation -h` for more help")
+			if o.CheckClaims && len(args) == 0 && (o.Digest == "" || o.DigestAlg == "") {
+				return fmt.Errorf("must provide path to blob or digest and digestAlg; run `cosign verify-blob-attestation -h` for more help")
 			}
 			var path string
 			if len(args) > 0 {

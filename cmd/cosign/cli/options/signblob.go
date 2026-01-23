@@ -16,6 +16,12 @@
 package options
 
 import (
+	"fmt"
+	"strings"
+
+	"github.com/sigstore/cosign/v3/pkg/cosign"
+	v1 "github.com/sigstore/protobuf-specs/gen/pb-go/common/v1"
+	"github.com/sigstore/sigstore/pkg/signature"
 	"github.com/spf13/cobra"
 )
 
@@ -23,6 +29,8 @@ import (
 // The new output-certificate flag is only in use when COSIGN_EXPERIMENTAL is enabled
 type SignBlobOptions struct {
 	Key                  string
+	Cert                 string
+	CertChain            string
 	Base64Output         bool
 	Output               string // deprecated: TODO remove when the output flag is fully deprecated
 	OutputSignature      string // TODO: this should be the root output file arg.
@@ -43,6 +51,11 @@ type SignBlobOptions struct {
 	TSAServerURL         string
 	RFC3161TimestampPath string
 	IssueCertificate     bool
+	SigningAlgorithm     string
+
+	UseSigningConfig  bool
+	SigningConfigPath string
+	TrustedRootPath   string
 }
 
 var _ Interface = (*SignBlobOptions)(nil)
@@ -57,6 +70,17 @@ func (o *SignBlobOptions) AddFlags(cmd *cobra.Command) {
 	cmd.Flags().StringVar(&o.Key, "key", "",
 		"path to the private key file, KMS URI or Kubernetes Secret")
 	_ = cmd.MarkFlagFilename("key", privateKeyExts...)
+
+	cmd.Flags().StringVar(&o.Cert, "certificate", "",
+		"path to the X.509 certificate for signing attestation")
+	_ = cmd.MarkFlagFilename("certificate", certificateExts...)
+
+	cmd.Flags().StringVar(&o.CertChain, "certificate-chain", "",
+		"path to a list of CA X.509 certificates in PEM format which will be needed "+
+			"when building the certificate chain for the signed attestation. "+
+			"Must start with the parent intermediate CA certificate of the "+
+			"signing certificate and end with the root certificate.")
+	_ = cmd.MarkFlagFilename("certificate-chain", certificateExts...)
 
 	cmd.Flags().BoolVar(&o.Base64Output, "b64", true,
 		"whether to base64 encode the output")
@@ -77,15 +101,26 @@ func (o *SignBlobOptions) AddFlags(cmd *cobra.Command) {
 		"write everything required to verify the blob to a FILE")
 	_ = cmd.MarkFlagFilename("bundle", bundleExts...)
 
-	// TODO: have this default to true as a breaking change
-	cmd.Flags().BoolVar(&o.NewBundleFormat, "new-bundle-format", false,
+	cmd.Flags().BoolVar(&o.NewBundleFormat, "new-bundle-format", true,
 		"output bundle in new format that contains all verification material")
+
+	cmd.Flags().BoolVar(&o.UseSigningConfig, "use-signing-config", true,
+		"whether to use a TUF-provided signing config for the service URLs. Must provide --bundle, which will output verification material in the new format")
+
+	cmd.Flags().StringVar(&o.SigningConfigPath, "signing-config", "",
+		"path to a signing config file. Must provide --bundle, which will output verification material in the new format")
+
+	cmd.MarkFlagsMutuallyExclusive("use-signing-config", "signing-config")
+
+	cmd.Flags().StringVar(&o.TrustedRootPath, "trusted-root", "",
+		"optional path to a TrustedRoot JSON file to verify a signature after signing")
 
 	cmd.Flags().BoolVarP(&o.SkipConfirmation, "yes", "y", false,
 		"skip confirmation prompts for non-destructive operations")
 
 	cmd.Flags().BoolVar(&o.TlogUpload, "tlog-upload", true,
 		"whether or not to upload to the tlog")
+	_ = cmd.Flags().MarkDeprecated("tlog-upload", "prefer using a --signing-config file with no transparency log services")
 
 	cmd.Flags().StringVar(&o.TSAClientCACert, "timestamp-client-cacert", "",
 		"path to the X.509 CA certificate file in PEM format to be used for the connection to the TSA Server")
@@ -113,4 +148,9 @@ func (o *SignBlobOptions) AddFlags(cmd *cobra.Command) {
 
 	cmd.Flags().BoolVar(&o.IssueCertificate, "issue-certificate", false,
 		"issue a code signing certificate from Fulcio, even if a key is provided")
+
+	keyAlgorithmTypes := cosign.GetSupportedAlgorithms()
+	keyAlgorithmHelp := fmt.Sprintf("signing algorithm to use for signing/hashing (allowed %s)", strings.Join(keyAlgorithmTypes, ", "))
+	defaultKeyFlag, _ := signature.FormatSignatureAlgorithmFlag(v1.PublicKeyDetails_PKIX_ECDSA_P256_SHA_256)
+	cmd.Flags().StringVar(&o.SigningAlgorithm, "signing-algorithm", defaultKeyFlag, keyAlgorithmHelp)
 }

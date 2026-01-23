@@ -51,8 +51,8 @@ linters:
       settings:
         printf:
           funcs:
-            - github.com/sigstore/cosign/v2/internal/ui.Infof
-            - github.com/sigstore/cosign/v2/internal/ui.Warnf
+            - github.com/sigstore/cosign/v3/internal/ui.Infof
+            - github.com/sigstore/cosign/v3/internal/ui.Warnf
   exclusions:
     generated: lax
     presets:
@@ -69,9 +69,20 @@ linters:
           - gosec
         path: _test\.go
       - linters:
-          - revive
-        path: pkg/types/
-        text: "var-naming: avoid meaningless package names"
+          - staticcheck
+        path: pkg/cosign/tlog.go
+        # NewEntry used for Rekor v1, will update to NewTlogEntry for Rekor v2 support
+        text: SA1019
+      - linters:
+          - staticcheck
+        path: pkg/cosign/verify.go
+        # NewEntry used for Rekor v1, will update to NewTlogEntry for Rekor v2 support
+        text: SA1019
+      - linters:
+          - staticcheck
+        path: pkg/cosign/verify_bundle_test.go
+        # NewEntry used for Rekor v1, will update to NewTlogEntry for Rekor v2 support
+        text: SA1019
     paths:
       - third_party$
       - builtin$

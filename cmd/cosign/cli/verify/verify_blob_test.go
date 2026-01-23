@@ -37,14 +37,14 @@ import (
 
 	"github.com/cyberphone/json-canonicalization/go/src/webpki.org/jsoncanonicalizer"
 	"github.com/go-openapi/runtime"
-	"github.com/go-openapi/swag"
-	"github.com/sigstore/cosign/v2/cmd/cosign/cli/options"
-	"github.com/sigstore/cosign/v2/internal/pkg/cosign/tsa/mock"
-	"github.com/sigstore/cosign/v2/pkg/cosign"
-	"github.com/sigstore/cosign/v2/pkg/cosign/bundle"
-	sigs "github.com/sigstore/cosign/v2/pkg/signature"
-	ctypes "github.com/sigstore/cosign/v2/pkg/types"
-	"github.com/sigstore/cosign/v2/test"
+	"github.com/go-openapi/swag/conv"
+	"github.com/sigstore/cosign/v3/cmd/cosign/cli/options"
+	"github.com/sigstore/cosign/v3/internal/pkg/cosign/tsa/mock"
+	"github.com/sigstore/cosign/v3/internal/test"
+	"github.com/sigstore/cosign/v3/pkg/cosign"
+	"github.com/sigstore/cosign/v3/pkg/cosign/bundle"
+	sigs "github.com/sigstore/cosign/v3/pkg/signature"
+	ctypes "github.com/sigstore/cosign/v3/pkg/types"
 	protobundle "github.com/sigstore/protobuf-specs/gen/pb-go/bundle/v1"
 	protocommon "github.com/sigstore/protobuf-specs/gen/pb-go/common/v1"
 	"github.com/sigstore/rekor/pkg/generated/models"
@@ -162,6 +162,18 @@ func TestVerifyBlob(t *testing.T) {
 		time.Now().Add(-time.Hour), leafPriv, rootCert, rootPriv)
 	expiredLeafPem, _ := cryptoutils.MarshalCertificateToPEM(expiredLeafCert)
 
+	unrelatedPriv, err := ecdsa.GenerateKey(elliptic.P256(), rand.Reader)
+	if err != nil {
+		t.Fatal(err)
+	}
+	unrelatedSigner, err := signature.LoadECDSASignerVerifier(unrelatedPriv, crypto.SHA256)
+	if err != nil {
+		t.Fatal(err)
+	}
+	unrelatedLeafCert, _ := test.GenerateLeafCertWithExpiration(identity, issuer,
+		time.Now(), unrelatedPriv, rootCert, rootPriv)
+	unrelatedCertPem, _ := cryptoutils.MarshalCertificateToPEM(unrelatedLeafCert)
+
 	// Make rekor signer
 	rekorPriv, err := ecdsa.GenerateKey(elliptic.P256(), rand.Reader)
 	if err != nil {
@@ -178,7 +190,7 @@ func TestVerifyBlob(t *testing.T) {
 	tmpRekorPubFile := writeBlobFile(t, td, string(pemRekor), "rekor_pub.key")
 	t.Setenv("SIGSTORE_REKOR_PUBLIC_KEY", tmpRekorPubFile)
 
-	var makeSignature = func(blob []byte) string {
+	var makeSignature = func(blob []byte, signer signature.SignerVerifier) string {
 		sig, err := signer.SignMessage(bytes.NewReader(blob))
 		if err != nil {
 			t.Fatal(err)
@@ -186,10 +198,12 @@ func TestVerifyBlob(t *testing.T) {
 		return string(sig)
 	}
 	blobBytes := []byte("foo")
-	blobSignature := makeSignature(blobBytes)
+	blobSignature := makeSignature(blobBytes, signer)
 
 	otherBytes := []byte("bar")
-	otherSignature := makeSignature(otherBytes)
+	otherSignature := makeSignature(otherBytes, signer)
+
+	unrelatedSignature := makeSignature(blobBytes, unrelatedSigner)
 
 	// initialize timestamp for expired and unexpired certificates
 	expiredTSAOpts := mock.TSAClientOptions{Time: time.Now().Add(-time.Hour), Message: []byte(blobSignature)}
@@ -300,18 +314,27 @@ func TestVerifyBlob(t *testing.T) {
 		{
 			name:      "valid signature with public key - bad bundle cert mismatch",
 			blob:      blobBytes,
+			signature: unrelatedSignature,
+			key:       pubKeyBytes,
+			bundlePath: makeLocalBundle(t, *rekorSigner, blobBytes, []byte(unrelatedSignature),
+				unrelatedCertPem, true),
+			shouldErr: true,
+		},
+		{
+			name:      "valid signature with public key and bundle cert derived from public key",
+			blob:      blobBytes,
 			signature: blobSignature,
 			key:       pubKeyBytes,
 			bundlePath: makeLocalBundle(t, *rekorSigner, blobBytes, []byte(blobSignature),
 				unexpiredCertPem, true),
-			shouldErr: true,
+			shouldErr: false,
 		},
 		{
 			name:      "valid signature with public key - bad bundle signature mismatch",
 			blob:      blobBytes,
 			signature: blobSignature,
 			key:       pubKeyBytes,
-			bundlePath: makeLocalBundle(t, *rekorSigner, blobBytes, []byte(makeSignature(blobBytes)),
+			bundlePath: makeLocalBundle(t, *rekorSigner, blobBytes, []byte(makeSignature(blobBytes, signer)),
 				pubKeyBytes, true),
 			shouldErr: true,
 		},
@@ -366,20 +389,11 @@ func TestVerifyBlob(t *testing.T) {
 			shouldErr: true,
 		},
 		{
-			name:      "valid signature with unexpired certificate - bad bundle cert mismatch",
-			blob:      blobBytes,
-			signature: blobSignature,
-			key:       pubKeyBytes,
-			bundlePath: makeLocalBundle(t, *rekorSigner, blobBytes, []byte(blobSignature),
-				unexpiredCertPem, true),
-			shouldErr: true,
-		},
-		{
 			name:      "valid signature with unexpired certificate - bad bundle signature mismatch",
 			blob:      blobBytes,
 			signature: blobSignature,
 			cert:      unexpiredLeafCert,
-			bundlePath: makeLocalBundle(t, *rekorSigner, blobBytes, []byte(makeSignature(blobBytes)),
+			bundlePath: makeLocalBundle(t, *rekorSigner, blobBytes, []byte(makeSignature(blobBytes, signer)),
 				unexpiredCertPem, true),
 			shouldErr: true,
 		},
@@ -701,9 +715,9 @@ func makeRekorEntry(t *testing.T, rekorSigner signature.ECDSASignerVerifier,
 	}
 	e := models.LogEntryAnon{
 		Body:           base64.StdEncoding.EncodeToString(leaf),
-		IntegratedTime: swag.Int64(integratedTime.Unix()),
-		LogIndex:       swag.Int64(0),
-		LogID:          swag.String(logID),
+		IntegratedTime: conv.Pointer(integratedTime.Unix()),
+		LogIndex:       conv.Pointer(int64(0)),
+		LogID:          conv.Pointer(logID),
 	}
 	// Marshal payload, sign, and set SET in Bundle
 	jsonPayload, err := json.Marshal(e)
@@ -723,9 +737,9 @@ func makeRekorEntry(t *testing.T, rekorSigner signature.ECDSASignerVerifier,
 	e.Verification = &models.LogEntryAnonVerification{
 		SignedEntryTimestamp: bundleSig,
 		InclusionProof: &models.InclusionProof{
-			LogIndex: swag.Int64(0),
-			TreeSize: swag.Int64(1),
-			RootHash: swag.String(hex.EncodeToString(uuid)),
+			LogIndex: conv.Pointer(int64(0)),
+			TreeSize: conv.Pointer(int64(1)),
+			RootHash: conv.Pointer(hex.EncodeToString(uuid)),
 			Hashes:   []string{},
 		},
 	}
@@ -819,6 +833,7 @@ func makeLocalNewBundle(t *testing.T, sig []byte, digest [32]byte) string {
 }
 
 func TestVerifyBlobCmdWithBundle(t *testing.T) {
+	t.Setenv("TUF_ROOT", t.TempDir())
 	keyless := newKeylessStack(t)
 	defer os.RemoveAll(keyless.td)
 
@@ -1332,6 +1347,7 @@ func TestVerifyBlobCmdWithBundle(t *testing.T) {
 }
 
 func TestVerifyBlobCmdInvalidRootCA(t *testing.T) {
+	t.Setenv("TUF_ROOT", t.TempDir())
 	keyless := newKeylessStack(t)
 	defer os.RemoveAll(keyless.td)
 

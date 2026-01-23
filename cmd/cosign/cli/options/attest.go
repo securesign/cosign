@@ -26,6 +26,7 @@ type AttestOptions struct {
 	Key                     string
 	Cert                    string
 	CertChain               string
+	IssueCertificate        bool
 	NoUpload                bool
 	Replace                 bool
 	SkipConfirmation        bool
@@ -37,7 +38,11 @@ type AttestOptions struct {
 	TSAServerURL            string
 	RekorEntryType          string
 	RecordCreationTimestamp bool
+	BundlePath              string
 	NewBundleFormat         bool
+	UseSigningConfig        bool
+	SigningConfigPath       string
+	TrustedRootPath         string
 
 	Rekor       RekorOptions
 	Fulcio      FulcioOptions
@@ -74,8 +79,7 @@ func (o *AttestOptions) AddFlags(cmd *cobra.Command) {
 	_ = cmd.MarkFlagFilename("certificate-chain", certificateExts...)
 
 	cmd.Flags().BoolVar(&o.NoUpload, "no-upload", false,
-		"do not upload the generated attestation")
-
+		"do not upload the generated attestation, but send the attestation output to STDOUT")
 	cmd.Flags().BoolVarP(&o.Replace, "replace", "", false,
 		"")
 
@@ -84,6 +88,7 @@ func (o *AttestOptions) AddFlags(cmd *cobra.Command) {
 
 	cmd.Flags().BoolVar(&o.TlogUpload, "tlog-upload", true,
 		"whether or not to upload to the tlog")
+	_ = cmd.Flags().MarkDeprecated("tlog-upload", "prefer using a --signing-config file with no transparency log services")
 
 	cmd.Flags().StringVar(&o.RekorEntryType, "rekor-entry-type", rekorEntryTypes[0],
 		"specifies the type to be used for a rekor entry upload ("+strings.Join(rekorEntryTypes, "|")+")")
@@ -108,5 +113,23 @@ func (o *AttestOptions) AddFlags(cmd *cobra.Command) {
 	cmd.Flags().BoolVar(&o.RecordCreationTimestamp, "record-creation-timestamp", false,
 		"set the createdAt timestamp in the attestation artifact to the time it was created; by default, cosign sets this to the zero value")
 
-	cmd.Flags().BoolVar(&o.NewBundleFormat, "new-bundle-format", false, "attach a Sigstore bundle using OCI referrers API")
+	cmd.Flags().BoolVar(&o.IssueCertificate, "issue-certificate", false,
+		"issue a code signing certificate from Fulcio, even if a key is provided")
+
+	cmd.Flags().StringVar(&o.BundlePath, "bundle", "",
+		"write everything required to verify the blob to a FILE")
+	_ = cmd.MarkFlagFilename("bundle", bundleExts...)
+
+	cmd.Flags().BoolVar(&o.NewBundleFormat, "new-bundle-format", true, "attach a Sigstore bundle using OCI referrers API")
+
+	cmd.Flags().BoolVar(&o.UseSigningConfig, "use-signing-config", true,
+		"whether to use a TUF-provided signing config for the service URLs. Must set --new-bundle-format, which will store verification material in the new format")
+
+	cmd.Flags().StringVar(&o.SigningConfigPath, "signing-config", "",
+		"path to a signing config file. Must provide --new-bundle-format, which will store verification material in the new format")
+
+	cmd.MarkFlagsMutuallyExclusive("use-signing-config", "signing-config")
+
+	cmd.Flags().StringVar(&o.TrustedRootPath, "trusted-root", "",
+		"optional path to a TrustedRoot JSON file to verify a signature after signing")
 }

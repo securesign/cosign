@@ -17,6 +17,7 @@ package verify
 
 import (
 	"context"
+	"crypto"
 	"errors"
 	"flag"
 	"fmt"
@@ -25,19 +26,13 @@ import (
 	"strings"
 
 	"github.com/google/go-containerregistry/pkg/name"
-	"github.com/sigstore/cosign/v2/cmd/cosign/cli/fulcio"
-	"github.com/sigstore/cosign/v2/cmd/cosign/cli/options"
-	"github.com/sigstore/cosign/v2/cmd/cosign/cli/rekor"
-	"github.com/sigstore/cosign/v2/internal/ui"
-	"github.com/sigstore/cosign/v2/pkg/cosign"
-	"github.com/sigstore/cosign/v2/pkg/cosign/cue"
-	"github.com/sigstore/cosign/v2/pkg/cosign/pivkey"
-	"github.com/sigstore/cosign/v2/pkg/cosign/pkcs11key"
-	"github.com/sigstore/cosign/v2/pkg/cosign/rego"
-	"github.com/sigstore/cosign/v2/pkg/oci"
-	"github.com/sigstore/cosign/v2/pkg/policy"
-	sigs "github.com/sigstore/cosign/v2/pkg/signature"
-	"github.com/sigstore/sigstore-go/pkg/root"
+	"github.com/sigstore/cosign/v3/cmd/cosign/cli/options"
+	"github.com/sigstore/cosign/v3/internal/ui"
+	"github.com/sigstore/cosign/v3/pkg/cosign"
+	"github.com/sigstore/cosign/v3/pkg/cosign/cue"
+	"github.com/sigstore/cosign/v3/pkg/cosign/rego"
+	"github.com/sigstore/cosign/v3/pkg/oci"
+	"github.com/sigstore/cosign/v3/pkg/policy"
 )
 
 // VerifyAttestationCommand verifies a signature on a supplied container image
@@ -72,12 +67,18 @@ type VerifyAttestationCommand struct {
 	IgnoreTlog                   bool
 	MaxWorkers                   int
 	UseSignedTimestamps          bool
+	HashAlgorithm                crypto.Hash
 }
 
 // Exec runs the verification command
 func (c *VerifyAttestationCommand) Exec(ctx context.Context, images []string) (err error) {
 	if len(images) == 0 {
 		return flag.ErrHelp
+	}
+
+	// always default to sha256 if the algorithm hasn't been explicitly set
+	if c.HashAlgorithm == 0 {
+		c.HashAlgorithm = crypto.SHA256
 	}
 
 	// We can't have both a key and a security key
@@ -97,6 +98,9 @@ func (c *VerifyAttestationCommand) Exec(ctx context.Context, images []string) (e
 	if err != nil {
 		return fmt.Errorf("constructing client options: %w", err)
 	}
+	if c.AllowHTTPRegistry || c.AllowInsecure {
+		c.NameOptions = append(c.NameOptions, name.Insecure)
+	}
 
 	co := &cosign.CheckOpts{
 		RegistryClientOpts:           ociremoteOpts,
@@ -113,139 +117,53 @@ func (c *VerifyAttestationCommand) Exec(ctx context.Context, images []string) (e
 		UseSignedTimestamps:          c.TSACertChainPath != "" || c.UseSignedTimestamps,
 		NewBundleFormat:              c.NewBundleFormat,
 	}
+	vOfflineKey := verifyOfflineWithKey(c.KeyRef, c.CertRef, c.Sk, co)
+
+	// Check to see if we are using the new bundle format or not
+	if !c.LocalImage {
+		ref, err := name.ParseReference(images[0], c.NameOptions...)
+		if err == nil && c.NewBundleFormat {
+			newBundles, _, err := cosign.GetBundles(ctx, ref, co.RegistryClientOpts, c.NameOptions...)
+			if len(newBundles) == 0 || err != nil {
+				co.NewBundleFormat = false
+			}
+		}
+	}
+
 	if c.CheckClaims {
 		co.ClaimVerifier = cosign.IntotoSubjectClaimVerifier
 	}
 
-	if c.NewBundleFormat {
-		if err = checkSigstoreBundleUnsupportedOptions(c); err != nil {
-			return err
-		}
-		co.TrustedMaterial, err = loadTrustedRoot(ctx, c.TrustedRootPath)
-		if err != nil {
-			return err
-		}
+	err = SetTrustedMaterial(ctx, c.TrustedRootPath, c.CertChain, c.CARoots, c.CAIntermediates, c.TSACertChainPath, vOfflineKey, co)
+	if err != nil {
+		return fmt.Errorf("setting trusted material: %w", err)
 	}
 
-	// Ignore Signed Certificate Timestamp if the flag is set or a key is provided
-	if shouldVerifySCT(c.IgnoreSCT, c.KeyRef, c.Sk) && !c.NewBundleFormat {
-		co.CTLogPubKeys, err = cosign.GetCTLogPubs(ctx)
-		if err != nil {
-			return fmt.Errorf("getting ctlog public keys: %w", err)
-		}
+	if err = CheckSigstoreBundleUnsupportedOptions(*c, vOfflineKey, co); err != nil {
+		return err
 	}
 
-	// If we are using signed timestamps, we need to load the TSA certificates
-	if co.UseSignedTimestamps && !c.NewBundleFormat {
-		tsaCertificates, err := cosign.GetTSACerts(ctx, c.TSACertChainPath, cosign.GetTufTargets)
-		if err != nil {
-			return fmt.Errorf("unable to load TSA certificates: %w", err)
-		}
-		co.TSACertificate = tsaCertificates.LeafCert
-		co.TSARootCertificates = tsaCertificates.RootCert
-		co.TSAIntermediateCertificates = tsaCertificates.IntermediateCerts
+	err = SetLegacyClientsAndKeys(ctx, c.IgnoreTlog, shouldVerifySCT(c.IgnoreSCT, c.KeyRef, c.Sk), keylessVerification(c.KeyRef, c.Sk), c.RekorURL, c.TSACertChainPath, c.CertChain, c.CARoots, c.CAIntermediates, co)
+	if err != nil {
+		return fmt.Errorf("setting up clients and keys: %w", err)
 	}
 
-	if !c.IgnoreTlog && !co.NewBundleFormat {
-		if c.RekorURL != "" {
-			rekorClient, err := rekor.NewClient(c.RekorURL)
-			if err != nil {
-				return fmt.Errorf("creating Rekor client: %w", err)
-			}
-			co.RekorClient = rekorClient
-		}
-		// This performs an online fetch of the Rekor public keys, but this is needed
-		// for verifying tlog entries (both online and offline).
-		co.RekorPubKeys, err = cosign.GetRekorPubs(ctx)
-		if err != nil {
-			return fmt.Errorf("getting Rekor public keys: %w", err)
-		}
+	// User provides a key or certificate. Otherwise, verification requires a Fulcio certificate
+	// provided in an attached bundle or OCI annotation. LoadVerifierFromKeyOrCert must be called
+	// after initializing trust material in order to verify certificate chain.
+	var closeSV func()
+	co.SigVerifier, _, closeSV, err = LoadVerifierFromKeyOrCert(ctx, c.KeyRef, c.Slot, c.CertRef, c.CertChain, c.HashAlgorithm, c.Sk, false, co)
+	if err != nil {
+		return fmt.Errorf("loading verifierfrom key opts: %w", err)
 	}
+	defer closeSV()
 
-	if keylessVerification(c.KeyRef, c.Sk) {
-		if err := loadCertsKeylessVerification(c.CertChain, c.CARoots, c.CAIntermediates, co); err != nil {
-			return err
-		}
-	}
-
-	keyRef := c.KeyRef
-
-	// Keys are optional!
-	switch {
-	case keyRef != "":
-		co.SigVerifier, err = sigs.PublicKeyFromKeyRef(ctx, keyRef)
+	if c.CertRef != "" && c.SCTRef != "" {
+		sct, err := os.ReadFile(filepath.Clean(c.SCTRef))
 		if err != nil {
-			return fmt.Errorf("loading public key: %w", err)
+			return fmt.Errorf("reading sct from file: %w", err)
 		}
-		pkcs11Key, ok := co.SigVerifier.(*pkcs11key.Key)
-		if ok {
-			defer pkcs11Key.Close()
-		}
-	case c.Sk:
-		sk, err := pivkey.GetKeyWithSlot(c.Slot)
-		if err != nil {
-			return fmt.Errorf("opening piv token: %w", err)
-		}
-		defer sk.Close()
-		co.SigVerifier, err = sk.Verifier()
-		if err != nil {
-			return fmt.Errorf("initializing piv token verifier: %w", err)
-		}
-	case c.CertRef != "":
-		if c.NewBundleFormat {
-			// This shouldn't happen because we already checked for this above in checkSigstoreBundleUnsupportedOptions
-			return fmt.Errorf("unsupported: certificate reference currently not supported with --new-bundle-format")
-		}
-		cert, err := loadCertFromFileOrURL(c.CertRef)
-		if err != nil {
-			return fmt.Errorf("loading certificate from reference: %w", err)
-		}
-		if c.CertChain == "" {
-			// If no certChain is passed, the Fulcio root certificate will be used
-			co.RootCerts, err = fulcio.GetRoots()
-			if err != nil {
-				return fmt.Errorf("getting Fulcio roots: %w", err)
-			}
-			co.IntermediateCerts, err = fulcio.GetIntermediates()
-			if err != nil {
-				return fmt.Errorf("getting Fulcio intermediates: %w", err)
-			}
-			co.SigVerifier, err = cosign.ValidateAndUnpackCert(cert, co)
-			if err != nil {
-				return fmt.Errorf("creating certificate verifier: %w", err)
-			}
-		} else {
-			// Verify certificate with chain
-			chain, err := loadCertChainFromFileOrURL(c.CertChain)
-			if err != nil {
-				return err
-			}
-			co.SigVerifier, err = cosign.ValidateAndUnpackCertWithChain(cert, chain, co)
-			if err != nil {
-				return fmt.Errorf("creating certificate verifier: %w", err)
-			}
-		}
-		if c.SCTRef != "" {
-			sct, err := os.ReadFile(filepath.Clean(c.SCTRef))
-			if err != nil {
-				return fmt.Errorf("reading sct from file: %w", err)
-			}
-			co.SCT = sct
-		}
-	case c.TrustedRootPath != "":
-		if !c.NewBundleFormat {
-			return fmt.Errorf("unsupported: trusted root path currently only supported with --new-bundle-format")
-		}
-
-		// If a trusted root path is provided, we will use it to verify the bundle.
-		// Otherwise, the verifier will default to the public good instance.
-		co.TrustedMaterial, err = root.NewTrustedRootFromPath(c.TrustedRootPath)
-		if err != nil {
-			return fmt.Errorf("creating trusted root from path: %w", err)
-		}
-	case c.CARoots != "":
-		// CA roots + possible intermediates are already loaded into co.RootCerts with the call to
-		// loadCertsKeylessVerification above.
+		co.SCT = sct
 	}
 
 	// NB: There are only 2 kinds of verification right now:
@@ -270,7 +188,7 @@ func (c *VerifyAttestationCommand) Exec(ctx context.Context, images []string) (e
 				return err
 			}
 
-			verified, bundleVerified, err = cosign.VerifyImageAttestations(ctx, ref, co)
+			verified, bundleVerified, err = cosign.VerifyImageAttestations(ctx, ref, co, c.NameOptions...)
 			if err != nil {
 				return err
 			}
@@ -345,21 +263,5 @@ func (c *VerifyAttestationCommand) Exec(ctx context.Context, images []string) (e
 		PrintVerification(ctx, checked, "text")
 	}
 
-	return nil
-}
-
-func checkSigstoreBundleUnsupportedOptions(c *VerifyAttestationCommand) error {
-	if c.CertRef != "" {
-		return fmt.Errorf("unsupported: certificate may not be provided using --certificate when using --new-bundle-format (cert must be in bundle)")
-	}
-	if c.CertChain != "" {
-		return fmt.Errorf("unsupported: certificate chain may not be provided using --certificate-chain when using --new-bundle-format (cert must be in bundle)")
-	}
-	if c.CARoots != "" || c.CAIntermediates != "" {
-		return fmt.Errorf("unsupported: CA roots/intermediates must be provided using --trusted-root when using --new-bundle-format")
-	}
-	if c.TSACertChainPath != "" {
-		return fmt.Errorf("unsupported: TSA certificate chain path may only be provided using --trusted-root when using --new-bundle-format")
-	}
 	return nil
 }

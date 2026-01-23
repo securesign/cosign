@@ -18,8 +18,8 @@ package cli
 import (
 	"context"
 
-	"github.com/sigstore/cosign/v2/cmd/cosign/cli/options"
-	"github.com/sigstore/cosign/v2/cmd/cosign/cli/trustedroot"
+	"github.com/sigstore/cosign/v3/cmd/cosign/cli/options"
+	"github.com/sigstore/cosign/v3/cmd/cosign/cli/trustedroot"
 	"github.com/spf13/cobra"
 )
 
@@ -41,16 +41,39 @@ func trustedRootCreate() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "create",
 		Short: "Create a Sigstore protobuf trusted root",
-		Long:  "Create a Sigstore protobuf trusted root by supplying verification material",
+		Long: `Create a Sigstore protobuf trusted root by supplying verification material.
+
+Each service is specified via a repeatable flag (--fulcio, --rekor, --ctfe, --tsa) that takes a comma-separated list of key-value pairs.`,
+		Example: `cosign trusted-root create \
+    --fulcio="url=https://fulcio.sigstore.dev,certificate-chain=/path/to/fulcio.pem,end-time=2025-01-01T00:00:00Z" \
+    --rekor="url=https://rekor.sigstore.dev,public-key=/path/to/rekor.pub,start-time=2024-01-01T00:00:00Z" \
+    --ctfe="url=https://ctfe.sigstore.dev,public-key=/path/to/ctfe.pub,start-time=2024-01-01T00:00:00Z" \
+    --tsa="url=https://timestamp.sigstore.dev/api/v1/timestamp,certificate-chain=/path/to/tsa.pem" \
+    --out trusted-root.json`,
 		RunE: func(cmd *cobra.Command, _ []string) error {
 			trCreateCmd := &trustedroot.CreateCmd{
-				CertChain:        o.CertChain,
-				CtfeKeyPath:      o.CtfeKeyPath,
-				CtfeStartTime:    o.CtfeStartTime,
-				Out:              o.Out,
-				RekorKeyPath:     o.RekorKeyPath,
-				RekorStartTime:   o.RekorStartTime,
-				TSACertChainPath: o.TSACertChainPath,
+				FulcioSpecs:         o.Fulcio,
+				RekorSpecs:          o.Rekor,
+				CTFESpecs:           o.CTFE,
+				TSASpecs:            o.TSA,
+				CertChain:           o.CertChain,
+				FulcioURI:           o.FulcioURI,
+				CtfeKeyPath:         o.CtfeKeyPath,
+				CtfeStartTime:       o.CtfeStartTime,
+				CtfeEndTime:         o.CtfeEndTime,
+				CtfeURL:             o.CtfeURL,
+				Out:                 o.Out,
+				RekorKeyPath:        o.RekorKeyPath,
+				RekorStartTime:      o.RekorStartTime,
+				RekorEndTime:        o.RekorEndTime,
+				RekorURL:            o.RekorURL,
+				TSACertChainPath:    o.TSACertChainPath,
+				TSAURI:              o.TSAURI,
+				WithDefaultServices: o.WithDefaultServices,
+				NoDefaultFulcio:     o.NoDefaultFulcio,
+				NoDefaultCTFE:       o.NoDefaultCTFE,
+				NoDefaultTSA:        o.NoDefaultTSA,
+				NoDefaultRekor:      o.NoDefaultRekor,
 			}
 
 			ctx, cancel := context.WithTimeout(cmd.Context(), ro.Timeout)

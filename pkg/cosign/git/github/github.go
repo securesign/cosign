@@ -25,12 +25,12 @@ import (
 	"os"
 	"strings"
 
-	"github.com/google/go-github/v55/github"
+	"github.com/google/go-github/v73/github"
 	"golang.org/x/crypto/nacl/box"
 	"golang.org/x/oauth2"
 
-	"github.com/sigstore/cosign/v2/pkg/cosign"
-	"github.com/sigstore/cosign/v2/pkg/cosign/env"
+	"github.com/sigstore/cosign/v3/pkg/cosign"
+	"github.com/sigstore/cosign/v3/pkg/cosign/env"
 )
 
 const (

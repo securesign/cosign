@@ -25,7 +25,7 @@ Cosign supports:
 
 `Cosign` is developed as part of the [`sigstore`](https://sigstore.dev) project.
 We also use a [slack channel](https://sigstore.slack.com)!
-Click [here](https://join.slack.com/t/sigstore/shared_invite/zt-mhs55zh0-XmY3bcfWn4XEyMqUUutbUQ) for the invite link.
+Click [here](https://join.slack.com/t/sigstore/shared_invite/zt-2ub0ztl5z-PkWb_Ldwef5d6nb~oryaTA) for the invite link.
 
 ## Installation
 
@@ -141,6 +141,14 @@ The following checks were performed on these signatures:
 
 ### Verify a container in an air-gapped environment
 
+**Note:** This section is out of date.
+
+**Note:** Most verification workflows require periodically requesting service keys from a TUF repository.
+For airgapped verification of signatures using the public-good instance, you will need to retrieve the
+[trusted root](https://github.com/sigstore/root-signing/blob/main/targets/trusted_root.json) file from the production
+TUF repository. The contents of this file will change without notification. By not using TUF, you will need
+to build your own mechanism to keep your airgapped copy of this file up-to-date.
+
 Cosign can do completely offline verification by verifying a [bundle](./specs/SIGNATURE_SPEC.md#properties) which is typically distributed as an annotation on the image manifest.
 As long as this annotation is present, then offline verification can be done.
 This bundle annotation is always included by default for keyless signing, so the default `cosign sign` functionality will include all materials needed for offline verification.
@@ -156,8 +164,14 @@ cosign save $IMAGE_NAME --dir ./path/to/dir
 
 Now, in an air-gapped environment, this local image can be verified:
 
-```
-cosign verify --certificate-identity $CERT_IDENTITY --certificate-oidc-issuer $CERT_OIDC_ISSUER --offline --local-image ./path/to/dir
+```shell
+cosign verify \
+  --certificate-identity $CERT_IDENTITY \
+  --certificate-oidc-issuer $CERT_OIDC_ISSUER \
+  --offline=true \
+  --new-bundle-format=false \ # for artifacts signed without the new protobuf bundle format
+  --trusted-root ~/.sigstore/root/tuf-repo-cdn.sigstore.dev/targets/trusted_root.json \ # default location of trusted root
+  --local-image ./path/to/dir
 ```
 
 You'll need to pass in expected values for `$CERT_IDENTITY` and `$CERT_OIDC_ISSUER` to correctly verify this image.
@@ -761,8 +775,6 @@ will be released when there are breaking features.
 Should you discover any security issues, please refer to sigstore's [security
 process](https://github.com/sigstore/.github/blob/main/SECURITY.md)
 
-## PEM files in GitHub Release Assets
+## Bundle files in GitHub Release Assets
 
-The GitHub release assets for cosign contain a PEM file produced by [GoReleaser](https://github.com/sigstore/cosign/blob/ac999344eb381ae91455b0a9c5c267e747608d76/.goreleaser.yml#L166) while signing the cosign blob that is used to verify the integrity of the release binaries. This file is not used by cosign itself, but is provided for users who wish to verify the integrity of the release binaries.
-
-By default, cosign output these PEM files in [base64 encoded format](https://github.com/sigstore/cosign/blob/main/doc/cosign_sign-blob.md#options), this approach might be good for air-gapped environments where the PEM file is stored in a file system. So, you should decode these PEM files before using them to verify the blobs.
+The GitHub release assets for `cosign` contain Sigstore bundle files produced by [GoReleaser](https://github.com/sigstore/cosign/blob/ac999344eb381ae91455b0a9c5c267e747608d76/.goreleaser.yml#L166) while signing the cosign blob that is used to verify the integrity of the release binaries. This file is not used by cosign itself, but is provided for users who wish to [verify the integrity of the release binaries](https://docs.sigstore.dev/cosign/system_config/installation/#verifying-cosign-with-artifact-key).

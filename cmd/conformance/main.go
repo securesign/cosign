@@ -30,10 +30,11 @@ var certOIDC *string
 var certSAN *string
 var identityToken *string
 var trustedRootPath *string
+var signingConfigPath *string
 
 func usage() {
 	fmt.Println("Usage:")
-	fmt.Printf("\t%s sign-bundle --identity-token TOKEN --bundle FILE FILE\n", os.Args[0])
+	fmt.Printf("\t%s sign-bundle --identity-token TOKEN [--signing-config FILE] [--trusted-root FILE] --bundle FILE FILE\n", os.Args[0])
 	fmt.Printf("\t%s verify-bundle --bundle FILE --certificate-identity IDENTITY --certificate-oidc-issuer URL [--trusted-root FILE] FILE\n", os.Args[0])
 }
 
@@ -60,6 +61,9 @@ func parseArgs() {
 			i += 2
 		case "--trusted-root":
 			trustedRootPath = &os.Args[i+1]
+			i += 2
+		case "--signing-config":
+			signingConfigPath = &os.Args[i+1]
 			i += 2
 		default:
 			i++
@@ -121,14 +125,22 @@ func main() {
 	if trustedRootPath != nil {
 		args = append(args, "--trusted-root", *trustedRootPath)
 	}
+	if signingConfigPath != nil {
+		args = append(args, "--signing-config", *signingConfigPath)
+	}
 	args = append(args, os.Args[len(os.Args)-1])
 
 	dir := filepath.Dir(os.Args[0])
+	initCmd := exec.Command(filepath.Join(dir, "cosign"), "initialize") // #nosec G204
+	err := initCmd.Run()
+	if err != nil {
+		log.Fatal(err)
+	}
 	cmd := exec.Command(filepath.Join(dir, "cosign"), args...) // #nosec G204
 	var out strings.Builder
 	cmd.Stdout = &out
 	cmd.Stderr = &out
-	err := cmd.Run()
+	err = cmd.Run()
 
 	fmt.Println(out.String())
 

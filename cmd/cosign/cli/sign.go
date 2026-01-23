@@ -19,9 +19,10 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/sigstore/cosign/v2/cmd/cosign/cli/generate"
-	"github.com/sigstore/cosign/v2/cmd/cosign/cli/options"
-	"github.com/sigstore/cosign/v2/cmd/cosign/cli/sign"
+	"github.com/sigstore/cosign/v3/cmd/cosign/cli/generate"
+	"github.com/sigstore/cosign/v3/cmd/cosign/cli/options"
+	"github.com/sigstore/cosign/v3/cmd/cosign/cli/sign"
+	"github.com/sigstore/cosign/v3/cmd/cosign/cli/signcommon"
 	"github.com/spf13/cobra"
 )
 
@@ -89,7 +90,7 @@ race conditions or (worse) malicious tampering.
 
 		Args:             cobra.MinimumNArgs(1),
 		PersistentPreRun: options.BindViper,
-		RunE: func(_ *cobra.Command, args []string) error {
+		RunE: func(cmd *cobra.Command, args []string) error {
 			switch o.Attachment {
 			case "sbom":
 				fmt.Fprintln(os.Stderr, options.SBOMAttachmentDeprecation)
@@ -102,6 +103,7 @@ race conditions or (worse) malicious tampering.
 			if err != nil {
 				return err
 			}
+
 			ko := options.KeyOpts{
 				KeyRef:                         o.Key,
 				PassFunc:                       generate.GetPass,
@@ -126,7 +128,13 @@ race conditions or (worse) malicious tampering.
 				TSAServerURL:                   o.TSAServerURL,
 				IssueCertificateForExistingKey: o.IssueCertificate,
 			}
-			if err := sign.SignCmd(ro, ko, *o, args); err != nil {
+			if err := signcommon.LoadTrustedMaterialAndSigningConfig(cmd.Context(), &ko, o.UseSigningConfig, o.SigningConfigPath,
+				o.Rekor.URL, o.Fulcio.URL, o.OIDC.Issuer, o.TSAServerURL, o.TrustedRootPath, o.TlogUpload,
+				o.NewBundleFormat, "", o.Key, o.IssueCertificate, o.Output, "", o.OutputCertificate, o.OutputPayload, o.OutputSignature); err != nil {
+				return err
+			}
+
+			if err := sign.SignCmd(cmd.Context(), ro, ko, *o, args); err != nil {
 				if o.Attachment == "" {
 					return fmt.Errorf("signing %v: %w", args, err)
 				}

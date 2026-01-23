@@ -18,9 +18,10 @@ package cli
 import (
 	"fmt"
 
-	"github.com/sigstore/cosign/v2/cmd/cosign/cli/attest"
-	"github.com/sigstore/cosign/v2/cmd/cosign/cli/generate"
-	"github.com/sigstore/cosign/v2/cmd/cosign/cli/options"
+	"github.com/sigstore/cosign/v3/cmd/cosign/cli/attest"
+	"github.com/sigstore/cosign/v3/cmd/cosign/cli/generate"
+	"github.com/sigstore/cosign/v3/cmd/cosign/cli/options"
+	"github.com/sigstore/cosign/v3/cmd/cosign/cli/signcommon"
 	"github.com/spf13/cobra"
 )
 
@@ -59,6 +60,9 @@ func Attest() *cobra.Command {
   # supply attestation via stdin
   echo <PAYLOAD> | cosign attest --predicate - <IMAGE>
 
+  # write attestation to stdout
+  cosign attest --predicate <FILE> --type <TYPE> --key cosign.key --no-upload true <IMAGE>
+
   # attach an attestation to a container image and honor the creation timestamp of the signature
   cosign attest --predicate <FILE> --type <TYPE> --key cosign.key --record-creation-timestamp <IMAGE>`,
 
@@ -69,29 +73,39 @@ func Attest() *cobra.Command {
 			if err != nil {
 				return err
 			}
+
 			ko := options.KeyOpts{
-				KeyRef:                   o.Key,
-				PassFunc:                 generate.GetPass,
-				Sk:                       o.SecurityKey.Use,
-				Slot:                     o.SecurityKey.Slot,
-				FulcioURL:                o.Fulcio.URL,
-				IDToken:                  o.Fulcio.IdentityToken,
-				FulcioAuthFlow:           o.Fulcio.AuthFlow,
-				InsecureSkipFulcioVerify: o.Fulcio.InsecureSkipFulcioVerify,
-				RekorURL:                 o.Rekor.URL,
-				OIDCIssuer:               o.OIDC.Issuer,
-				OIDCClientID:             o.OIDC.ClientID,
-				OIDCClientSecret:         oidcClientSecret,
-				OIDCRedirectURL:          o.OIDC.RedirectURL,
-				OIDCProvider:             o.OIDC.Provider,
-				SkipConfirmation:         o.SkipConfirmation,
-				TSAClientCACert:          o.TSAClientCACert,
-				TSAClientKey:             o.TSAClientKey,
-				TSAClientCert:            o.TSAClientCert,
-				TSAServerName:            o.TSAServerName,
-				TSAServerURL:             o.TSAServerURL,
-				NewBundleFormat:          o.NewBundleFormat,
+				KeyRef:                         o.Key,
+				PassFunc:                       generate.GetPass,
+				Sk:                             o.SecurityKey.Use,
+				Slot:                           o.SecurityKey.Slot,
+				FulcioURL:                      o.Fulcio.URL,
+				IDToken:                        o.Fulcio.IdentityToken,
+				FulcioAuthFlow:                 o.Fulcio.AuthFlow,
+				InsecureSkipFulcioVerify:       o.Fulcio.InsecureSkipFulcioVerify,
+				RekorURL:                       o.Rekor.URL,
+				OIDCIssuer:                     o.OIDC.Issuer,
+				OIDCClientID:                   o.OIDC.ClientID,
+				OIDCClientSecret:               oidcClientSecret,
+				OIDCRedirectURL:                o.OIDC.RedirectURL,
+				OIDCProvider:                   o.OIDC.Provider,
+				SkipConfirmation:               o.SkipConfirmation,
+				TSAClientCACert:                o.TSAClientCACert,
+				TSAClientKey:                   o.TSAClientKey,
+				TSAClientCert:                  o.TSAClientCert,
+				TSAServerName:                  o.TSAServerName,
+				TSAServerURL:                   o.TSAServerURL,
+				IssueCertificateForExistingKey: o.IssueCertificate,
+				BundlePath:                     o.BundlePath,
+				NewBundleFormat:                o.NewBundleFormat,
 			}
+			if err := signcommon.LoadTrustedMaterialAndSigningConfig(cmd.Context(), &ko, o.UseSigningConfig, o.SigningConfigPath,
+				o.Rekor.URL, o.Fulcio.URL, o.OIDC.Issuer, o.TSAServerURL, o.TrustedRootPath, o.TlogUpload,
+				o.NewBundleFormat, "", o.Key, o.IssueCertificate,
+				"", "", "", "", ""); err != nil {
+				return err
+			}
+
 			attestCommand := attest.AttestCommand{
 				KeyOpts:                 ko,
 				RegistryOptions:         o.Registry,

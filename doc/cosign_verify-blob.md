@@ -78,19 +78,19 @@ cosign verify-blob [flags]
       --certificate-identity-regexp string              A regular expression alternative to --certificate-identity. Accepts the Go regular expression syntax described at https://golang.org/s/re2syntax. Either --certificate-identity or --certificate-identity-regexp must be set for keyless flows.
       --certificate-oidc-issuer string                  The OIDC issuer expected in a valid Fulcio certificate, e.g. https://token.actions.githubusercontent.com or https://oauth2.sigstore.dev/auth. Either --certificate-oidc-issuer or --certificate-oidc-issuer-regexp must be set for keyless flows.
       --certificate-oidc-issuer-regexp string           A regular expression alternative to --certificate-oidc-issuer. Accepts the Go regular expression syntax described at https://golang.org/s/re2syntax. Either --certificate-oidc-issuer or --certificate-oidc-issuer-regexp must be set for keyless flows.
-      --experimental-oci11                              set to true to enable experimental OCI 1.1 behaviour
+      --experimental-oci11                              set to true to enable experimental OCI 1.1 behaviour (unrelated to bundle format)
   -h, --help                                            help for verify-blob
       --insecure-ignore-sct                             when set, verification will not check that a certificate contains an embedded SCT, a proof of inclusion in a certificate transparency log
       --insecure-ignore-tlog                            ignore transparency log verification, to be used when an artifact signature has not been uploaded to the transparency log. Artifacts cannot be publicly verified when not included in a log
       --key string                                      path to the public key file, KMS URI or Kubernetes Secret
       --max-workers int                                 the amount of maximum workers for parallel executions (default 10)
-      --new-bundle-format                               expect the signature/attestation to be packaged in a Sigstore bundle
-      --offline                                         only allow offline verification
+      --new-bundle-format                               expect the signature/attestation to be packaged in a Sigstore bundle (default true)
       --private-infrastructure                          skip transparency log verification when verifying artifacts in a privately deployed infrastructure
       --rekor-url string                                address of rekor STL server (default "https://rekor.sigstore.dev")
       --rfc3161-timestamp string                        path to RFC3161 timestamp FILE
       --sct string                                      path to a detached Signed Certificate Timestamp, formatted as a RFC6962 AddChainResponse struct. If a certificate contains an SCT, verification will check both the detached and embedded SCTs.
       --signature string                                signature content or path or remote URL
+      --signature-digest-algorithm string               digest algorithm to use when processing a signature (sha224|sha256|sha384|sha512) (default "sha256")
       --sk                                              whether to use a hardware security key
       --slot string                                     security key slot to use for generated key (default: signature) (authentication|signature|card-authentication|key-management)
       --timestamp-certificate-chain string              path to PEM-encoded certificate chain file for the RFC3161 timestamp authority. Must contain the root CA certificate. Optionally may contain intermediate CA certificates, and may contain the leaf TSA certificate if not present in the timestamp

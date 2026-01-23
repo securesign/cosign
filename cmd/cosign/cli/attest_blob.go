@@ -15,9 +15,10 @@
 package cli
 
 import (
-	"github.com/sigstore/cosign/v2/cmd/cosign/cli/attest"
-	"github.com/sigstore/cosign/v2/cmd/cosign/cli/generate"
-	"github.com/sigstore/cosign/v2/cmd/cosign/cli/options"
+	"github.com/sigstore/cosign/v3/cmd/cosign/cli/attest"
+	"github.com/sigstore/cosign/v3/cmd/cosign/cli/generate"
+	"github.com/sigstore/cosign/v3/cmd/cosign/cli/options"
+	"github.com/sigstore/cosign/v3/cmd/cosign/cli/signcommon"
 	"github.com/spf13/cobra"
 )
 
@@ -47,38 +48,49 @@ func AttestBlob() *cobra.Command {
   # supply attestation via stdin
   echo <PAYLOAD> | cosign attest-blob --predicate - --yes`,
 
-		Args:             cobra.ExactArgs(1),
 		PersistentPreRun: options.BindViper,
 		RunE: func(cmd *cobra.Command, args []string) error {
+			if o.Predicate.Statement == "" && len(args) != 1 {
+				return cobra.ExactArgs(1)(cmd, args)
+			}
 			oidcClientSecret, err := o.OIDC.ClientSecret()
 			if err != nil {
 				return err
 			}
+
 			ko := options.KeyOpts{
-				KeyRef:                   o.Key,
-				PassFunc:                 generate.GetPass,
-				Sk:                       o.SecurityKey.Use,
-				Slot:                     o.SecurityKey.Slot,
-				FulcioURL:                o.Fulcio.URL,
-				IDToken:                  o.Fulcio.IdentityToken,
-				FulcioAuthFlow:           o.Fulcio.AuthFlow,
-				InsecureSkipFulcioVerify: o.Fulcio.InsecureSkipFulcioVerify,
-				RekorURL:                 o.Rekor.URL,
-				OIDCIssuer:               o.OIDC.Issuer,
-				OIDCClientID:             o.OIDC.ClientID,
-				OIDCClientSecret:         oidcClientSecret,
-				OIDCRedirectURL:          o.OIDC.RedirectURL,
-				OIDCProvider:             o.OIDC.Provider,
-				SkipConfirmation:         o.SkipConfirmation,
-				TSAClientCACert:          o.TSAClientCACert,
-				TSAClientKey:             o.TSAClientKey,
-				TSAClientCert:            o.TSAClientCert,
-				TSAServerName:            o.TSAServerName,
-				TSAServerURL:             o.TSAServerURL,
-				RFC3161TimestampPath:     o.RFC3161TimestampPath,
-				BundlePath:               o.BundlePath,
-				NewBundleFormat:          o.NewBundleFormat,
+				KeyRef:                         o.Key,
+				PassFunc:                       generate.GetPass,
+				Sk:                             o.SecurityKey.Use,
+				Slot:                           o.SecurityKey.Slot,
+				FulcioURL:                      o.Fulcio.URL,
+				IDToken:                        o.Fulcio.IdentityToken,
+				FulcioAuthFlow:                 o.Fulcio.AuthFlow,
+				InsecureSkipFulcioVerify:       o.Fulcio.InsecureSkipFulcioVerify,
+				RekorURL:                       o.Rekor.URL,
+				OIDCIssuer:                     o.OIDC.Issuer,
+				OIDCClientID:                   o.OIDC.ClientID,
+				OIDCClientSecret:               oidcClientSecret,
+				OIDCRedirectURL:                o.OIDC.RedirectURL,
+				OIDCProvider:                   o.OIDC.Provider,
+				SkipConfirmation:               o.SkipConfirmation,
+				TSAClientCACert:                o.TSAClientCACert,
+				TSAClientKey:                   o.TSAClientKey,
+				TSAClientCert:                  o.TSAClientCert,
+				TSAServerName:                  o.TSAServerName,
+				TSAServerURL:                   o.TSAServerURL,
+				RFC3161TimestampPath:           o.RFC3161TimestampPath,
+				IssueCertificateForExistingKey: o.IssueCertificate,
+				BundlePath:                     o.BundlePath,
+				NewBundleFormat:                o.NewBundleFormat,
 			}
+			if err := signcommon.LoadTrustedMaterialAndSigningConfig(cmd.Context(), &ko, o.UseSigningConfig, o.SigningConfigPath,
+				o.Rekor.URL, o.Fulcio.URL, o.OIDC.Issuer, o.TSAServerURL, o.TrustedRootPath, o.TlogUpload,
+				o.NewBundleFormat, o.BundlePath, o.Key, o.IssueCertificate,
+				"", o.OutputAttestation, o.OutputCertificate, "", o.OutputSignature); err != nil {
+				return err
+			}
+
 			v := attest.AttestBlobCommand{
 				KeyOpts:           ko,
 				CertPath:          o.Cert,
@@ -87,13 +99,18 @@ func AttestBlob() *cobra.Command {
 				TlogUpload:        o.TlogUpload,
 				PredicateType:     o.Predicate.Type,
 				PredicatePath:     o.Predicate.Path,
+				StatementPath:     o.Predicate.Statement,
 				OutputSignature:   o.OutputSignature,
 				OutputAttestation: o.OutputAttestation,
 				OutputCertificate: o.OutputCertificate,
 				Timeout:           ro.Timeout,
 				RekorEntryType:    o.RekorEntryType,
 			}
-			return v.Exec(cmd.Context(), args[0])
+			var artifactPath string
+			if len(args) == 1 {
+				artifactPath = args[0]
+			}
+			return v.Exec(cmd.Context(), artifactPath)
 		},
 	}
 	o.AddFlags(cmd)

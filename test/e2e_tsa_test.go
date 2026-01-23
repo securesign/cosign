@@ -27,12 +27,13 @@ import (
 	"time"
 
 	"github.com/secure-systems-lab/go-securesystemslib/encrypted"
-	"github.com/sigstore/cosign/v2/cmd/cosign/cli/options"
-	"github.com/sigstore/cosign/v2/cmd/cosign/cli/sign"
-	cliverify "github.com/sigstore/cosign/v2/cmd/cosign/cli/verify"
-	"github.com/sigstore/cosign/v2/pkg/cosign"
-	tsaclient "github.com/sigstore/timestamp-authority/pkg/client"
-	tsaserver "github.com/sigstore/timestamp-authority/pkg/server"
+	"github.com/sigstore/cosign/v3/cmd/cosign/cli/options"
+	"github.com/sigstore/cosign/v3/cmd/cosign/cli/sign"
+	cliverify "github.com/sigstore/cosign/v3/cmd/cosign/cli/verify"
+	cert_test "github.com/sigstore/cosign/v3/internal/test"
+	"github.com/sigstore/cosign/v3/pkg/cosign"
+	tsaclient "github.com/sigstore/timestamp-authority/v2/pkg/client"
+	tsaserver "github.com/sigstore/timestamp-authority/v2/pkg/server"
 	"github.com/spf13/viper"
 )
 
@@ -68,7 +69,7 @@ func TestTSAMTLS(t *testing.T) {
 		Cert:       pemLeafRef,
 		CertChain:  pemRootRef,
 	}
-	must(sign.SignCmd(ro, ko, so, []string{imgName}), t)
+	must(sign.SignCmd(t.Context(), ro, ko, so, []string{imgName}), t)
 
 	verifyCmd := cliverify.VerifyCommand{
 		IgnoreTlog:       true,
@@ -109,7 +110,7 @@ func TestSignBlobTSAMTLS(t *testing.T) {
 		RFC3161TimestampPath: timestampPath,
 		BundlePath:           bundlePath,
 	}
-	sig, err := sign.SignBlobCmd(ro, signingKO, blobPath, true, "", "", false)
+	sig, err := sign.SignBlobCmd(t.Context(), ro, signingKO, blobPath, "", "", true, "", "", false)
 	must(err, t)
 
 	verifyKO := options.KeyOpts{
@@ -132,11 +133,11 @@ func TestSignBlobTSAMTLS(t *testing.T) {
 }
 
 func generateSigningKeys(t *testing.T, td string) (string, string, string) {
-	rootCert, rootKey, _ := GenerateRootCa()
+	rootCert, rootKey, _ := cert_test.GenerateRootCa()
 	pemRoot := pem.EncodeToMemory(&pem.Block{Type: "CERTIFICATE", Bytes: rootCert.Raw})
 	pemRootRef := mkfile(string(pemRoot), td, t)
 
-	leafCert, privKey, _ := GenerateLeafCert("xyz@nosuchprovider.com", "oidc-issuer", rootCert, rootKey)
+	leafCert, privKey, _ := cert_test.GenerateLeafCert("xyz@nosuchprovider.com", "oidc-issuer", rootCert, rootKey)
 	pemLeaf := pem.EncodeToMemory(&pem.Block{Type: "CERTIFICATE", Bytes: leafCert.Raw})
 	pemLeafRef := mkfile(string(pemLeaf), td, t)
 
@@ -144,33 +145,36 @@ func generateSigningKeys(t *testing.T, td string) (string, string, string) {
 	encBytes, _ := encrypted.Encrypt(x509Encoded, keyPass)
 	keyPem := pem.EncodeToMemory(&pem.Block{
 		Type:  cosign.CosignPrivateKeyPemType,
-		Bytes: encBytes})
+		Bytes: encBytes,
+	})
 	pemKeyRef := mkfile(string(keyPem), td, t)
 
 	return pemRootRef, pemLeafRef, pemKeyRef
 }
 
 func generateMTLSKeys(t *testing.T, td string) (string, string, string, string, string) {
-	rootCert, rootKey, _ := GenerateRootCa()
+	rootCert, rootKey, _ := cert_test.GenerateRootCa()
 	pemRoot := pem.EncodeToMemory(&pem.Block{Type: "CERTIFICATE", Bytes: rootCert.Raw})
 	pemRootRef := mkfile(string(pemRoot), td, t)
 
-	serverLeafCert, serverPrivKey, _ := GenerateLeafCertWithSubjectAlternateNames([]string{"server.example.com"}, nil, nil, nil, "oidc-issuer", rootCert, rootKey)
+	serverLeafCert, serverPrivKey, _ := cert_test.GenerateLeafCertWithSubjectAlternateNames([]string{"server.example.com"}, nil, nil, nil, "oidc-issuer", rootCert, rootKey)
 	serverPemLeaf := pem.EncodeToMemory(&pem.Block{Type: "CERTIFICATE", Bytes: serverLeafCert.Raw})
 	serverPemLeafRef := mkfile(string(serverPemLeaf), td, t)
 	serverX509Encoded, _ := x509.MarshalPKCS8PrivateKey(serverPrivKey)
 	serverKeyPem := pem.EncodeToMemory(&pem.Block{
 		Type:  cosign.ECPrivateKeyPemType,
-		Bytes: serverX509Encoded})
+		Bytes: serverX509Encoded,
+	})
 	serverPemKeyRef := mkfile(string(serverKeyPem), td, t)
 
-	clientLeafCert, clientPrivKey, _ := GenerateLeafCert("tsa-mtls-client", "oidc-issuer", rootCert, rootKey)
+	clientLeafCert, clientPrivKey, _ := cert_test.GenerateLeafCert("tsa-mtls-client", "oidc-issuer", rootCert, rootKey)
 	clientPemLeaf := pem.EncodeToMemory(&pem.Block{Type: "CERTIFICATE", Bytes: clientLeafCert.Raw})
 	clientPemLeafRef := mkfile(string(clientPemLeaf), td, t)
 	clientX509Encoded, _ := x509.MarshalPKCS8PrivateKey(clientPrivKey)
 	clientKeyPem := pem.EncodeToMemory(&pem.Block{
 		Type:  cosign.ECPrivateKeyPemType,
-		Bytes: clientX509Encoded})
+		Bytes: clientX509Encoded,
+	})
 	clientPemKeyRef := mkfile(string(clientKeyPem), td, t)
 	return pemRootRef, serverPemLeafRef, serverPemKeyRef, clientPemLeafRef, clientPemKeyRef
 }
