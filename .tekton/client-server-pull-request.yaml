@@ -12,8 +12,8 @@ metadata:
       || "trigger-konflux-builds.txt".pathChanged() )
   creationTimestamp: null
   labels:
-    appstudio.openshift.io/application: cli
-    appstudio.openshift.io/component: client-server
+    appstudio.openshift.io/application: client-server-v1-3
+    appstudio.openshift.io/component: client-server-v1-3
     pipelines.appstudio.openshift.io/type: build
   name: client-server-on-pull-request
   namespace: rhtas-tenant
@@ -43,7 +43,7 @@ spec:
       value: pipelines/docker-build-oci-ta.yaml
     resolver: git
   taskRunTemplate:
-    serviceAccountName: build-pipeline-client-server
+    serviceAccountName: build-pipeline-client-server-v1-3
   workspaces:
   - name: workspace
     volumeClaimTemplate:
