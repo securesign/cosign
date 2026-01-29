@@ -24,6 +24,7 @@ import (
 	_ "github.com/sigstore/rekor/pkg/types/hashedrekord/v0.0.1"
 )
 
+//nolint:staticcheck
 func TestMakeProtobufBundle(t *testing.T) {
 	testCases := []struct {
 		name           string

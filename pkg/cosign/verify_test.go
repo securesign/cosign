@@ -1641,6 +1641,8 @@ func (m *mockEntriesClient) SearchLogQuery(params *entries.SearchLogQueryParams,
 }
 
 // createRekorEntry creates a mock Rekor log entry.
+//
+//nolint:staticcheck
 func createRekorEntry(ctx context.Context, t *testing.T, logID string, signer signature.Signer, payload, signature []byte, publicKey crypto.PublicKey) *models.LogEntry {
 	payloadHash := sha256.Sum256(payload)
 
