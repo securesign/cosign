@@ -186,7 +186,7 @@ func FetchAttestations(se oci.SignedEntity, predicateType string) ([]Attestation
 				if err != nil {
 					return fmt.Errorf("decoding payload: %w", err)
 				}
-				var statement in_toto.Statement
+				var statement in_toto.Statement //nolint:staticcheck
 				if err := json.Unmarshal(decodedPayload, &statement); err != nil {
 					return fmt.Errorf("unmarshaling statement: %w", err)
 				}

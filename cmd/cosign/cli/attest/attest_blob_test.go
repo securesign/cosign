@@ -249,7 +249,7 @@ func TestAttestBlob(t *testing.T) {
 			if err != nil {
 				t.Fatalf("decoding dsse payload: %v", err)
 			}
-			var statement in_toto.Statement
+			var statement in_toto.Statement //nolint:staticcheck
 			if err := json.Unmarshal(decodedPredicate, &statement); err != nil {
 				t.Fatalf("decoding predicate: %v", err)
 			}

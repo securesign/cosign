@@ -43,6 +43,7 @@ func mustGetNewSigner(t *testing.T) signature.Signer {
 	return s
 }
 
+//nolint:staticcheck
 func TestSigner(t *testing.T) {
 	// Need real cert and chain
 	payloadSigner := payload.NewSigner(mustGetNewSigner(t))

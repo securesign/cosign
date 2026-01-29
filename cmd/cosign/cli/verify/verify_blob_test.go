@@ -661,6 +661,7 @@ func TestVerifyBlobCertMissingIssuer(t *testing.T) {
 	}
 }
 
+//nolint:staticcheck
 func makeRekorEntry(t *testing.T, rekorSigner signature.ECDSASignerVerifier,
 	pyld, sig, svBytes []byte, expiryValid bool) *models.LogEntry {
 	ctx := context.Background()

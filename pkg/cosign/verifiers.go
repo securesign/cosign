@@ -72,7 +72,7 @@ func IntotoSubjectClaimVerifier(sig oci.Signature, imageDigest v1.Hash, _ map[st
 		return err
 	}
 
-	st := in_toto.Statement{}
+	st := in_toto.Statement{} //nolint:staticcheck
 	if err := json.Unmarshal(stBytes, &st); err != nil {
 		return err
 	}

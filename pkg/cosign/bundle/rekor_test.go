@@ -25,6 +25,7 @@ import (
 	"github.com/sigstore/rekor/pkg/generated/models"
 )
 
+//nolint:staticcheck
 func TestRekorBundle(t *testing.T) {
 	testCases := []struct {
 		name                string

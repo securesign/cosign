@@ -169,6 +169,8 @@ func rekorPubsFromClient(rekorClient *client.Rekor) (*TrustedTransparencyLogPubK
 }
 
 // TLogUpload will upload the signature, public key and payload to the transparency log.
+//
+//nolint:staticcheck
 func TLogUpload(ctx context.Context, rekorClient *client.Rekor, signature []byte, sha256CheckSum hash.Hash, pemBytes []byte) (*models.LogEntryAnon, error) {
 	re := rekorEntry(sha256CheckSum, signature, pemBytes)
 	returnVal := models.Hashedrekord{
@@ -229,6 +231,7 @@ func doUpload(ctx context.Context, rekorClient *client.Rekor, pe models.Proposed
 	return nil, errors.New("bad response from server")
 }
 
+//nolint:staticcheck
 func rekorEntry(sha256CheckSum hash.Hash, signature, pubKey []byte) hashedrekord_v001.V001Entry {
 	// TODO: Signatures created on a digest using a hash algorithm other than SHA256 will fail
 	// upload right now. Plumb information on the hash algorithm used when signing from the
@@ -371,6 +374,7 @@ func GetTlogEntry(ctx context.Context, rekorClient *client.Rekor, entryUUID stri
 	return nil, errors.New("empty response")
 }
 
+//nolint:staticcheck
 func proposedEntries(b64Sig string, payload, pubKey []byte) ([]models.ProposedEntry, error) {
 	var proposedEntry []models.ProposedEntry
 	signature, err := base64.StdEncoding.DecodeString(b64Sig)
