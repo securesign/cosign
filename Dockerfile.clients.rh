@@ -4,37 +4,37 @@ FROM --platform=linux/arm64   quay.io/securesign/cli-cosign@sha256:8ce71066399e9
 FROM --platform=linux/ppc64le quay.io/securesign/cli-cosign@sha256:00b7a9254ee5017600e99a253ec5796e1c6af612a701bff968e8427bcacb3da1 AS cosign-ppc64le
 FROM --platform=linux/s390x   quay.io/securesign/cli-cosign@sha256:41d45d1fb21618257461c71e88beb96acf01b41a679f8da524e568181fde0845 AS cosign-s390x
 
-FROM --platform=linux/amd64 quay.io/securesign/gitsign@sha256:a5441c3a40f5dcf13c1d90d33db5d2ff5c7cc3dda7606846c03bab557fc09e50 AS gitsign-amd64
-FROM --platform=linux/arm64 quay.io/securesign/gitsign@sha256:56e629f727db3b715c812735537d1c614b017e508230c15118ab57a390ae6634 AS gitsign-arm64
-FROM --platform=linux/ppc64le quay.io/securesign/gitsign@sha256:dc7a3067697d1b349e2b97ea85d3d0b8f8d0315eb6b840d15e03f79352a765a9 AS gitsign-ppc64le
-FROM --platform=linux/s390x quay.io/securesign/gitsign@sha256:ece030d0a2d1029488effcdaa800ba6ea31b03cc2bf734a883eb7582f3804c19 AS gitsign-s390x
+FROM --platform=linux/amd64 quay.io/securesign/gitsign@sha256:70c73be0ca274d83ecd72e3803a9646caf5dbc970c2bb3c83ec05df0957f8d73 AS gitsign-amd64
+FROM --platform=linux/arm64 quay.io/securesign/gitsign@sha256:03f2d47f54e16888423fd0381f6376319915261cb2df357ecf81832f8ff0f4ce AS gitsign-arm64
+FROM --platform=linux/ppc64le quay.io/securesign/gitsign@sha256:28d63229f2754422c42b55731dae3c9d89885c69a446689e2505f8348493ada5 AS gitsign-ppc64le
+FROM --platform=linux/s390x quay.io/securesign/gitsign@sha256:cb2fcd37c5852f1cfe7b1ffd52b0c3839803716c07a12d943c5567ca83ab818f AS gitsign-s390x
 
 # Provides the Trusted Artifact Signer CLI binary, fetch-tsa-certs
-FROM --platform=linux/amd64 quay.io/securesign/fetch-tsa-certs@sha256:11d331a1d6d1fbb89025b9108c5f8f569f59050e0dca9fb980c6c652b23f5eb1 as fetch_tsa_certs-amd64
-FROM --platform=linux/arm64 quay.io/securesign/fetch-tsa-certs@sha256:9c99d771fdb999cec604175ef1cd9a849d415b8da1133252cee72356e33734a6 as fetch_tsa_certs-arm64
-FROM --platform=linux/ppc64le quay.io/securesign/fetch-tsa-certs@sha256:ebc74ef8bdde44a4e91f14777a227823b70e885b0f51b4c078d06ab140cc165b as fetch_tsa_certs-ppc64le
-FROM --platform=linux/s390x quay.io/securesign/fetch-tsa-certs@sha256:5d897c9f75967d92baf12c3065b7175f96ac18db4691d6e42c6df1d303b675e6 as fetch_tsa_certs-s390x
+FROM --platform=linux/amd64 quay.io/securesign/fetch-tsa-certs@sha256:412518304a037d646c36f39fe4e0e414d9f1776bb7526005b1be1891b4daad10 as fetch_tsa_certs-amd64
+FROM --platform=linux/arm64 quay.io/securesign/fetch-tsa-certs@sha256:4d4259534fb18154c262a47c12ddb526b9d3bf33a6b32809570ef689bee92107 as fetch_tsa_certs-arm64
+FROM --platform=linux/ppc64le quay.io/securesign/fetch-tsa-certs@sha256:ee770605bba2bc76860ad42c2e169934025a927e8ccd21d4b3668179199c18b0 as fetch_tsa_certs-ppc64le
+FROM --platform=linux/s390x quay.io/securesign/fetch-tsa-certs@sha256:2fdbd94cb2008a7cb708f553ac68f7e3f1b5d1c9ca98185f060292178934e293 as fetch_tsa_certs-s390x
 
 # Provides the Trusted Artifact Signer CLI binaries, rekor-cli and ec
-FROM --platform=linux/amd64 quay.io/securesign/rekor-cli@sha256:519beb6bd97a0dbf8467473437074979a2af13744fd4afa2123d74a7dc499d2f as rekor-amd64
-FROM --platform=linux/arm64 quay.io/securesign/rekor-cli@sha256:a03f71354d189de9feaed0f3843bc8aa929d2093e5189e971957844557ed72a6 as rekor-arm64
-FROM --platform=linux/ppc64le quay.io/securesign/rekor-cli@sha256:905a9bb47c3a93347721e948a481a940f39ab0d9ae6c60ba31244c943063fca2 as rekor-ppc64le
-FROM --platform=linux/s390x quay.io/securesign/rekor-cli@sha256:69f1a56caa80cfe938e30e0e99f24dcf24c1e0414802020243056b040a49f857 as rekor-s390x
+FROM --platform=linux/amd64 quay.io/securesign/rekor-cli@sha256:60fd2fc605303e9c9e2ed87898234b082dbb504a26ff6ff6d8db61136c6b8b2f as rekor-amd64
+FROM --platform=linux/arm64 quay.io/securesign/rekor-cli@sha256:81906f1f0a8a82ac5c23343aff985762b7c4412ca8abc6fc47e8063ae042c11c as rekor-arm64
+FROM --platform=linux/ppc64le quay.io/securesign/rekor-cli@sha256:6607e3c63722c4defa3e3db5c9a7cf45c1f3961f973ed37d083e093a6ec3d5f8 as rekor-ppc64le
+FROM --platform=linux/s390x quay.io/securesign/rekor-cli@sha256:3169cc64957fd04ec6634f4d758ab404149a9e3aba0396ef9db8d6ac246aa00d as rekor-s390x
 
 FROM registry.redhat.io/rhtas/ec-rhel9:0.7@sha256:dfba448351ab2cf92eea34d0c6c103110b3d90dda0cd037b5346841e1a3ddd78 as ec
 
 # Provides the Trusted Artifact Signer CLI binaries trillian-createtree and trillian-updatetree
-FROM --platform=linux/amd64 quay.io/securesign/trillian-createtree@sha256:f37313147f9f821f855fe30fdc46ab9c72b449fd0fa82b3b30dc72c1e5559c6e as trillian-createtree-amd64
-FROM --platform=linux/arm64 quay.io/securesign/trillian-createtree@sha256:ad263de220d6d1446aac7db3cd6c09087a478252af7c27a39a9a7b165623da8d as trillian-createtree-arm64
-FROM --platform=linux/ppc64le quay.io/securesign/trillian-createtree@sha256:adaad3dd86d22f334373e06fe312b943241a52ada291d6c0758fd750d30ff59a as trillian-createtree-ppc64le
-FROM --platform=linux/s390x quay.io/securesign/trillian-createtree@sha256:22714a27d44b23a91d9519f54517b8894b0a3499e3ce511e4459b356bc0f0518 as trillian-createtree-s390x
+FROM --platform=linux/amd64 quay.io/securesign/trillian-createtree@sha256:0204fd086bca26af9577657b239aeb5e89848c55b1c278644ac62d8c2cbcc524 as trillian-createtree-amd64
+FROM --platform=linux/arm64 quay.io/securesign/trillian-createtree@sha256:ae0614c2bb778a97ff976b952ddbf8c49a99950404886326fa1c85ec52896858 as trillian-createtree-arm64
+FROM --platform=linux/ppc64le quay.io/securesign/trillian-createtree@sha256:6b4026edbb82cadddda588bf2ed6c739116c4523812a49e701d7d0eb5f00c225 as trillian-createtree-ppc64le
+FROM --platform=linux/s390x quay.io/securesign/trillian-createtree@sha256:f782e7727c45fbf21c8716a6f02c95112abc0a2098644d7fa60a9dc5942efd49 as trillian-createtree-s390x
 
-FROM --platform=linux/amd64 quay.io/securesign/trillian-updatetree@sha256:08674f6da0522a2c057fa776fcc97d8952c4db9224707165256c146763ac2ca7 as trillian-updatetree-amd64
-FROM --platform=linux/arm64 quay.io/securesign/trillian-updatetree@sha256:f579c83fb1fa31e209a471bf83f5cd6d4e528609d4827261790c851d807ae346 as trillian-updatetree-arm64
-FROM --platform=linux/ppc64le quay.io/securesign/trillian-updatetree@sha256:aeb0b2274d2a18081719cae8f94414cfcae090fb80651a49a484a88ff4671d17 as trillian-updatetree-ppc64le
-FROM --platform=linux/s390x quay.io/securesign/trillian-updatetree@sha256:81883f2bc4c85c83b5f8631c2f47d9426709b3d4c4e13ef3fd01e194adcbfe59 as trillian-updatetree-s390x
+FROM --platform=linux/amd64 quay.io/securesign/trillian-updatetree@sha256:ac2609f1b2d4ed694e9f43d20ead1aa69c07ccced166cae1b13928371590b3ed as trillian-updatetree-amd64
+FROM --platform=linux/arm64 quay.io/securesign/trillian-updatetree@sha256:12f6709dbce78f2c8d61b5567d3cc1f85d135378bd3ccdfd8fb217a882854738 as trillian-updatetree-arm64
+FROM --platform=linux/ppc64le quay.io/securesign/trillian-updatetree@sha256:fce3a043c9c20f69a03668173671d0d704c00d3f69438ebbac3b54737a58ec18 as trillian-updatetree-ppc64le
+FROM --platform=linux/s390x quay.io/securesign/trillian-updatetree@sha256:afb2e658255e4644b0ab8aa73e4b1a526a3187bc192adf21ea72779aeb910927 as trillian-updatetree-s390x
 
-FROM quay.io/securesign/cli-tuftool@sha256:3f171dc370c8350bfa6734016a97bd3e129a7f0d0ecedd201e517af7724631e5 as tuf-tool
+FROM quay.io/securesign/cli-tuftool@sha256:8b6a2a9c6c8d61858353d2db479e84e1babe2ae8b9ea43a1c0cabcebf6b121b3 as tuf-tool
 
 FROM registry.redhat.io/ubi9/httpd-24@sha256:4e83e90dc25d3088a0c66b07db2fff3fac4d6c879d62a5a90149edc341e58e2d
 ENV APP_ROOT=/opt/app-root
