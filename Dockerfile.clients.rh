@@ -16,10 +16,10 @@ FROM --platform=linux/ppc64le quay.io/securesign/fetch-tsa-certs@sha256:66432522
 FROM --platform=linux/s390x quay.io/securesign/fetch-tsa-certs@sha256:9c6682e4f860650386bdad6019d332b810137654b2e218d5a79ff4594a7e51b7 as fetch_tsa_certs-s390x
 
 # Provides the Trusted Artifact Signer CLI binaries, rekor-cli and ec
-FROM --platform=linux/amd64 quay.io/securesign/rekor-cli@sha256:60fd2fc605303e9c9e2ed87898234b082dbb504a26ff6ff6d8db61136c6b8b2f as rekor-amd64
-FROM --platform=linux/arm64 quay.io/securesign/rekor-cli@sha256:81906f1f0a8a82ac5c23343aff985762b7c4412ca8abc6fc47e8063ae042c11c as rekor-arm64
-FROM --platform=linux/ppc64le quay.io/securesign/rekor-cli@sha256:6607e3c63722c4defa3e3db5c9a7cf45c1f3961f973ed37d083e093a6ec3d5f8 as rekor-ppc64le
-FROM --platform=linux/s390x quay.io/securesign/rekor-cli@sha256:3169cc64957fd04ec6634f4d758ab404149a9e3aba0396ef9db8d6ac246aa00d as rekor-s390x
+FROM --platform=linux/amd64 quay.io/securesign/rekor-cli@sha256:7f69665e8edffe4d75fb7183a1173aaa48445434c973a1ddebd631bb69e21681 as rekor-amd64
+FROM --platform=linux/arm64 quay.io/securesign/rekor-cli@sha256:46ca553872adc12223ddfc7f4d2e4dce226f4471841b7c2af2e90c492ea1ac4e as rekor-arm64
+FROM --platform=linux/ppc64le quay.io/securesign/rekor-cli@sha256:d7945fba118b9a2acbf25ffc3f8a920ab8be34c0a23bd7d1db8227886c55c777 as rekor-ppc64le
+FROM --platform=linux/s390x quay.io/securesign/rekor-cli@sha256:2733aaaf6cb4201c2a47f8c174605b470d49b18db95d36042c8c18a32fb354c3 as rekor-s390x
 
 FROM registry.redhat.io/rhtas/ec-rhel9:0.7@sha256:dfba448351ab2cf92eea34d0c6c103110b3d90dda0cd037b5346841e1a3ddd78 as ec
 
