@@ -1,8 +1,8 @@
 # Provides the Trusted Artifact Signer CLI binaries, cosign and gitsign
-FROM --platform=linux/amd64   quay.io/securesign/cli-cosign@sha256:a970dd534f07b79c17b556451ae60c648b6db0cd4f1263101f62a719a4f18684 AS cosign-amd64
-FROM --platform=linux/arm64   quay.io/securesign/cli-cosign@sha256:6b73aa71524d33d79edca72fb75fbdf4c3a1e93102b90330daea82bf86b8895c AS cosign-arm64
-FROM --platform=linux/ppc64le quay.io/securesign/cli-cosign@sha256:ef0369ff75567f0cc7479aab86ec082e98e47232f806b5e08ca9b8b50c45d969 AS cosign-ppc64le
-FROM --platform=linux/s390x   quay.io/securesign/cli-cosign@sha256:1c0f0294e38dab0fdebc580b9312e885024674e56c9f786b3c692ce889377795 AS cosign-s390x
+FROM --platform=linux/amd64   quay.io/securesign/cli-cosign@sha256:7a83ab7cd316450ceba91705c54ea7627c3c4743c7e7e699ccade49df42304e2 AS cosign-amd64
+FROM --platform=linux/arm64   quay.io/securesign/cli-cosign@sha256:962f475a9d954c9444bcb2074a9da823532a8299719782fb0d92c13a54a8f11f AS cosign-arm64
+FROM --platform=linux/ppc64le quay.io/securesign/cli-cosign@sha256:2bdda5c6d0a8190486c2be0c7ff62ad8410766e9518f486ae9a4cc028dd53d9d AS cosign-ppc64le
+FROM --platform=linux/s390x   quay.io/securesign/cli-cosign@sha256:7705eb4777de58f2705a2e579a98d52cfc2c417f1b304b978fb73cb7c947cfc8 AS cosign-s390x
 
 FROM --platform=linux/amd64   quay.io/securesign/gitsign@sha256:aa6dde8cd9045c370ca42816faf9d82cedae332add22be9f2a50090169cbb292 AS gitsign-amd64
 FROM --platform=linux/arm64   quay.io/securesign/gitsign@sha256:0da16b23dfebf7992d983e7a09026bea565651df768f92b8d1275bb2338fe41c AS gitsign-arm64
