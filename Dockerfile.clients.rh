@@ -34,7 +34,7 @@ FROM --platform=linux/arm64 quay.io/securesign/trillian-updatetree@sha256:60dc6b
 FROM --platform=linux/ppc64le quay.io/securesign/trillian-updatetree@sha256:88d0d0c0bd8174d2e59ce5f98ab587bba5e6c83071cd07388dacbff001a93357 as trillian-updatetree-ppc64le
 FROM --platform=linux/s390x quay.io/securesign/trillian-updatetree@sha256:0ebe615a7dec8e61bceac2cfd7dc408add525f05d7853a263e59a497fd4877c5 as trillian-updatetree-s390x
 
-FROM quay.io/securesign/cli-tuftool@sha256:d511c1acfb150e54b4249256df3eb75754192ffcd3bf1029fae4c43eaa03ef69 as tuf-tool
+FROM quay.io/securesign/cli-tuftool@sha256:631fc38a9130df6f4c5da9009b632e784d1d65e8bd651c1d1ba4f5f44b3cb639 as tuf-tool
 
 FROM registry.redhat.io/ubi9/httpd-24@sha256:4e83e90dc25d3088a0c66b07db2fff3fac4d6c879d62a5a90149edc341e58e2d
 ENV APP_ROOT=/opt/app-root
