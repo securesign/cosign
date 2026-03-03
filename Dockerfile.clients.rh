@@ -10,10 +10,10 @@ FROM --platform=linux/ppc64le quay.io/securesign/gitsign@sha256:853f26cc99c0a069
 FROM --platform=linux/s390x   quay.io/securesign/gitsign@sha256:83dcbdeec6e1d62491bd2b45b23895c73971a727a503745f73097f876d96958b AS gitsign-s390x
 
 # Provides the Trusted Artifact Signer CLI binary, fetch-tsa-certs
-FROM --platform=linux/amd64 quay.io/securesign/fetch-tsa-certs@sha256:879f54735a9f4f62a33bd8469d833ef3c1aff6d93b23d586a1a5118f97352ae7 as fetch_tsa_certs-amd64
-FROM --platform=linux/arm64 quay.io/securesign/fetch-tsa-certs@sha256:366334b1c5caca13201ec1fbc0c7eb1951e199b300afafddcaa5369fc309409a as fetch_tsa_certs-arm64
-FROM --platform=linux/ppc64le quay.io/securesign/fetch-tsa-certs@sha256:f738f9b0a622da78727f226a5658ca71def25482213c183b27cb2b5781469ce6 as fetch_tsa_certs-ppc64le
-FROM --platform=linux/s390x quay.io/securesign/fetch-tsa-certs@sha256:bd2b0e48829d82213ff8466e1103ff9e48c532b56002405ba0b18acad783fbcb as fetch_tsa_certs-s390x
+FROM --platform=linux/amd64 quay.io/securesign/fetch-tsa-certs@sha256:eb4e340010b9ceaa0b06965ca7e10617b55a619f1681287e4f34bef8a6faf213 as fetch_tsa_certs-amd64
+FROM --platform=linux/arm64 quay.io/securesign/fetch-tsa-certs@sha256:5b2a09fe36c73173601e8fecce06ea7c4f39f687020947deca856be40a3d7906 as fetch_tsa_certs-arm64
+FROM --platform=linux/ppc64le quay.io/securesign/fetch-tsa-certs@sha256:ce6a0aaf62ffb44a3e064b55ddc3fb0a28f5fb146eec3c0a1e94b753e083d955 as fetch_tsa_certs-ppc64le
+FROM --platform=linux/s390x quay.io/securesign/fetch-tsa-certs@sha256:b24c46b819db5a691efd9416dc19cb7f86c12c6f8fe5ccf9deec9e673a01b73f as fetch_tsa_certs-s390x
 
 # Provides the Trusted Artifact Signer CLI binaries, rekor-cli and ec
 FROM --platform=linux/amd64 quay.io/securesign/rekor-cli@sha256:ecf66cc7ad8b2c271acea2b202ea205a410af11850072d1c42477b33d3a33626 as rekor-amd64
