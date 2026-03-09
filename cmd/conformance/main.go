@@ -106,7 +106,7 @@ func main() {
 		}
 
 	default:
-		log.Fatalf("Unsupported command %s", os.Args[1])
+		log.Fatalf("Unsupported command %q", os.Args[1])
 	}
 
 	if bundlePath != nil {
