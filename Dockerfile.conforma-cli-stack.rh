@@ -1,0 +1,67 @@
+FROM --platform=linux/amd64   quay.io/redhat-user-workloads/rhtap-contract-tenant/ec-v08/cli-v08@sha256:5f36dea0b903f11bc4fe501e3010b89e4fae1e232257cd19b43133b4c24dd66c AS build-amd64
+FROM --platform=linux/arm64   quay.io/redhat-user-workloads/rhtap-contract-tenant/ec-v08/cli-v08@sha256:2885c7644c6b6c2eeedccfa64fbb89882828c0af4a115dfebe5f508f1b6b60d5 AS build-arm64
+FROM --platform=linux/ppc64le quay.io/redhat-user-workloads/rhtap-contract-tenant/ec-v08/cli-v08@sha256:d255573c896bed92b7cb7fe6f47958445f204efb76cb24bbe23a87a746c6ca23 AS build-ppc64le
+FROM --platform=linux/s390x   quay.io/redhat-user-workloads/rhtap-contract-tenant/ec-v08/cli-v08@sha256:3e332ca617d16249f803e2eb1918189a5cc8ab1275bb03a5e8dbe3d0d329cd4f AS build-s390x
+
+
+FROM registry.redhat.io/ubi9/go-toolset:9.7-1774618347@sha256:0f4f6f7868962aa75dddfe4230b664bdf77071e92c43c70c824c58450e37693f AS packager
+USER root
+RUN mkdir -p /binaries
+
+# Native Linux binaries from each arch variant
+COPY --from=build-amd64 /usr/local/bin/ec_linux_amd64.gz /tmp/ec_linux_amd64.gz
+RUN gzip -d /tmp/ec_linux_amd64.gz && \
+    tar -czf /binaries/ec_linux_amd64.tar.gz -C /tmp ec_linux_amd64 && \
+    rm /tmp/ec_linux_amd64
+
+COPY --from=build-arm64 /usr/local/bin/ec_linux_arm64.gz /tmp/ec_linux_arm64.gz
+RUN gzip -d /tmp/ec_linux_arm64.gz && \
+    tar -czf /binaries/ec_linux_arm64.tar.gz -C /tmp ec_linux_arm64 && \
+    rm /tmp/ec_linux_arm64
+
+COPY --from=build-ppc64le /usr/local/bin/ec_linux_ppc64le.gz /tmp/ec_linux_ppc64le.gz
+RUN gzip -d /tmp/ec_linux_ppc64le.gz && \
+    tar -czf /binaries/ec_linux_ppc64le.tar.gz -C /tmp ec_linux_ppc64le && \
+    rm /tmp/ec_linux_ppc64le
+
+COPY --from=build-s390x /usr/local/bin/ec_linux_s390x.gz /tmp/ec_linux_s390x.gz
+RUN gzip -d /tmp/ec_linux_s390x.gz && \
+    tar -czf /binaries/ec_linux_s390x.tar.gz -C /tmp ec_linux_s390x && \
+    rm /tmp/ec_linux_s390x
+
+# Cross-compiled binaries (same across all variants, taken from amd64)
+# Darwin amd64
+COPY --from=build-amd64 /usr/local/bin/ec_darwin_amd64.gz /tmp/ec_darwin_amd64.gz
+RUN gzip -d /tmp/ec_darwin_amd64.gz && \
+    tar -czf /binaries/ec_darwin_amd64.tar.gz -C /tmp ec_darwin_amd64 && \
+    rm /tmp/ec_darwin_amd64
+
+# Darwin arm64
+COPY --from=build-amd64 /usr/local/bin/ec_darwin_arm64.gz /tmp/ec_darwin_arm64.gz
+RUN gzip -d /tmp/ec_darwin_arm64.gz && \
+    tar -czf /binaries/ec_darwin_arm64.tar.gz -C /tmp ec_darwin_arm64 && \
+    rm /tmp/ec_darwin_arm64
+
+# Windows amd64
+COPY --from=build-amd64 /usr/local/bin/ec_windows_amd64.exe.gz /tmp/ec_windows_amd64.exe.gz
+RUN gzip -d /tmp/ec_windows_amd64.exe.gz && \
+    tar -czf /binaries/ec_windows_amd64.tar.gz -C /tmp ec_windows_amd64.exe && \
+    rm /tmp/ec_windows_amd64.exe
+
+# Final minimal image with all binaries
+FROM registry.redhat.io/ubi9/ubi-minimal@sha256:83006d535923fcf1345067873524a3980316f51794f01d8655be55d6e9387183
+
+LABEL description="Flat image containing Conforma CLI binaries for all platforms and architectures"
+LABEL io.k8s.description="Flat image containing Conforma CLI binaries for all platforms and architectures"
+LABEL io.opencontainers.image.description="Flat image containing Conforma CLI binaries for all platforms and architectures"
+LABEL io.k8s.display-name="Conforma CLI stack image for Red Hat Trusted Artifact Signer"
+LABEL io.openshift.tags="conforma trusted-artifact-signer cli-stack"
+LABEL summary="Provides Conforma CLI binaries as tar.gz archives for CDN distribution."
+LABEL com.redhat.component="conforma-cli-stack"
+
+COPY --from=packager /binaries/ /binaries/
+COPY --from=build-amd64 /licenses/ /licenses/
+
+RUN chown -R root:0 /binaries && chmod -R g+r /binaries
+
+USER 65532:65532
