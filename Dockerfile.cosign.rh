@@ -27,7 +27,7 @@ RUN git config --global --add safe.directory /cosign && \
     git update-index --no-assume-unchanged Dockerfile.cosign.rh
 
 # Install Cosign
-FROM registry.access.redhat.com/ubi9/ubi-minimal@sha256:83006d535923fcf1345067873524a3980316f51794f01d8655be55d6e9387183
+FROM registry.access.redhat.com/ubi9/ubi-minimal@sha256:f5346fbb587b72b5376e66272935d22c62af78be2e8ea1dcf3e9e46865a9a2ee
 
 LABEL description="Cosign is a container signing tool that leverages simple, secure, and auditable signatures based on simple primitives and best practices."
 LABEL io.k8s.description="Cosign is a container signing tool that leverages simple, secure, and auditable signatures based on simple primitives and best practices."
