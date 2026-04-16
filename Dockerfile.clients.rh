@@ -11,7 +11,7 @@ FROM registry.redhat.io/rhtas/ec-rhel9:0.8-1775506126@sha256:06e2f14607b00e1cb25
 
 # Provides the Trusted Artifact Signer CLI binaries trillian-createtree and trillian-updatetree
 FROM quay.io/securesign/trillian-createtree@sha256:ee6cce99f4362f9a1b4c60136705a97b3cd9806322208dfcd166241c1a0392ff as trillian-createtree
-FROM quay.io/securesign/trillian-updatetree@sha256:bcd31780ad6c923dabd76e26a8550b5eb975e3beb94d56f986eb14fa37b23cff as trillian-updatetree
+FROM quay.io/securesign/trillian-updatetree@sha256:49d1968ed236c78da3f355f228f24d0048ac11c83bea82025a83630c9bc39c99 as trillian-updatetree
 
 FROM quay.io/securesign/cli-tuftool@sha256:cc2676a9d70599503faf8ca413e7bbc29cd523782a3d1e81bfc8f9e6323b4a28 as tuf-tool
 
