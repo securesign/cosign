@@ -7,13 +7,12 @@ metadata:
     build.appstudio.redhat.com/commit_sha: '{{revision}}'
     build.appstudio.redhat.com/target_branch: '{{target_branch}}'
     pipelinesascode.tekton.dev/max-keep-runs: "3"
-    pipelinesascode.tekton.dev/on-cel-expression: event == "push" && target_branch
-      == "main" && ( "Dockerfile.clients.rh".pathChanged() || ".tekton/client-server-push.yaml".pathChanged()
+    pipelinesascode.tekton.dev/on-cel-expression: event == "push" && target_branch == "release-1.4" && ( "Dockerfile.clients.rh".pathChanged() || ".tekton/client-server-push.yaml".pathChanged()
       || "trigger-konflux-builds.txt".pathChanged() )
   creationTimestamp: null
   labels:
-    appstudio.openshift.io/application: client-server
-    appstudio.openshift.io/component: client-server
+    appstudio.openshift.io/application: client-server-v1-4
+    appstudio.openshift.io/component: client-server-v1-4
     pipelines.appstudio.openshift.io/type: build
   name: client-server-on-push
   namespace: rhtas-tenant
@@ -45,7 +44,7 @@ spec:
       value: pipelines/docker-build-oci-ta.yaml
     resolver: git
   taskRunTemplate:
-    serviceAccountName: build-pipeline-client-server
+    serviceAccountName: build-pipeline-client-server-v1-4
   workspaces:
   - name: workspace
     volumeClaimTemplate:

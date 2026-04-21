@@ -7,15 +7,14 @@ metadata:
     build.appstudio.redhat.com/commit_sha: '{{revision}}'
     build.appstudio.redhat.com/target_branch: '{{target_branch}}'
     pipelinesascode.tekton.dev/max-keep-runs: "3"
-    pipelinesascode.tekton.dev/on-cel-expression: event == "push" && target_branch
-      == "main" && ( "Dockerfile.cosign.rh".pathChanged() || ".tekton/cosign-push.yaml".pathChanged()
+    pipelinesascode.tekton.dev/on-cel-expression: event == "push" && target_branch == "release-1.4" && ( "Dockerfile.cosign.rh".pathChanged() || ".tekton/cosign-push.yaml".pathChanged()
       || "cmd/***".pathChanged() || "internal/***".pathChanged() || "pkg/***".pathChanged()
       || "Build.mak".pathChanged() || "Makefile".pathChanged() || "trigger-konflux-builds.txt".pathChanged()
       || "go.mod".pathChanged() || "go.sum".pathChanged() )
   creationTimestamp: null
   labels:
-    appstudio.openshift.io/application: tas-tools
-    appstudio.openshift.io/component: cosign
+    appstudio.openshift.io/application: tas-tools-v1-4
+    appstudio.openshift.io/component: cosign-v1-4
     pipelines.appstudio.openshift.io/type: build
   name: cosign-on-push
   namespace: rhtas-tenant
@@ -66,7 +65,7 @@ spec:
           memory: 5Gi
       name: run-tests
   taskRunTemplate:
-    serviceAccountName: build-pipeline-cosign
+    serviceAccountName: build-pipeline-cosign-v1-4
   workspaces:
   - name: git-auth
     secret:
