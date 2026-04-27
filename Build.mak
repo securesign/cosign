@@ -1,4 +1,4 @@
-GIT_VERSION ?= $(shell git describe --tags --always --dirty)
+GIT_VERSION ?= $(shell cat VERSION)
 GIT_HASH ?= $(shell git rev-parse HEAD)
 DATE_FMT = +%Y-%m-%dT%H:%M:%SZ
 SOURCE_DATE_EPOCH ?= $(shell git log -1 --no-show-signature --pretty=%ct)
@@ -24,12 +24,12 @@ cross-platform: cosign-darwin-arm64 cosign-darwin-amd64 cosign-windows-amd64 ## 
 
 .PHONY:	cosign-darwin-arm64
 cosign-darwin-arm64: ## Build for mac M1
-	env CGO_ENABLED=0 GOFIPS140=$(FIPS_MODULE)  GOOS=darwin GOARCH=arm64 go build -o cosign-darwin-arm64 -trimpath -ldflags "$(LDFLAGS) -w -s" ./cmd/cosign
+	env CGO_ENABLED=0 GOFIPS140=$(FIPS_MODULE)  GOOS=darwin GOARCH=arm64 go build -o cosign-darwin-arm64 -buildvcs=false -trimpath -ldflags "$(LDFLAGS) -w -s" ./cmd/cosign
 
 .PHONY: cosign-darwin-amd64
 cosign-darwin-amd64:  ## Build for Darwin (macOS)
-	env CGO_ENABLED=0 GOFIPS140=$(FIPS_MODULE)  GOOS=darwin GOARCH=amd64 go build -o cosign-darwin-amd64 -trimpath -ldflags "$(LDFLAGS) -w -s" ./cmd/cosign
+	env CGO_ENABLED=0 GOFIPS140=$(FIPS_MODULE)  GOOS=darwin GOARCH=amd64 go build -o cosign-darwin-amd64 -buildvcs=false -trimpath -ldflags "$(LDFLAGS) -w -s" ./cmd/cosign
 
 .PHONY: cosign-windows-amd64
 cosign-windows-amd64: ## Build for Windows
-	env CGO_ENABLED=0 GOFIPS140=$(FIPS_MODULE)  GOOS=windows GOARCH=amd64 go build -o cosign-windows-amd64.exe -trimpath -ldflags "$(LDFLAGS) -w -s" ./cmd/cosign
+	env CGO_ENABLED=0 GOFIPS140=$(FIPS_MODULE)  GOOS=windows GOARCH=amd64 go build -o cosign-windows-amd64.exe -buildvcs=false -trimpath -ldflags "$(LDFLAGS) -w -s" ./cmd/cosign
