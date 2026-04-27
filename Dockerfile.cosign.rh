@@ -9,7 +9,7 @@ COPY . .
 USER root
 RUN git config --global --add safe.directory /cosign && \
     git update-index --assume-unchanged Dockerfile.cosign.rh && \
-    export GIT_VERSION=$(git describe --tags --always --dirty) && \
+    export GIT_VERSION=$(cat VERSION) && \
     export GIT_HASH=$(git rev-parse HEAD) && \
     export BUILD_DATE=$(date -u +'%Y-%m-%dT%H:%M:%SZ') && \
     go mod vendor && \
@@ -18,7 +18,7 @@ RUN git config --global --add safe.directory /cosign && \
                 -X sigs.k8s.io/release-utils/version.gitCommit=${GIT_HASH} \
                 -X sigs.k8s.io/release-utils/version.gitTreeState=${GIT_TREESTATE} \
                 -X sigs.k8s.io/release-utils/version.buildDate=${BUILD_DATE}"; \
-    go build -o cosign-linux -trimpath -ldflags "${LDFLAGS} -w -s" ./cmd/cosign && \
+    go build -o cosign-linux -buildvcs=false -trimpath -ldflags "${LDFLAGS} -w -s" ./cmd/cosign && \
     gzip -k cosign-linux && \
     make -f Build.mak cross-platform && \
     gzip cosign-darwin-amd64 && \
