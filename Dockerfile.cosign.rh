@@ -10,7 +10,7 @@ COPY . .
 USER root
 RUN git config --global --add safe.directory /cosign && \
     git update-index --assume-unchanged Dockerfile.cosign.rh && \
-    export GIT_VERSION=$(git describe --tags --always --dirty) && \
+    export GIT_VERSION=$(cat VERSION) && \
     export GIT_HASH=$(git rev-parse HEAD) && \
     export BUILD_DATE=$(date -u +'%Y-%m-%dT%H:%M:%SZ') && \
     go mod vendor && \
