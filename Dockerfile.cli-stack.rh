@@ -3,7 +3,7 @@ FROM --platform=linux/arm64   quay.io/securesign/cli-cosign@sha256:f7ebd95afa252
 FROM --platform=linux/ppc64le quay.io/securesign/cli-cosign@sha256:76326f72e8a350b69c284db4d03ab632f2c137c6d9ae3808cedd51f1c98a1674 AS build-ppc64le
 FROM --platform=linux/s390x   quay.io/securesign/cli-cosign@sha256:1b3078cb111c663a340668bf7c5148cb3e9fea2f0809a33b5ce247c22b462ca6 AS build-s390x
 
-FROM registry.redhat.io/ubi9/go-toolset:9.7-1777043046@sha256:35f08031de19eb51d6b35ed62c6357d3529bc69a8db65cf623ea5f0b44051999 AS packager
+FROM registry.redhat.io/ubi9/go-toolset:9.7-1777537863@sha256:634d5f68245449c0427cfb1e9a1ec629e24ffe61dfb9e450f8ce9e8376d05904 AS packager
 USER root
 RUN mkdir -p /binaries
 
