@@ -14,7 +14,7 @@ metadata:
     appstudio.openshift.io/application: client-server-v1-3
     appstudio.openshift.io/component: client-server-v1-3
     pipelines.appstudio.openshift.io/type: build
-  name: client-server-on-push
+  name: client-server-v1-3-on-push
   namespace: rhtas-tenant
 spec:
   params:
