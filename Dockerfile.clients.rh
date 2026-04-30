@@ -10,7 +10,7 @@ FROM quay.io/securesign/rekor-cli@sha256:d244f892515000472b3d1ef8a8126761a829dfe
 FROM registry.redhat.io/rhtas/ec-rhel9:0.8-1776366841@sha256:e4dafcf2793e5bd050aff6d458bb161aa9c018f8df43a0142a8b1d6eaea78c9a as ec
 
 # Provides the Trusted Artifact Signer CLI binaries trillian-createtree and trillian-updatetree
-FROM quay.io/securesign/trillian-createtree@sha256:63d823aecedc2fda116d7c89b53ef994fbd4f035640d403e734cf67e87750a2e as trillian-createtree
+FROM quay.io/securesign/trillian-createtree@sha256:98c1e1b8bfe382b956bfa176b70836e020050388f301a380d0f37c5e7e12fd1a as trillian-createtree
 FROM quay.io/securesign/trillian-updatetree@sha256:d70a9e83141ce9d27b4feba5803d04260d7028e17c5cacc158f4271e60d744e2 as trillian-updatetree
 
 FROM quay.io/securesign/cli-tuftool@sha256:892874c5cc063b3bda423cc25d2ed72954f4b3cdfbf9b8b5bbca6abe34425d72 as tuf-tool
