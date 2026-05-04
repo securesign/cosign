@@ -144,7 +144,9 @@ func AuthenticateCaller(flow, idToken, oidcIssuer, oidcClientID, oidcClientSecre
 	case flowDevice:
 		tokenGetter = oauthflow.NewDeviceFlowTokenGetterForIssuer(oidcIssuer)
 	case flowNormal:
-		tokenGetter = oauthflow.DefaultIDTokenGetter
+		tokenGetter = &oauthflow.InteractiveIDTokenGetter{
+			HTMLPage: ui.RedHatInteractiveSuccessHTML,
+		}
 	case flowToken:
 		tokenGetter = &oauthflow.StaticTokenGetter{RawToken: idToken}
 	default:
