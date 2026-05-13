@@ -12,7 +12,7 @@ metadata:
     appstudio.openshift.io/application: cli-stacks-v1-4
     appstudio.openshift.io/component: cosign-cli-stack-v1-4
     pipelines.appstudio.openshift.io/type: build
-  name: cosign-cli-stack-on-push
+  name: cosign-cli-stack-v1-4-on-push
   namespace: rhtas-tenant
 spec:
   params:
