@@ -1,7 +1,7 @@
-FROM --platform=linux/amd64   quay.io/securesign/cli-cosign@sha256:c132a895748dce47504c5b9d3d851006522170475266d134fa9739703ff2b1ad AS build-amd64
-FROM --platform=linux/arm64   quay.io/securesign/cli-cosign@sha256:6d0b25fc9ed201716fda8d9b14e743b02a033d877dfdc32f7a57b67690676d86 AS build-arm64
-FROM --platform=linux/ppc64le quay.io/securesign/cli-cosign@sha256:499f326633e619475a6bf58e4c282e9bf16cec998a2870186789f7a03054e156 AS build-ppc64le
-FROM --platform=linux/s390x   quay.io/securesign/cli-cosign@sha256:0ff40508f2f9e6d22e968d0b782b2b00e70db619bdbac0002c819d4811ca7c5f AS build-s390x
+FROM --platform=linux/amd64   quay.io/securesign/cli-cosign@sha256:5fd5251973239b8902d9fd297c8636d1992deeec324ab91235e590ac714f9260 AS build-amd64
+FROM --platform=linux/arm64   quay.io/securesign/cli-cosign@sha256:6383853a3396f2b26acfe6352428574314c3200d90e5ce125d3cc3c6ee93f794 AS build-arm64
+FROM --platform=linux/ppc64le quay.io/securesign/cli-cosign@sha256:c77afc5fec6a203a1713e85a6beafe1e644190460d3d2ffe2c1104eeeeb967a0 AS build-ppc64le
+FROM --platform=linux/s390x   quay.io/securesign/cli-cosign@sha256:55c21b13da1b63a47660188848de7cc2b5e206eff24ff21c6fbb4aff3a6e0389 AS build-s390x
 
 FROM registry.redhat.io/ubi9/go-toolset:9.7-1778604137@sha256:e06a6f4c85c3ca75f64127542449c9770fb885adfb592f987c576d268ac108de AS packager
 USER root
