@@ -69,6 +69,41 @@ linters:
           - gosec
         path: _test\.go
       - linters:
+          - staticcheck
+        path: pkg/cosign/attestation/attestation.go
+        # in-toto v0.x Statement types, will migrate to v1 attestation framework
+        text: SA1019
+      - linters:
+          - staticcheck
+        path: pkg/cosign/fetch.go
+        # in-toto v0.x Statement types, will migrate to v1 attestation framework
+        text: SA1019
+      - linters:
+          - staticcheck
+        path: pkg/cosign/verifiers.go
+        # in-toto v0.x Statement types, will migrate to v1 attestation framework
+        text: SA1019
+      - linters:
+          - staticcheck
+        path: pkg/cosign/verify_bundle.go
+        # verify.NewSignedEntityVerifier deprecated, will update to NewVerifier
+        text: SA1019
+      - linters:
+          - staticcheck
+        path: pkg/policy/attestation.go
+        # in-toto v0.x Statement types, will migrate to v1 attestation framework
+        text: SA1019
+      - linters:
+          - staticcheck
+        path: pkg/policy/attestation_test.go
+        # in-toto v0.x Statement types, will migrate to v1 attestation framework
+        text: SA1019
+      - linters:
+          - staticcheck
+        path: cmd/cosign/cli/attest/attest_blob_test.go
+        # in-toto v0.x Statement types, will migrate to v1 attestation framework
+        text: SA1019
+      - linters:
           - revive
         path: pkg/types/
         text: "var-naming: avoid meaningless package names"
