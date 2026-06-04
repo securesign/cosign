@@ -24,10 +24,10 @@ FROM --platform=linux/s390x quay.io/securesign/rekor-cli@sha256:44b2ded738016fae
 FROM registry.redhat.io/rhtas/ec-rhel9:0.8@sha256:db0c40dcc9a8ad2015af8b4d894f1434c9397a66b2919d81c1f323134d12bb5a as ec
 
 # Provides the Trusted Artifact Signer CLI binaries trillian-createtree and trillian-updatetree
-FROM --platform=linux/amd64 quay.io/securesign/trillian-createtree@sha256:5a68980e9d21a069c9f4bdbc6dfdd9407d6138d017cff0efb416af51934685ba as trillian-createtree-amd64
-FROM --platform=linux/arm64 quay.io/securesign/trillian-createtree@sha256:5b049b00784ec200422bf9cc928e7086fea3cae2e5113a17cb8b6d203b08ca84 as trillian-createtree-arm64
-FROM --platform=linux/ppc64le quay.io/securesign/trillian-createtree@sha256:eceefaa91f9599fa4b37c9ba46a5263e816e4f56f78723eda7363400931e44fe as trillian-createtree-ppc64le
-FROM --platform=linux/s390x quay.io/securesign/trillian-createtree@sha256:a82138334c60a3a44d1731fa6b569c34bb16b2afc6e0eb5996e4973764e5668b as trillian-createtree-s390x
+FROM --platform=linux/amd64 quay.io/securesign/trillian-createtree@sha256:867f93f707308068ac5e1a8dced7e7eb0a9450500838b80eb62b254a19bab795 as trillian-createtree-amd64
+FROM --platform=linux/arm64 quay.io/securesign/trillian-createtree@sha256:84a412f81a26085616b111d20eff83fa1e57295f07df51b245357c1f72c1375f as trillian-createtree-arm64
+FROM --platform=linux/ppc64le quay.io/securesign/trillian-createtree@sha256:06e694c871cfb7e8792aab2bf4f244850725511b73fe27143596560802987cd4 as trillian-createtree-ppc64le
+FROM --platform=linux/s390x quay.io/securesign/trillian-createtree@sha256:295ee305bc426cf08e549b8383b841bcb43f49ed466ff0a5aeb25538ee32468a as trillian-createtree-s390x
 
 FROM --platform=linux/amd64 quay.io/securesign/trillian-updatetree@sha256:ff700ac49dae17f88eb8a06d6898cb02b934bc7f043dbbcc60058c4db5b6f802 as trillian-updatetree-amd64
 FROM --platform=linux/arm64 quay.io/securesign/trillian-updatetree@sha256:f95dae9f0a73496a83d11af721ba3775b414b6389dc07eb484b80fa299d8d999 as trillian-updatetree-arm64
