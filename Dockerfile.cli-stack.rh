@@ -3,7 +3,7 @@ FROM --platform=linux/arm64   quay.io/securesign/cli-cosign@sha256:6383853a3396f
 FROM --platform=linux/ppc64le quay.io/securesign/cli-cosign@sha256:c77afc5fec6a203a1713e85a6beafe1e644190460d3d2ffe2c1104eeeeb967a0 AS build-ppc64le
 FROM --platform=linux/s390x   quay.io/securesign/cli-cosign@sha256:55c21b13da1b63a47660188848de7cc2b5e206eff24ff21c6fbb4aff3a6e0389 AS build-s390x
 
-FROM registry.redhat.io/ubi9/go-toolset:9.7-1778604137@sha256:e06a6f4c85c3ca75f64127542449c9770fb885adfb592f987c576d268ac108de AS packager
+FROM registry.redhat.io/ubi9/go-toolset:9.8-1780490420@sha256:d36470d5258da00f618b7aca9bdaab8e05134aa938bd6c42d9bd17d50ed45e76 AS packager
 USER root
 RUN mkdir -p /binaries
 
@@ -47,7 +47,7 @@ RUN gzip -d /tmp/cosign-windows-amd64.exe.gz && \
     rm /tmp/cosign-windows-amd64.exe
 
 # Final minimal image with all binaries
-FROM registry.redhat.io/ubi9/ubi-minimal@sha256:12db9874bd753eb98b1ab3d840e75de5d6842ac0604fbd68c012adefe97140be
+FROM registry.redhat.io/ubi9/ubi-minimal@sha256:ae09ecc3d754bc1726cbda3e2599cc7839e09fe1cc547ce173cf669b645be3cc
 
 LABEL description="Flat image containing cosign CLI binaries for all platforms and architectures"
 LABEL io.k8s.description="Flat image containing cosign CLI binaries for all platforms and architectures"
