@@ -1,42 +1,26 @@
-# Provides the Trusted Artifact Signer CLI binaries, cosign and gitsign
-FROM --platform=linux/amd64   quay.io/securesign/cli-cosign@sha256:8ffe6c3d16b1be53e0b34d6f328049adce18bb4c3e9794cbc4ed2e26ad540a77 AS cosign-amd64
-FROM --platform=linux/arm64   quay.io/securesign/cli-cosign@sha256:f7ebd95afa25227469a2ef12bb0e8d0a38abdeb316c6feefbe5a6b07059275ea AS cosign-arm64
-FROM --platform=linux/ppc64le quay.io/securesign/cli-cosign@sha256:76326f72e8a350b69c284db4d03ab632f2c137c6d9ae3808cedd51f1c98a1674 AS cosign-ppc64le
-FROM --platform=linux/s390x   quay.io/securesign/cli-cosign@sha256:1b3078cb111c663a340668bf7c5148cb3e9fea2f0809a33b5ce247c22b462ca6 AS cosign-s390x
+# cosign
+FROM quay.io/securesign/cosign-cli-stack@sha256:9ec7f5be46646abd3d7e15cd28300e9912017f22db0ff594b2c9a913b6e94c5b AS cosign
 
-FROM --platform=linux/amd64   quay.io/securesign/gitsign@sha256:95d3116a7369482359d3ae22adc0ac830a3ceda36a19bd43945f93e5a121da3a AS gitsign-amd64
-FROM --platform=linux/arm64   quay.io/securesign/gitsign@sha256:7a03e8482e6d6b80c9a710a54b82b0a14de6257cb6f333f164a175fd56267bd5 AS gitsign-arm64
-FROM --platform=linux/ppc64le quay.io/securesign/gitsign@sha256:2608c1b4c0af1fe2cfe25a3b5bd1a43ec0d6497edcbd1d05ea1f15e872b13317 AS gitsign-ppc64le
-FROM --platform=linux/s390x   quay.io/securesign/gitsign@sha256:a3932d3b949b2f58005cf164f2ca990b1be340bcca0e6a8318749710eb24b952 AS gitsign-s390x
+# gitsign
+FROM quay.io/securesign/gitsign-cli-stack@sha256:1a62bcd96fa065b1de9d24c4b5b880de7e9ebf0d0741f01478c2cd0a7d414d4c AS gitsign
 
-# Provides the Trusted Artifact Signer CLI binary, fetch-tsa-certs
-FROM --platform=linux/amd64 quay.io/securesign/fetch-tsa-certs@sha256:77b2a8640e8417921161869ff447e2c13479131d8700b34bd4e8697e2c799aca as fetch_tsa_certs-amd64
-FROM --platform=linux/arm64 quay.io/securesign/fetch-tsa-certs@sha256:784bf6296c636231054112c37a1399afedbd137c8d9adf5b8861d472bed3f97c as fetch_tsa_certs-arm64
-FROM --platform=linux/ppc64le quay.io/securesign/fetch-tsa-certs@sha256:ad659c674d7bfe8a59fc733b4656564b0bb5c35916abce274eb22d80111c86ba as fetch_tsa_certs-ppc64le
-FROM --platform=linux/s390x quay.io/securesign/fetch-tsa-certs@sha256:81fecc40486c85cd3d42802b533ce625feb6ed704f63cea7de41c8eb974cb6d9 as fetch_tsa_certs-s390x
+# rekor-cli
+FROM quay.io/securesign/rekor-cli-stack@sha256:1111ebc514826e9959ccca38d6ac600bd477be145bbe867b94336762c04b5513 AS rekor
 
-# Provides the Trusted Artifact Signer CLI binaries, rekor-cli and ec
-FROM --platform=linux/amd64 quay.io/securesign/rekor-cli@sha256:4f297ebc1917d68bd93903687b5ff0c0740801594a8ed234d676512f367e02a7 as rekor-amd64
-FROM --platform=linux/arm64 quay.io/securesign/rekor-cli@sha256:73a707e13c90cc5388f2d0cf04cf4e650e951b62d1f7f5d688ac33fbc7f5cf6e as rekor-arm64
-FROM --platform=linux/ppc64le quay.io/securesign/rekor-cli@sha256:8bf706967755e6489dcc8e4e71717eef4452950c8b5184bc06336c8cc67812bf as rekor-ppc64le
-FROM --platform=linux/s390x quay.io/securesign/rekor-cli@sha256:44b2ded738016fae222db9319eb843612a2d67011b103ea82b9ef6b3e57ca198 as rekor-s390x
+# fetch-tsa-certs
+FROM quay.io/securesign/fetch-tsa-certs-cli-stack@sha256:4736b15a08bdfcaad07560615c83fc13f8a018b35d26782b69ff0c5138323224 AS fetch-tsa-certs
 
-FROM registry.redhat.io/rhtas/ec-rhel9:0.8@sha256:db0c40dcc9a8ad2015af8b4d894f1434c9397a66b2919d81c1f323134d12bb5a as ec
+# ec
+FROM registry.redhat.io/rhtas/ec-rhel9:0.8@sha256:db0c40dcc9a8ad2015af8b4d894f1434c9397a66b2919d81c1f323134d12bb5a AS ec
 
-# Provides the Trusted Artifact Signer CLI binaries trillian-createtree and trillian-updatetree
-FROM --platform=linux/amd64 quay.io/securesign/trillian-createtree@sha256:5a68980e9d21a069c9f4bdbc6dfdd9407d6138d017cff0efb416af51934685ba as trillian-createtree-amd64
-FROM --platform=linux/arm64 quay.io/securesign/trillian-createtree@sha256:5b049b00784ec200422bf9cc928e7086fea3cae2e5113a17cb8b6d203b08ca84 as trillian-createtree-arm64
-FROM --platform=linux/ppc64le quay.io/securesign/trillian-createtree@sha256:eceefaa91f9599fa4b37c9ba46a5263e816e4f56f78723eda7363400931e44fe as trillian-createtree-ppc64le
-FROM --platform=linux/s390x quay.io/securesign/trillian-createtree@sha256:a82138334c60a3a44d1731fa6b569c34bb16b2afc6e0eb5996e4973764e5668b as trillian-createtree-s390x
+# trillian-createtree and trillian-updatetree
+FROM quay.io/securesign/trillian-cli-stack@sha256:9bc0535e5c85aa90a5e3bb1d80e7cac63df43def5a47a7538e301a524dfd5612 AS trillian
 
-FROM --platform=linux/amd64 quay.io/securesign/trillian-updatetree@sha256:ff700ac49dae17f88eb8a06d6898cb02b934bc7f043dbbcc60058c4db5b6f802 as trillian-updatetree-amd64
-FROM --platform=linux/arm64 quay.io/securesign/trillian-updatetree@sha256:f95dae9f0a73496a83d11af721ba3775b414b6389dc07eb484b80fa299d8d999 as trillian-updatetree-arm64
-FROM --platform=linux/ppc64le quay.io/securesign/trillian-updatetree@sha256:02247a33df9109b5c4598730d0a61546ab766f3dee9bfa270b99acd331b86a1d as trillian-updatetree-ppc64le
-FROM --platform=linux/s390x quay.io/securesign/trillian-updatetree@sha256:d316d332bb6c106b18ba6f7b1ca4bbda5d0fc376c29b978323c55da75c5650df as trillian-updatetree-s390x
-
-FROM quay.io/securesign/cli-tuftool@sha256:2fbffa294cac96c7b618a23284555adec42dcb4afdaf6d90b6944541a56d9b69 as tuf-tool
+# tuftool
+FROM quay.io/securesign/tuftool-cli-stack@sha256:20b48a8bccbc3995b7c654c7404472e111973b051aab79e88bf216f7f719c5cc AS tuftool
 
 FROM registry.redhat.io/ubi9/httpd-24@sha256:e7cfc9237b44ba31d78d520f1cdc1ff076bc1e1ad538bda3039cb772905e37f9
+
 ENV APP_ROOT=/opt/app-root
 WORKDIR $APP_ROOT/src/
 
@@ -44,34 +28,79 @@ RUN mkdir -p /var/www/html/clients/darwin && \
     mkdir -p /var/www/html/clients/linux && \
     mkdir -p /var/www/html/clients/windows
 
-# Copy the cosign binaries from the previous stages
-COPY --from=cosign-amd64 /usr/local/bin/cosign-darwin-amd64.gz /var/www/html/clients/darwin/cosign-amd64.gz
-COPY --from=cosign-arm64 /usr/local/bin/cosign-darwin-arm64.gz /var/www/html/clients/darwin/cosign-arm64.gz
-COPY --from=cosign-amd64 /usr/local/bin/cosign.gz /var/www/html/clients/linux/cosign-amd64.gz
-COPY --from=cosign-arm64 /usr/local/bin/cosign.gz /var/www/html/clients/linux/cosign-arm64.gz
-COPY --from=cosign-ppc64le /usr/local/bin/cosign.gz /var/www/html/clients/linux/cosign-ppc64le.gz
-COPY --from=cosign-s390x /usr/local/bin/cosign.gz /var/www/html/clients/linux/cosign-s390x.gz
-COPY --from=cosign-amd64 /usr/local/bin/cosign-windows-amd64.exe.gz /var/www/html/clients/windows/cosign-amd64.gz
+# Copy cli-stack tar.gz bundles to temp
+COPY --from=cosign /binaries/ /tmp/cosign/
+COPY --from=gitsign /binaries/ /tmp/gitsign/
+COPY --from=rekor /binaries/ /tmp/rekor/
+COPY --from=fetch-tsa-certs /binaries/ /tmp/fetch-tsa-certs/
+COPY --from=trillian /binaries/ /tmp/trillian/
+COPY --from=tuftool /binaries/ /tmp/tuftool/
 
-# Copy the gitsign binaries from the previous stages
-COPY --from=gitsign-amd64 /usr/local/bin/gitsign_cli_darwin_amd64.gz /var/www/html/clients/darwin/gitsign-amd64.gz
-COPY --from=gitsign-arm64 /usr/local/bin/gitsign_cli_darwin_arm64.gz /var/www/html/clients/darwin/gitsign-arm64.gz
-COPY --from=gitsign-amd64 /usr/local/bin/gitsign_cli_linux.gz /var/www/html/clients/linux/gitsign-amd64.gz
-COPY --from=gitsign-arm64 /usr/local/bin/gitsign_cli_linux.gz /var/www/html/clients/linux/gitsign-arm64.gz
-COPY --from=gitsign-ppc64le /usr/local/bin/gitsign_cli_linux.gz /var/www/html/clients/linux/gitsign-ppc64le.gz
-COPY --from=gitsign-s390x /usr/local/bin/gitsign_cli_linux.gz /var/www/html/clients/linux/gitsign-s390x.gz
-COPY --from=gitsign-amd64 /usr/local/bin/gitsign_cli_windows_amd64.exe.gz /var/www/html/clients/windows/gitsign-amd64.gz
+# Repackage tar.gz archives to plain .gz for backward compatibility
+RUN set -e && \
+    repack() { \
+      src="$1"; dst="$2"; \
+      tmp_dir=$(mktemp -d); \
+      tar xzf "$src" -C "$tmp_dir"; \
+      bin=$(ls "$tmp_dir"); \
+      gzip "$tmp_dir/$bin"; \
+      mv "$tmp_dir/$bin.gz" "$dst"; \
+      rm -rf "$tmp_dir"; \
+    } && \
+    # cosign
+    repack /tmp/cosign/cosign_darwin_amd64.tar.gz /var/www/html/clients/darwin/cosign-amd64.gz && \
+    repack /tmp/cosign/cosign_darwin_arm64.tar.gz /var/www/html/clients/darwin/cosign-arm64.gz && \
+    repack /tmp/cosign/cosign_linux_amd64.tar.gz /var/www/html/clients/linux/cosign-amd64.gz && \
+    repack /tmp/cosign/cosign_linux_arm64.tar.gz /var/www/html/clients/linux/cosign-arm64.gz && \
+    repack /tmp/cosign/cosign_linux_ppc64le.tar.gz /var/www/html/clients/linux/cosign-ppc64le.gz && \
+    repack /tmp/cosign/cosign_linux_s390x.tar.gz /var/www/html/clients/linux/cosign-s390x.gz && \
+    repack /tmp/cosign/cosign_windows_amd64.tar.gz /var/www/html/clients/windows/cosign-amd64.gz && \
+    # gitsign
+    repack /tmp/gitsign/gitsign_cli_darwin_amd64.tar.gz /var/www/html/clients/darwin/gitsign-amd64.gz && \
+    repack /tmp/gitsign/gitsign_cli_darwin_arm64.tar.gz /var/www/html/clients/darwin/gitsign-arm64.gz && \
+    repack /tmp/gitsign/gitsign_cli_linux_amd64.tar.gz /var/www/html/clients/linux/gitsign-amd64.gz && \
+    repack /tmp/gitsign/gitsign_cli_linux_arm64.tar.gz /var/www/html/clients/linux/gitsign-arm64.gz && \
+    repack /tmp/gitsign/gitsign_cli_linux_ppc64le.tar.gz /var/www/html/clients/linux/gitsign-ppc64le.gz && \
+    repack /tmp/gitsign/gitsign_cli_linux_s390x.tar.gz /var/www/html/clients/linux/gitsign-s390x.gz && \
+    repack /tmp/gitsign/gitsign_cli_windows_amd64.tar.gz /var/www/html/clients/windows/gitsign-amd64.gz && \
+    # rekor-cli
+    repack /tmp/rekor/rekor_cli_darwin_amd64.tar.gz /var/www/html/clients/darwin/rekor-cli-amd64.gz && \
+    repack /tmp/rekor/rekor_cli_darwin_arm64.tar.gz /var/www/html/clients/darwin/rekor-cli-arm64.gz && \
+    repack /tmp/rekor/rekor_cli_linux_amd64.tar.gz /var/www/html/clients/linux/rekor-cli-amd64.gz && \
+    repack /tmp/rekor/rekor_cli_linux_arm64.tar.gz /var/www/html/clients/linux/rekor-cli-arm64.gz && \
+    repack /tmp/rekor/rekor_cli_linux_ppc64le.tar.gz /var/www/html/clients/linux/rekor-cli-ppc64le.gz && \
+    repack /tmp/rekor/rekor_cli_linux_s390x.tar.gz /var/www/html/clients/linux/rekor-cli-s390x.gz && \
+    repack /tmp/rekor/rekor_cli_windows_amd64.tar.gz /var/www/html/clients/windows/rekor-cli-amd64.gz && \
+    # fetch-tsa-certs
+    repack /tmp/fetch-tsa-certs/fetch_tsa_certs_darwin_amd64.tar.gz /var/www/html/clients/darwin/fetch-tsa-certs-amd64.gz && \
+    repack /tmp/fetch-tsa-certs/fetch_tsa_certs_darwin_arm64.tar.gz /var/www/html/clients/darwin/fetch-tsa-certs-arm64.gz && \
+    repack /tmp/fetch-tsa-certs/fetch_tsa_certs_linux_amd64.tar.gz /var/www/html/clients/linux/fetch-tsa-certs-amd64.gz && \
+    repack /tmp/fetch-tsa-certs/fetch_tsa_certs_linux_arm64.tar.gz /var/www/html/clients/linux/fetch-tsa-certs-arm64.gz && \
+    repack /tmp/fetch-tsa-certs/fetch_tsa_certs_linux_ppc64le.tar.gz /var/www/html/clients/linux/fetch-tsa-certs-ppc64le.gz && \
+    repack /tmp/fetch-tsa-certs/fetch_tsa_certs_linux_s390x.tar.gz /var/www/html/clients/linux/fetch-tsa-certs-s390x.gz && \
+    repack /tmp/fetch-tsa-certs/fetch_tsa_certs_windows_amd64.tar.gz /var/www/html/clients/windows/fetch-tsa-certs-amd64.gz && \
+    # createtree
+    repack /tmp/trillian/createtree_darwin_amd64.tar.gz /var/www/html/clients/darwin/createtree-amd64.gz && \
+    repack /tmp/trillian/createtree_darwin_arm64.tar.gz /var/www/html/clients/darwin/createtree-arm64.gz && \
+    repack /tmp/trillian/createtree_linux_amd64.tar.gz /var/www/html/clients/linux/createtree-amd64.gz && \
+    repack /tmp/trillian/createtree_linux_arm64.tar.gz /var/www/html/clients/linux/createtree-arm64.gz && \
+    repack /tmp/trillian/createtree_linux_ppc64le.tar.gz /var/www/html/clients/linux/createtree-ppc64le.gz && \
+    repack /tmp/trillian/createtree_linux_s390x.tar.gz /var/www/html/clients/linux/createtree-s390x.gz && \
+    repack /tmp/trillian/createtree_windows_amd64.tar.gz /var/www/html/clients/windows/createtree-amd64.gz && \
+    # updatetree
+    repack /tmp/trillian/updatetree_darwin_amd64.tar.gz /var/www/html/clients/darwin/updatetree-amd64.gz && \
+    repack /tmp/trillian/updatetree_darwin_arm64.tar.gz /var/www/html/clients/darwin/updatetree-arm64.gz && \
+    repack /tmp/trillian/updatetree_linux_amd64.tar.gz /var/www/html/clients/linux/updatetree-amd64.gz && \
+    repack /tmp/trillian/updatetree_linux_arm64.tar.gz /var/www/html/clients/linux/updatetree-arm64.gz && \
+    repack /tmp/trillian/updatetree_linux_ppc64le.tar.gz /var/www/html/clients/linux/updatetree-ppc64le.gz && \
+    repack /tmp/trillian/updatetree_linux_s390x.tar.gz /var/www/html/clients/linux/updatetree-s390x.gz && \
+    repack /tmp/trillian/updatetree_windows_amd64.tar.gz /var/www/html/clients/windows/updatetree-amd64.gz && \
+    # tuftool (linux amd64 only)
+    repack /tmp/tuftool/tuftool_linux_amd64.tar.gz /var/www/html/clients/linux/tuftool-amd64.gz && \
+    # cleanup
+    rm -rf /tmp/cosign /tmp/gitsign /tmp/rekor /tmp/fetch-tsa-certs /tmp/trillian /tmp/tuftool || true
 
-# Copy the rekor binaries from the previous stages
-COPY --from=rekor-amd64 /usr/local/bin/rekor_cli_darwin_amd64.gz /var/www/html/clients/darwin/rekor-cli-amd64.gz
-COPY --from=rekor-arm64 /usr/local/bin/rekor_cli_darwin_arm64.gz /var/www/html/clients/darwin/rekor-cli-arm64.gz
-COPY --from=rekor-amd64 /usr/local/bin/rekor_cli_linux.gz /var/www/html/clients/linux/rekor-cli-amd64.gz
-COPY --from=rekor-arm64 /usr/local/bin/rekor_cli_linux.gz /var/www/html/clients/linux/rekor-cli-arm64.gz
-COPY --from=rekor-ppc64le /usr/local/bin/rekor_cli_linux.gz /var/www/html/clients/linux/rekor-cli-ppc64le.gz
-COPY --from=rekor-s390x /usr/local/bin/rekor_cli_linux.gz /var/www/html/clients/linux/rekor-cli-s390x.gz
-COPY --from=rekor-amd64 /usr/local/bin/rekor_cli_windows_amd64.exe.gz /var/www/html/clients/windows/rekor-cli-amd64.gz
-
-# Copy the ec binaries from the previous stages
+# Copy the ec binaries (kept in old .gz format)
 COPY --from=ec /usr/local/bin/ec_darwin_amd64.gz      /var/www/html/clients/darwin/ec-amd64.gz
 COPY --from=ec /usr/local/bin/ec_darwin_arm64.gz      /var/www/html/clients/darwin/ec-arm64.gz
 COPY --from=ec /usr/local/bin/ec_linux_amd64.gz       /var/www/html/clients/linux/ec-amd64.gz
@@ -79,36 +108,6 @@ COPY --from=ec /usr/local/bin/ec_linux_arm64.gz       /var/www/html/clients/linu
 COPY --from=ec /usr/local/bin/ec_linux_ppc64le.gz     /var/www/html/clients/linux/ec-ppc64le.gz
 COPY --from=ec /usr/local/bin/ec_linux_s390x.gz       /var/www/html/clients/linux/ec-s390x.gz
 COPY --from=ec /usr/local/bin/ec_windows_amd64.exe.gz /var/www/html/clients/windows/ec-amd64.gz
-
-# Copy the fetch-tsa-certs binaries from the previous stages
-COPY --from=fetch_tsa_certs-arm64 /usr/local/bin/fetch_tsa_certs_darwin_arm64.gz  /var/www/html/clients/darwin/fetch-tsa-certs-arm64.gz
-COPY --from=fetch_tsa_certs-amd64 /usr/local/bin/fetch_tsa_certs_darwin_amd64.gz  /var/www/html/clients/darwin/fetch-tsa-certs-amd64.gz
-COPY --from=fetch_tsa_certs-amd64 /usr/local/bin/fetch_tsa_certs_linux.gz  /var/www/html/clients/linux/fetch-tsa-certs-amd64.gz
-COPY --from=fetch_tsa_certs-arm64 /usr/local/bin/fetch_tsa_certs_linux.gz  /var/www/html/clients/linux/fetch-tsa-certs-arm64.gz
-COPY --from=fetch_tsa_certs-ppc64le /usr/local/bin/fetch_tsa_certs_linux.gz /var/www/html/clients/linux/fetch-tsa-certs-ppc64le.gz
-COPY --from=fetch_tsa_certs-s390x /usr/local/bin/fetch_tsa_certs_linux.gz   /var/www/html/clients/linux/fetch-tsa-certs-s390x.gz
-COPY --from=fetch_tsa_certs-amd64 /usr/local/bin/fetch_tsa_certs_windows_amd64.exe.gz /var/www/html/clients/windows/fetch-tsa-certs-amd64.gz
-
-# Copy the trillian-createtree binaries from the previous stages
-COPY --from=trillian-createtree-arm64 /usr/local/bin/createtree-darwin-arm64.gz /var/www/html/clients/darwin/createtree-arm64.gz
-COPY --from=trillian-createtree-amd64 /usr/local/bin/createtree-darwin-amd64.gz /var/www/html/clients/darwin/createtree-amd64.gz
-COPY --from=trillian-createtree-amd64 /usr/local/bin/createtree.gz /var/www/html/clients/linux/createtree-amd64.gz
-COPY --from=trillian-createtree-arm64 /usr/local/bin/createtree.gz /var/www/html/clients/linux/createtree-arm64.gz
-COPY --from=trillian-createtree-ppc64le /usr/local/bin/createtree.gz /var/www/html/clients/linux/createtree-ppc64le.gz
-COPY --from=trillian-createtree-s390x /usr/local/bin/createtree.gz /var/www/html/clients/linux/createtree-s390x.gz
-COPY --from=trillian-createtree-amd64 /usr/local/bin/createtree-windows-amd64.exe.gz /var/www/html/clients/windows/createtree-amd64.gz
-
-# Copy the trillian-updatetree binaries from the previous stages
-COPY --from=trillian-updatetree-arm64 /usr/local/bin/updatetree-darwin-arm64.gz /var/www/html/clients/darwin/updatetree-arm64.gz
-COPY --from=trillian-updatetree-amd64 /usr/local/bin/updatetree-darwin-amd64.gz /var/www/html/clients/darwin/updatetree-amd64.gz
-COPY --from=trillian-updatetree-amd64 /usr/local/bin/updatetree.gz /var/www/html/clients/linux/updatetree-amd64.gz
-COPY --from=trillian-updatetree-arm64 /usr/local/bin/updatetree.gz /var/www/html/clients/linux/updatetree-arm64.gz
-COPY --from=trillian-updatetree-ppc64le /usr/local/bin/updatetree.gz /var/www/html/clients/linux/updatetree-ppc64le.gz
-COPY --from=trillian-updatetree-s390x /usr/local/bin/updatetree.gz /var/www/html/clients/linux/updatetree-s390x.gz
-COPY --from=trillian-updatetree-amd64 /usr/local/bin/updatetree-windows-amd64.exe.gz /var/www/html/clients/windows/updatetree-amd64.gz
-
-COPY --from=tuf-tool /usr/bin/tuftool /var/www/html/clients/linux/tuftool-amd64
-RUN gzip /var/www/html/clients/linux/tuftool-amd64
 
 COPY LICENSE /licenses/license.txt
 
