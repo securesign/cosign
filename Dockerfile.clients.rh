@@ -3,7 +3,7 @@ FROM quay.io/securesign/cli-cosign@sha256:ce13481894c8221aac0eb0558a940038ef4904
 FROM quay.io/securesign/gitsign@sha256:19bdf80850dd534dd73be69c97dc1c3dfc58871c11bef5b5f44e6e37c4c84c93 AS gitsign
 
 # Provides the Trusted Artifact Signer CLI binary, fetch-tsa-certs
-FROM quay.io/securesign/fetch-tsa-certs@sha256:3941ce6dadc616e3144b62f047e595fa4d14f5d6dd2b6a5ac72daea079d48e48 as fetch_tsa_certs
+FROM quay.io/securesign/fetch-tsa-certs@sha256:274a982e9fc4f67617cc1213acfc6f3cdecf11cb61eefb632299a7c13abf51e3 as fetch_tsa_certs
 
 # Provides the Trusted Artifact Signer CLI binaries, rekor-cli and ec
 FROM quay.io/securesign/rekor-cli@sha256:82d86b76b9557e4018e9eefcb6ee9731437f76ae1aac60d1b73849a1a82d157a as rekor
