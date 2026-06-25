@@ -1,53 +1,61 @@
-FROM --platform=linux/amd64   quay.io/securesign/cli-cosign@sha256:5fd5251973239b8902d9fd297c8636d1992deeec324ab91235e590ac714f9260 AS build-amd64
-FROM --platform=linux/arm64   quay.io/securesign/cli-cosign@sha256:6383853a3396f2b26acfe6352428574314c3200d90e5ce125d3cc3c6ee93f794 AS build-arm64
-FROM --platform=linux/ppc64le quay.io/securesign/cli-cosign@sha256:c77afc5fec6a203a1713e85a6beafe1e644190460d3d2ffe2c1104eeeeb967a0 AS build-ppc64le
-FROM --platform=linux/s390x   quay.io/securesign/cli-cosign@sha256:55c21b13da1b63a47660188848de7cc2b5e206eff24ff21c6fbb4aff3a6e0389 AS build-s390x
+FROM registry.redhat.io/ubi9/go-toolset:9.8-1781757851@sha256:b2c0898987b688a95f4d2f38abdfd929f45903948831783153019ab749495c72 AS build-cross-platform
+ENV APP_ROOT=/opt/app-root \
+    GOPATH=/opt/app-root
 
-FROM registry.redhat.io/ubi9/go-toolset:9.8-1781757851@sha256:1503a8227c00a1934e3c1a4a88e0be785786a2d9e2f62a9334e75ff2fadca2fe AS packager
+USER root
+WORKDIR $APP_ROOT/src
+ADD go.mod go.sum ./
+ADD ./ ./
+
+RUN git config --global --add safe.directory /opt/app-root/src && \
+    git update-index --assume-unchanged Dockerfile.cosign.rh && \
+    git update-index --assume-unchanged Dockerfile.cli-stack.rh && \
+    go mod vendor && \
+    make -f Build.mak cross-platform
+
+FROM --platform=linux/amd64   quay.io/securesign/cli-cosign@sha256:4ee9c9fb842bc28f994aa641053f9f61fe32bf5928741a63e8af1489ecbe19f3 AS build-amd64
+FROM --platform=linux/arm64   quay.io/securesign/cli-cosign@sha256:4ee9c9fb842bc28f994aa641053f9f61fe32bf5928741a63e8af1489ecbe19f3 AS build-arm64
+FROM --platform=linux/ppc64le quay.io/securesign/cli-cosign@sha256:4ee9c9fb842bc28f994aa641053f9f61fe32bf5928741a63e8af1489ecbe19f3 AS build-ppc64le
+FROM --platform=linux/s390x   quay.io/securesign/cli-cosign@sha256:4ee9c9fb842bc28f994aa641053f9f61fe32bf5928741a63e8af1489ecbe19f3 AS build-s390x
+
+FROM registry.redhat.io/ubi9/go-toolset:9.8-1781757851@sha256:b2c0898987b688a95f4d2f38abdfd929f45903948831783153019ab749495c72 AS packager
 USER root
 RUN mkdir -p /binaries
 
-# Native Linux binaries from each arch variant
-COPY --from=build-amd64 /usr/local/bin/cosign.gz /tmp/cosign.gz
-RUN gzip -d /tmp/cosign.gz && \
-    tar -czf /binaries/cosign_linux_amd64.tar.gz -C /tmp cosign && \
+# cosign: Native Linux binaries from each arch variant
+COPY --from=build-amd64 /usr/local/bin/cosign /tmp/cosign
+RUN tar -czf /binaries/cosign_linux_amd64.tar.gz -C /tmp cosign && \
     rm /tmp/cosign
 
-COPY --from=build-arm64 /usr/local/bin/cosign.gz /tmp/cosign.gz
-RUN gzip -d /tmp/cosign.gz && \
-    tar -czf /binaries/cosign_linux_arm64.tar.gz -C /tmp cosign && \
+COPY --from=build-arm64 /usr/local/bin/cosign /tmp/cosign
+RUN tar -czf /binaries/cosign_linux_arm64.tar.gz -C /tmp cosign && \
     rm /tmp/cosign
 
-COPY --from=build-ppc64le /usr/local/bin/cosign.gz /tmp/cosign.gz
-RUN gzip -d /tmp/cosign.gz && \
-    tar -czf /binaries/cosign_linux_ppc64le.tar.gz -C /tmp cosign && \
+COPY --from=build-ppc64le /usr/local/bin/cosign /tmp/cosign
+RUN tar -czf /binaries/cosign_linux_ppc64le.tar.gz -C /tmp cosign && \
     rm /tmp/cosign
 
-COPY --from=build-s390x /usr/local/bin/cosign.gz /tmp/cosign.gz
-RUN gzip -d /tmp/cosign.gz && \
-    tar -czf /binaries/cosign_linux_s390x.tar.gz -C /tmp cosign && \
+COPY --from=build-s390x /usr/local/bin/cosign /tmp/cosign
+RUN tar -czf /binaries/cosign_linux_s390x.tar.gz -C /tmp cosign && \
     rm /tmp/cosign
 
-# Darwin amd64
-COPY --from=build-amd64 /usr/local/bin/cosign-darwin-amd64.gz /tmp/cosign-darwin-amd64.gz
-RUN gzip -d /tmp/cosign-darwin-amd64.gz && \
-    tar -czf /binaries/cosign_darwin_amd64.tar.gz -C /tmp cosign-darwin-amd64 && \
-    rm /tmp/cosign-darwin-amd64
+# cosign: Cross-compiled binaries
+COPY --from=build-cross-platform /opt/app-root/src/cosign-darwin-amd64 /tmp/cosign
+RUN tar -czf /binaries/cosign_darwin_amd64.tar.gz -C /tmp cosign && \
+    rm /tmp/cosign
 
-# Darwin arm64
-COPY --from=build-amd64 /usr/local/bin/cosign-darwin-arm64.gz /tmp/cosign-darwin-arm64.gz
-RUN gzip -d /tmp/cosign-darwin-arm64.gz && \
-    tar -czf /binaries/cosign_darwin_arm64.tar.gz -C /tmp cosign-darwin-arm64 && \
-    rm /tmp/cosign-darwin-arm64
+COPY --from=build-cross-platform /opt/app-root/src/cosign-darwin-arm64 /tmp/cosign
+RUN tar -czf /binaries/cosign_darwin_arm64.tar.gz -C /tmp cosign && \
+    rm /tmp/cosign
 
-# Windows amd64
-COPY --from=build-amd64 /usr/local/bin/cosign-windows-amd64.exe.gz /tmp/cosign-windows-amd64.exe.gz
-RUN gzip -d /tmp/cosign-windows-amd64.exe.gz && \
-    tar -czf /binaries/cosign_windows_amd64.tar.gz -C /tmp cosign-windows-amd64.exe && \
-    rm /tmp/cosign-windows-amd64.exe
+COPY --from=build-cross-platform /opt/app-root/src/cosign-windows-amd64.exe /tmp/cosign.exe
+RUN tar -czf /binaries/cosign_windows_amd64.tar.gz -C /tmp cosign.exe && \
+    rm /tmp/cosign.exe
+
+RUN chmod -R a+rX /binaries
 
 # Final minimal image with all binaries
-FROM registry.redhat.io/ubi9/ubi-minimal@sha256:12db9874bd753eb98b1ab3d840e75de5d6842ac0604fbd68c012adefe97140be
+FROM registry.redhat.io/ubi9/ubi-micro:9.8@sha256:b498b3ea26111ab4b81d65139f2ebd2ef9a2abb7a4588b7fdcc54889f95e9caa
 
 LABEL description="Flat image containing cosign CLI binaries for all platforms and architectures"
 LABEL io.k8s.description="Flat image containing cosign CLI binaries for all platforms and architectures"
@@ -56,10 +64,9 @@ LABEL io.k8s.display-name="Cosign CLI stack image for Red Hat Trusted Artifact S
 LABEL io.openshift.tags="cosign trusted-artifact-signer cli-stack"
 LABEL summary="Provides all cosign CLI binaries as tar.gz archives for CDN distribution."
 LABEL com.redhat.component="cosign-cli-stack"
+LABEL name="rhtas/cosign-cli-stack"
 
 COPY --from=packager /binaries/ /binaries/
 COPY --from=build-amd64 /licenses/ /licenses/
-
-RUN chown -R root:0 /binaries && chmod -R g+r /binaries
 
 USER 65532:65532

@@ -19,6 +19,10 @@ LDFLAGS=-buildid= -X sigs.k8s.io/release-utils/version.gitVersion=$(GIT_VERSION)
         -X sigs.k8s.io/release-utils/version.buildDate=$(BUILD_DATE)
 FIPS_MODULE ?= latest
 
+.PHONY: cosign-linux
+cosign-linux: ## Build native Linux binary (FIPS, CGO)
+	env CGO_ENABLED=1 GOEXPERIMENT=strictfipsruntime go build -o cosign -buildvcs=false -trimpath -ldflags "$(LDFLAGS) -w -s" ./cmd/cosign
+
 .PHONY:
 cross-platform: cosign-darwin-arm64 cosign-darwin-amd64 cosign-windows-amd64 ## Build all distributable (cross-platform) binaries
 
