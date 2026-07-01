@@ -1,23 +1,23 @@
 # cosign
-FROM quay.io/securesign/cosign-cli-stack@sha256:9ec7f5be46646abd3d7e15cd28300e9912017f22db0ff594b2c9a913b6e94c5b AS cosign
+FROM quay.io/securesign/cosign-cli-stack@sha256:aaef0d11cd8b60c0ee56817182485a1cec0e95afd91ab86a3973801da51aed34 AS cosign
 
 # gitsign
-FROM quay.io/securesign/gitsign-cli-stack@sha256:1a62bcd96fa065b1de9d24c4b5b880de7e9ebf0d0741f01478c2cd0a7d414d4c AS gitsign
+FROM quay.io/securesign/gitsign-cli-stack@sha256:037ed85a65c9460b93ff62903b87ffe1da8afa53f3b2e4dafb1a699e50b9d426 AS gitsign
 
 # rekor-cli
-FROM quay.io/securesign/rekor-cli-stack@sha256:1111ebc514826e9959ccca38d6ac600bd477be145bbe867b94336762c04b5513 AS rekor
+FROM quay.io/securesign/rekor-cli-stack@sha256:72acb43b82fafcb1413d21ff733515ced9bd7e860eef19b0baf6e39fef2aba75 AS rekor
 
 # fetch-tsa-certs
-FROM quay.io/securesign/fetch-tsa-certs-cli-stack@sha256:4736b15a08bdfcaad07560615c83fc13f8a018b35d26782b69ff0c5138323224 AS fetch-tsa-certs
+FROM quay.io/securesign/fetch-tsa-certs-cli-stack@sha256:fd4c724306e09de11be49014425a64222d15f4aeb191fe886e9b139f00a8554f AS fetch-tsa-certs
 
 # ec
 FROM registry.redhat.io/rhtas/ec-rhel9:0.8-1779828649@sha256:db93a96485a9d2ec1843dbc8b18bdf427853b66b2bf05350db1852a693a8ccb6 AS ec
 
 # trillian-createtree and trillian-updatetree
-FROM quay.io/securesign/trillian-cli-stack@sha256:9bc0535e5c85aa90a5e3bb1d80e7cac63df43def5a47a7538e301a524dfd5612 AS trillian
+FROM quay.io/securesign/trillian-cli-stack@sha256:8620e663b8f3d428c8a19dc1b60fbf51f104dbb5264e888d0afaa7321c9b84cf AS trillian
 
 # tuftool
-FROM quay.io/securesign/tuftool-cli-stack@sha256:20b48a8bccbc3995b7c654c7404472e111973b051aab79e88bf216f7f719c5cc AS tuftool
+FROM quay.io/securesign/tuftool-cli-stack@sha256:58d9608ccc62bb9dbe43b1dc62f3e8dbea4b4790f34711a2b3c366791362fc4a AS tuftool
 
 FROM registry.redhat.io/ubi9/httpd-24@sha256:68a91ff691092f455fea682330c499588747231c16516cd4f35aff821e6847f2
 ENV APP_ROOT=/opt/app-root
