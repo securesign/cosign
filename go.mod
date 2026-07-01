@@ -1,6 +1,6 @@
 module github.com/sigstore/cosign/v3
 
-go 1.25.7
+go 1.26.3
 
 require (
 	cuelang.org/go v0.16.0
