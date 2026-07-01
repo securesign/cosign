@@ -17,6 +17,7 @@ package github
 
 import (
 	"context"
+	"crypto/fips140"
 	"encoding/base64"
 	"errors"
 	"fmt"
@@ -44,6 +45,14 @@ func New() *Gh {
 }
 
 func (g *Gh) PutSecret(ctx context.Context, ref string, pf cosign.PassFunc) error {
+	// RHTAS FIPS - DO NOT REMOVE
+	// ========================================
+	if fips140.Enabled() {
+		return fmt.Errorf("GitHub Actions secret encryption is not available in FIPS 140-3 mode: " +
+			"it requires NaCl box (Curve25519/XSalsa20/Poly1305) which are not FIPS-approved algorithms")
+	}
+	// ========================================
+
 	var httpClient *http.Client
 	if token, ok := env.LookupEnv(env.VariableGitHubToken); ok {
 		ts := oauth2.StaticTokenSource(

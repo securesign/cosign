@@ -19,6 +19,7 @@ import (
 	"context"
 	"crypto"
 	"crypto/ecdsa"
+	"crypto/fips140"
 	"crypto/sha256"
 	"crypto/x509"
 	"encoding/asn1"
@@ -953,9 +954,20 @@ func keyBytes(sig oci.Signature, co *CheckOpts) ([]byte, error) {
 		}
 	}
 	if cert != nil && co.SigVerifier != nil {
-		if err := cryptoutils.EqualKeys(cert.PublicKey, pub); err != nil {
+		// RHTAS FIPS - DO NOT REMOVE
+		// ========================================
+		// EqualKeys may invoke SHA-1 via cryptoutils.SKID on the error path
+		// to generate a diagnostic Subject Key Identifier. This is a
+		// non-cryptographic use (RFC 5280 identifier only), so we suppress
+		// FIPS enforcement rather than blocking the operation.
+		var equalKeysErr error
+		fips140.WithoutEnforcement(func() {
+			equalKeysErr = cryptoutils.EqualKeys(cert.PublicKey, pub)
+		})
+		if equalKeysErr != nil {
 			return nil, fmt.Errorf("both public key and certificate were provided but did not match")
 		}
+		// ========================================
 	}
 
 	if cert != nil {

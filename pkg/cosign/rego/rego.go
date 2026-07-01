@@ -18,6 +18,7 @@ package rego
 import (
 	"bytes"
 	"context"
+	"crypto/fips140"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -44,14 +45,37 @@ type CosignRuleResult struct {
 	Result  bool   `json:"result,omitempty"`
 }
 
+// RHTAS FIPS - DO NOT REMOVE
+// ========================================
+func fipsRegoOpts() []func(*rego.Rego) {
+	if !fips140.Enabled() {
+		return nil
+	}
+	return []func(*rego.Rego){
+		rego.UnsafeBuiltins(map[string]struct{}{
+			"crypto.md5":       {},
+			"crypto.sha1":      {},
+			"crypto.hmac.md5":  {},
+			"crypto.hmac.sha1": {},
+		}),
+	}
+}
+
+// ========================================
+
 func ValidateJSON(jsonBody []byte, entrypoints []string) []error {
 	ctx := context.Background()
 
-	r := rego.New(
+	// RHTAS FIPS - DO NOT REMOVE
+	// ========================================
+	opts := []func(*rego.Rego){ //nolint:prealloc
 		rego.Query(QUERY),
 		rego.Load(entrypoints, nil),
 		rego.SetRegoVersion(ast.RegoV0),
-	)
+	}
+	opts = append(opts, fipsRegoOpts()...)
+	// ========================================
+	r := rego.New(opts...)
 
 	query, err := r.PrepareForEval(ctx)
 	if err != nil {
@@ -98,11 +122,16 @@ func ValidateJSONWithModuleInput(jsonBody []byte, moduleInput string) (warnings 
 	query := fmt.Sprintf("%s = data.%s.%s", CosignEvaluationRule, CosignRegoPackageName, CosignEvaluationRule)
 	module := fmt.Sprintf("%s.rego", CosignRegoPackageName)
 
-	r := rego.New(
+	// RHTAS FIPS - DO NOT REMOVE
+	// ========================================
+	opts := []func(*rego.Rego){ //nolint:prealloc
 		rego.Query(query),
 		rego.Module(module, moduleInput),
 		rego.SetRegoVersion(ast.RegoV0),
-	)
+	}
+	opts = append(opts, fipsRegoOpts()...)
+	// ========================================
+	r := rego.New(opts...)
 
 	evalQuery, err := r.PrepareForEval(ctx)
 	if err != nil {

@@ -17,8 +17,10 @@ package signature
 import (
 	"context"
 	"crypto"
+	"crypto/fips140"
 	"errors"
 	"fmt"
+	"os"
 	"strings"
 
 	"github.com/sigstore/cosign/v3/pkg/blob"
@@ -38,9 +40,31 @@ func LoadPublicKey(ctx context.Context, keyRef string) (verifier signature.Verif
 	return VerifierForKeyRef(ctx, keyRef, crypto.SHA256)
 }
 
+// RHTAS FIPS - DO NOT REMOVE
+// ========================================
+func checkFIPSKMSRef(keyRef string) error {
+	if fips140.Enabled() && strings.HasPrefix(keyRef, "azurekms://") {
+		if os.Getenv("AZURE_CLIENT_CERTIFICATE_PATH") != "" { //nolint:forbidigo
+			return fmt.Errorf("azure KMS with certificate authentication (AZURE_CLIENT_CERTIFICATE_PATH) is not available in FIPS 140-3 mode: " +
+				"PKCS#12 certificate parsing uses non-FIPS-approved algorithms (SHA-1, 3DES), " +
+				"use managed identity, client secret, or federated OIDC authentication instead")
+		}
+	}
+	return nil
+}
+
+// ========================================
+
 // VerifierForKeyRef parses the given keyRef, loads the key and returns an appropriate
 // verifier using the provided hash algorithm
 func VerifierForKeyRef(ctx context.Context, keyRef string, hashAlgorithm crypto.Hash) (verifier signature.Verifier, err error) {
+	// RHTAS FIPS - DO NOT REMOVE
+	// ========================================
+	if err := checkFIPSKMSRef(keyRef); err != nil {
+		return nil, err
+	}
+	// ========================================
+
 	// The key could be plaintext, in a file, at a URL, or in KMS.
 	var perr *kms.ProviderNotFoundError
 	kmsKey, err := kms.Get(ctx, keyRef, hashAlgorithm)
@@ -101,6 +125,13 @@ func SignerFromKeyRef(ctx context.Context, keyRef string, pf cosign.PassFunc) (s
 }
 
 func SignerVerifierFromKeyRef(ctx context.Context, keyRef string, pf cosign.PassFunc, defaultLoadOptions *[]signature.LoadOption) (signature.SignerVerifier, error) {
+	// RHTAS FIPS - DO NOT REMOVE
+	// ========================================
+	if err := checkFIPSKMSRef(keyRef); err != nil {
+		return nil, err
+	}
+	// ========================================
+
 	switch {
 	case strings.HasPrefix(keyRef, pkcs11key.ReferenceScheme):
 		pkcs11UriConfig := pkcs11key.NewPkcs11UriConfig()
