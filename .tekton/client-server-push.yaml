@@ -29,6 +29,8 @@ spec:
     value: quay.io/securesign/client-server:{{revision}}
   - name: dockerfile
     value: Dockerfile.clients.rh
+  - name: ALLOW_CROSS_PLATFORM_IMAGES
+    value: "true"
   - name: hermetic
     value: "true"
   - name: build-source-image

@@ -159,7 +159,7 @@ func TestVerifyBlob(t *testing.T) {
 	unexpiredCertPem, _ := cryptoutils.MarshalCertificateToPEM(unexpiredLeafCert)
 
 	expiredLeafCert, _ := test.GenerateLeafCertWithExpiration(identity, issuer,
-		time.Now().Add(-time.Hour), leafPriv, rootCert, rootPriv)
+		time.Now().Add(-10*time.Minute), leafPriv, rootCert, rootPriv)
 	expiredLeafPem, _ := cryptoutils.MarshalCertificateToPEM(expiredLeafCert)
 
 	unrelatedPriv, err := ecdsa.GenerateKey(elliptic.P256(), rand.Reader)
@@ -206,7 +206,7 @@ func TestVerifyBlob(t *testing.T) {
 	unrelatedSignature := makeSignature(blobBytes, unrelatedSigner)
 
 	// initialize timestamp for expired and unexpired certificates
-	expiredTSAOpts := mock.TSAClientOptions{Time: time.Now().Add(-time.Hour), Message: []byte(blobSignature)}
+	expiredTSAOpts := mock.TSAClientOptions{Time: time.Now().Add(-1 * time.Minute), Message: []byte(blobSignature)}
 	unexpiredTSAOpts := mock.TSAClientOptions{Time: time.Now(), Message: []byte(blobSignature)}
 	tsaClient, err := mock.NewTSAClient(expiredTSAOpts)
 	if err != nil {
@@ -586,7 +586,7 @@ func TestVerifyBlob(t *testing.T) {
 	for _, tt := range tts {
 		t.Run(tt.name, func(t *testing.T) {
 			tt := tt
-			entries := make([]models.LogEntry, 0)
+			entries := make([]models.LogEntry, 0, len(tt.rekorEntry))
 			for _, entry := range tt.rekorEntry {
 				entries = append(entries, *entry)
 			}
@@ -1468,7 +1468,7 @@ func (s *keylessStack) genLeafCert(t *testing.T, subject string, issuer string) 
 }
 
 func (s *keylessStack) genChainFile(t *testing.T) {
-	var chain []byte
+	chain := make([]byte, 0, len(s.subPemCert)+len(s.rootPemCert))
 	chain = append(chain, s.subPemCert...)
 	chain = append(chain, s.rootPemCert...)
 	tmpChainFile, err := os.CreateTemp(s.td, "cosign_fulcio_chain_*.cert")

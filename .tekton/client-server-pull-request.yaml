@@ -31,6 +31,8 @@ spec:
     value: 5d
   - name: dockerfile
     value: Dockerfile.clients.rh
+  - name: ALLOW_CROSS_PLATFORM_IMAGES
+    value: "true"
   - name: hermetic
     value: "true"
   - name: build-source-image
