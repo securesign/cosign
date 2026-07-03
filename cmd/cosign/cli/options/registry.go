@@ -16,6 +16,7 @@ package options
 
 import (
 	"context"
+	"crypto/fips140"
 	"crypto/tls"
 	"crypto/x509"
 	"errors"
@@ -135,14 +136,26 @@ func (o *RegistryOptions) GetRegistryClientOpts(ctx context.Context) []remote.Op
 	case o.Keychain != nil:
 		opts = append(opts, remote.WithAuthFromKeychain(o.Keychain))
 	case o.KubernetesKeychain:
-		kc := authn.NewMultiKeychain(
+		// RHTAS FIPS - DO NOT REMOVE
+		// ========================================
+		keychains := []authn.Keychain{
 			authn.DefaultKeychain,
 			google.Keychain,
 			authn.NewKeychainFromHelper(ecr.NewECRHelper(ecr.WithLogger(io.Discard))),
-			authn.NewKeychainFromHelper(credhelper.NewACRCredentialsHelper()),
-			authn.NewKeychainFromHelper(alibabaacr.NewACRHelper().WithLoggerOut(io.Discard)),
 			github.Keychain,
-		)
+		}
+		if !fips140.Enabled() {
+			keychains = append(keychains,
+				authn.NewKeychainFromHelper(credhelper.NewACRCredentialsHelper()),
+				authn.NewKeychainFromHelper(alibabaacr.NewACRHelper().WithLoggerOut(io.Discard)),
+			)
+		} else {
+			fmt.Fprintln(os.Stderr, "WARNING: FIPS 140-3 mode enabled: Azure ACR and Alibaba ACR credential helpers "+
+				"are disabled because they use non-FIPS-approved algorithms (MD5, SHA-1). "+
+				"Use --registry-username/--registry-password for these registries instead.")
+		}
+		kc := authn.NewMultiKeychain(keychains...)
+		// ========================================
 		opts = append(opts, remote.WithAuthFromKeychain(kc))
 	case o.AuthConfig.Username != "" && o.AuthConfig.Password != "":
 		opts = append(opts, remote.WithAuth(&authn.Basic{Username: o.AuthConfig.Username, Password: o.AuthConfig.Password}))

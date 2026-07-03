@@ -19,6 +19,7 @@ import (
 	"crypto"
 	"crypto/ecdsa"
 	"crypto/ed25519"
+	"crypto/fips140"
 	"crypto/rand"
 	"crypto/rsa"
 	_ "crypto/sha256" // for `crypto.SHA256`
@@ -197,6 +198,14 @@ func ImportKeyPair(keyPath string, pf PassFunc) (*KeysBytes, error) {
 }
 
 func marshalKeyPair(ptype string, keypair Keys, pf PassFunc) (key *KeysBytes, err error) {
+	// RHTAS FIPS - DO NOT REMOVE
+	// ========================================
+	if fips140.Enabled() {
+		return nil, fmt.Errorf("password-protected private keys are not supported in FIPS 140-3 mode: " +
+			"key encryption uses scrypt and NaCl SecretBox which are not FIPS-approved algorithms")
+	}
+	// ========================================
+
 	x509Encoded, err := x509.MarshalPKCS8PrivateKey(keypair.private)
 	if err != nil {
 		return nil, fmt.Errorf("x509 encoding private key: %w", err)
@@ -286,6 +295,14 @@ func LoadPrivateKey(key []byte, pass []byte, defaultLoadOptions *[]signature.Loa
 	if p.Type != CosignPrivateKeyPemType && p.Type != SigstorePrivateKeyPemType {
 		return nil, fmt.Errorf("unsupported pem type: %s", p.Type)
 	}
+
+	// RHTAS FIPS - DO NOT REMOVE
+	// ========================================
+	if fips140.Enabled() {
+		return nil, fmt.Errorf("password-protected private keys are not supported in FIPS 140-3 mode: " +
+			"key decryption uses scrypt and NaCl SecretBox which are not FIPS-approved algorithms")
+	}
+	// ========================================
 
 	x509Encoded, err := encrypted.Decrypt(p.Bytes, pass)
 	if err != nil {

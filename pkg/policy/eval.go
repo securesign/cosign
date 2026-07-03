@@ -17,7 +17,9 @@ package policy
 
 import (
 	"context"
+	"crypto/fips140"
 	"fmt"
+	"strings"
 
 	"cuelang.org/go/cue/cuecontext"
 	"github.com/sigstore/cosign/v3/pkg/cosign/rego"
@@ -56,6 +58,15 @@ func EvaluatePolicyAgainstJSON(ctx context.Context, name, policyType string, pol
 
 // evaluateCue evaluates a cue policy `evaluator` against `attestation`
 func evaluateCue(_ context.Context, attestation []byte, evaluator string) error {
+	// RHTAS FIPS - DO NOT REMOVE
+	// ========================================
+	if fips140.Enabled() {
+		if strings.Contains(evaluator, `"crypto/md5"`) || strings.Contains(evaluator, `"crypto/sha1"`) {
+			return fmt.Errorf("CUE policy imports crypto/md5 or crypto/sha1 which are not available in FIPS 140-3 mode")
+		}
+	}
+	// ========================================
+
 	cueCtx := cuecontext.New()
 	cueEvaluator := cueCtx.CompileString(evaluator)
 	if cueEvaluator.Err() != nil {

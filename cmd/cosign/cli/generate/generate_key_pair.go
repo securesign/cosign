@@ -18,6 +18,7 @@ package generate
 import (
 	"context"
 	"crypto"
+	"crypto/fips140"
 	"errors"
 	"fmt"
 	"io"
@@ -48,6 +49,15 @@ func GenerateKeyPairCmd(ctx context.Context, kmsVal string, outputKeyPrefixVal s
 	publicKeyFileName := outputKeyPrefixVal + ".pub"
 
 	if kmsVal != "" {
+		// RHTAS FIPS - DO NOT REMOVE
+		// ========================================
+		if fips140.Enabled() && strings.HasPrefix(kmsVal, "azurekms://") && os.Getenv("AZURE_CLIENT_CERTIFICATE_PATH") != "" { //nolint:forbidigo
+			return fmt.Errorf("azure KMS with certificate authentication (AZURE_CLIENT_CERTIFICATE_PATH) is not available in FIPS 140-3 mode: " +
+				"PKCS#12 certificate parsing uses non-FIPS-approved algorithms (SHA-1, 3DES), " +
+				"use managed identity, client secret, or federated OIDC authentication instead")
+		}
+		// ========================================
+
 		k, err := kms.Get(ctx, kmsVal, crypto.SHA256)
 		if err != nil {
 			return err

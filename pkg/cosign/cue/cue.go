@@ -16,12 +16,44 @@
 package cue
 
 import (
+	"crypto/fips140"
+	"fmt"
+	"os"
+	"strings"
+
 	"cuelang.org/go/cue/cuecontext"
 	"cuelang.org/go/cue/load"
 	cuejson "cuelang.org/go/encoding/json"
 )
 
+// RHTAS FIPS - DO NOT REMOVE
+// ========================================
+func checkCUEFIPSImports(entrypoints []string) error {
+	for _, path := range entrypoints {
+		data, err := os.ReadFile(path) // #nosec G304
+		if err != nil {
+			return fmt.Errorf("cannot read CUE policy %q for FIPS validation: %w", path, err)
+		}
+		src := string(data)
+		if strings.Contains(src, `"crypto/md5"`) || strings.Contains(src, `"crypto/sha1"`) {
+			return fmt.Errorf("CUE policy %q imports crypto/md5 or crypto/sha1 which are not available in FIPS 140-3 mode", path)
+		}
+	}
+	return nil
+}
+
+// ========================================
+
 func ValidateJSON(jsonBody []byte, entrypoints []string) error {
+	// RHTAS FIPS - DO NOT REMOVE
+	// ========================================
+	if fips140.Enabled() {
+		if err := checkCUEFIPSImports(entrypoints); err != nil {
+			return err
+		}
+	}
+	// ========================================
+
 	ctx := cuecontext.New()
 	bis := load.Instances(entrypoints, nil)
 

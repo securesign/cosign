@@ -17,6 +17,7 @@ package signcommon
 import (
 	"bytes"
 	"context"
+	"crypto/fips140"
 	"crypto/x509"
 	"encoding/json"
 	"encoding/pem"
@@ -305,10 +306,21 @@ func signerFromKeyRef(ctx context.Context, certPath, certChainPath, keyRef strin
 				pkcs11Key.Close()
 				return nil, err
 			}
-			if cryptoutils.EqualKeys(pubKey, certFromPKCS11.PublicKey) != nil {
+			// RHTAS FIPS - DO NOT REMOVE
+			// ========================================
+			// EqualKeys may invoke SHA-1 via cryptoutils.SKID on the error path
+			// to generate a diagnostic Subject Key Identifier. This is a
+			// non-cryptographic use (RFC 5280 identifier only), so we suppress
+			// FIPS enforcement rather than blocking the operation.
+			var equalKeysErr error
+			fips140.WithoutEnforcement(func() {
+				equalKeysErr = cryptoutils.EqualKeys(pubKey, certFromPKCS11.PublicKey)
+			})
+			if equalKeysErr != nil {
 				pkcs11Key.Close()
 				return nil, errors.New("pkcs11 key and certificate do not match")
 			}
+			// ========================================
 			leafCert = certFromPKCS11
 			certSigner.Cert = pemBytes
 		}
@@ -337,9 +349,20 @@ func signerFromKeyRef(ctx context.Context, certPath, certChainPath, keyRef strin
 		if err != nil {
 			return nil, fmt.Errorf("get public key: %w", err)
 		}
-		if cryptoutils.EqualKeys(pk, parsedCert.PublicKey) != nil {
+		// RHTAS FIPS - DO NOT REMOVE
+		// ========================================
+		// EqualKeys may invoke SHA-1 via cryptoutils.SKID on the error path
+		// to generate a diagnostic Subject Key Identifier. This is a
+		// non-cryptographic use (RFC 5280 identifier only), so we suppress
+		// FIPS enforcement rather than blocking the operation.
+		var equalKeysErr error
+		fips140.WithoutEnforcement(func() {
+			equalKeysErr = cryptoutils.EqualKeys(pk, parsedCert.PublicKey)
+		})
+		if equalKeysErr != nil {
 			return nil, errors.New("public key in certificate does not match the provided public key")
 		}
+		// ========================================
 		pemBytes, err := cryptoutils.MarshalCertificateToPEM(parsedCert)
 		if err != nil {
 			return nil, fmt.Errorf("marshaling certificate to PEM: %w", err)

@@ -6,6 +6,7 @@ COPY . .
 USER root
 RUN git config --global --add safe.directory /cosign && \
     git update-index --assume-unchanged Dockerfile.cosign.rh && \
+    go mod edit -godebug=fips140=auto && \
     go mod vendor && \
     make -f Build.mak cosign-linux && \
     git update-index --no-assume-unchanged Dockerfile.cosign.rh
