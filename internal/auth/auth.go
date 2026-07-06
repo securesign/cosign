@@ -16,10 +16,12 @@ package auth
 
 import (
 	"context"
+	"crypto/fips140"
 	"fmt"
 	"os"
 	"time"
 
+	"github.com/coreos/go-oidc/v3/oidc"
 	"github.com/go-jose/go-jose/v4"
 	"github.com/go-jose/go-jose/v4/jwt"
 	"github.com/sigstore/cosign/v3/cmd/cosign/cli/sign/privacy"
@@ -27,6 +29,7 @@ import (
 	"github.com/sigstore/cosign/v3/pkg/providers"
 	"github.com/sigstore/sigstore-go/pkg/root"
 	"github.com/sigstore/sigstore/pkg/oauthflow"
+	"golang.org/x/oauth2"
 	"golang.org/x/term"
 )
 
@@ -153,7 +156,38 @@ func AuthenticateCaller(flow, idToken, oidcIssuer, oidcClientID, oidcClientSecre
 		return "", "", fmt.Errorf("unsupported oauth flow: %s", flow)
 	}
 
-	tok, err := oauthflow.OIDConnect(oidcIssuer, oidcClientID, oidcClientSecret, oidcRedirectURL, tokenGetter)
+	// RHTAS FIPS - DO NOT REMOVE
+	// ========================================
+	// go-jose computes sha1.Sum during JWK parsing (x5t thumbprint) which is
+	// non-cryptographic but would panic under fips140=only.
+	// Same pattern as securesign/gitsign#369.
+	var tok *oauthflow.OIDCIDToken
+	var err error
+	if fips140.Enabled() {
+		if sg, ok := tokenGetter.(*oauthflow.StaticTokenGetter); ok {
+			tok, err = sg.GetIDToken(nil, oauth2.Config{})
+		} else {
+			var provider *oidc.Provider
+			fips140.WithoutEnforcement(func() {
+				provider, err = oidc.NewProvider(context.Background(), oidcIssuer)
+			})
+			if err == nil {
+				config := oauth2.Config{
+					ClientID:     oidcClientID,
+					ClientSecret: oidcClientSecret,
+					Endpoint:     provider.Endpoint(),
+					Scopes:       []string{oidc.ScopeOpenID, "email"},
+					RedirectURL:  oidcRedirectURL,
+				}
+				fips140.WithoutEnforcement(func() {
+					tok, err = tokenGetter.GetIDToken(provider, config)
+				})
+			}
+		}
+	} else {
+		tok, err = oauthflow.OIDConnect(oidcIssuer, oidcClientID, oidcClientSecret, oidcRedirectURL, tokenGetter)
+	}
+	// ========================================
 	if err != nil {
 		return "", "", err
 	}
