@@ -63,5 +63,4 @@ func (o *SigningConfigCreateOptions) AddFlags(cmd *cobra.Command) {
 	cmd.Flags().StringVar(&o.Out, "out", "", "path to output signing config")
 
 	cmd.MarkFlagsMutuallyExclusive("base-config", "with-default-services")
-	cmd.MarkFlagsMutuallyExclusive("base-config", "with-default-rekor-v2")
 }
