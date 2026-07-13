@@ -1,4 +1,4 @@
-FROM registry.redhat.io/ubi9/go-toolset:9.8@sha256:355b23fe885cf565c9313a7e98db742df0aec21456244e808942c56489594251 AS build-cross-platform
+FROM registry.redhat.io/ubi9/go-toolset:9.8-1783679445@sha256:ffc84dd3e27836987c95f9a33485c3aac784571a7ee9d13db51a690e5c27e30e AS build-cross-platform
 ENV APP_ROOT=/opt/app-root \
     GOPATH=/opt/app-root
 
@@ -18,7 +18,7 @@ FROM --platform=linux/arm64   quay.io/securesign/cli-cosign@sha256:f7ebd95afa252
 FROM --platform=linux/ppc64le quay.io/securesign/cli-cosign@sha256:76326f72e8a350b69c284db4d03ab632f2c137c6d9ae3808cedd51f1c98a1674 AS build-ppc64le
 FROM --platform=linux/s390x   quay.io/securesign/cli-cosign@sha256:1b3078cb111c663a340668bf7c5148cb3e9fea2f0809a33b5ce247c22b462ca6 AS build-s390x
 
-FROM registry.redhat.io/ubi9/go-toolset:9.8@sha256:355b23fe885cf565c9313a7e98db742df0aec21456244e808942c56489594251 AS packager
+FROM registry.redhat.io/ubi9/go-toolset:9.8-1783679445@sha256:ffc84dd3e27836987c95f9a33485c3aac784571a7ee9d13db51a690e5c27e30e AS packager
 USER root
 RUN mkdir -p /binaries
 
@@ -55,7 +55,7 @@ RUN tar -czf /binaries/cosign_windows_amd64.tar.gz -C /tmp cosign.exe && \
 RUN chmod -R a+rX /binaries
 
 # Final minimal image with all binaries
-FROM registry.redhat.io/ubi9/ubi-micro:9.8@sha256:b498b3ea26111ab4b81d65139f2ebd2ef9a2abb7a4588b7fdcc54889f95e9caa
+FROM registry.redhat.io/ubi9/ubi-micro:9.8-1782840931@sha256:35de56a9413112f1474e392ebc35e0cf6f0fb484c8e8877bbae59b513694b41f
 
 LABEL description="Flat image containing cosign CLI binaries for all platforms and architectures"
 LABEL io.k8s.description="Flat image containing cosign CLI binaries for all platforms and architectures"
