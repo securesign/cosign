@@ -102,7 +102,10 @@ func loadKey(keyPath string, pf cosign.PassFunc, defaultLoadOptions *[]signature
 		return nil, err
 	}
 	pass := []byte{}
-	if pf != nil {
+	// RHTAS FIPS - DO NOT REMOVE
+	// ========================================
+	if pf != nil && !fips140.Enabled() {
+		// ========================================
 		pass, err = pf(false)
 		if err != nil {
 			return nil, err

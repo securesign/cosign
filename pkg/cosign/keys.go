@@ -198,44 +198,45 @@ func ImportKeyPair(keyPath string, pf PassFunc) (*KeysBytes, error) {
 }
 
 func marshalKeyPair(ptype string, keypair Keys, pf PassFunc) (key *KeysBytes, err error) {
-	// RHTAS FIPS - DO NOT REMOVE
-	// ========================================
-	if fips140.Enabled() {
-		return nil, fmt.Errorf("password-protected private keys are not supported in FIPS 140-3 mode: " +
-			"key encryption uses scrypt and NaCl SecretBox which are not FIPS-approved algorithms")
-	}
-	// ========================================
-
 	x509Encoded, err := x509.MarshalPKCS8PrivateKey(keypair.private)
 	if err != nil {
 		return nil, fmt.Errorf("x509 encoding private key: %w", err)
 	}
 
+	// RHTAS FIPS - DO NOT REMOVE
+	// ========================================
+	var privBytes []byte
 	password := []byte{}
-	if pf != nil {
-		password, err = pf(true)
+	if fips140.Enabled() {
+		privBytes = pem.EncodeToMemory(&pem.Block{
+			Bytes: x509Encoded,
+			Type:  PrivateKeyPemType,
+		})
+	} else {
+		if pf != nil {
+			password, err = pf(true)
+			if err != nil {
+				return nil, err
+			}
+		}
+
+		encBytes, err := encrypted.Encrypt(x509Encoded, password)
 		if err != nil {
 			return nil, err
 		}
+
+		// default to SIGSTORE, but keep support of COSIGN
+		if ptype != CosignPrivateKeyPemType {
+			ptype = SigstorePrivateKeyPemType
+		}
+
+		privBytes = pem.EncodeToMemory(&pem.Block{
+			Bytes: encBytes,
+			Type:  ptype,
+		})
 	}
+	// ========================================
 
-	encBytes, err := encrypted.Encrypt(x509Encoded, password)
-	if err != nil {
-		return nil, err
-	}
-
-	// default to SIGSTORE, but keep support of COSIGN
-	if ptype != CosignPrivateKeyPemType {
-		ptype = SigstorePrivateKeyPemType
-	}
-
-	// store in PEM format
-	privBytes := pem.EncodeToMemory(&pem.Block{
-		Bytes: encBytes,
-		Type:  ptype,
-	})
-
-	// Now do the public key
 	pubBytes, err := cryptoutils.MarshalPublicKeyToPEM(keypair.public)
 	if err != nil {
 		return nil, err
@@ -287,27 +288,35 @@ func PemToECDSAKey(pemBytes []byte) (*ecdsa.PublicKey, error) {
 // LoadPrivateKey loads a cosign PEM private key encrypted with the given passphrase,
 // and returns a SignerVerifier instance. The private key must be in the PKCS #8 format.
 func LoadPrivateKey(key []byte, pass []byte, defaultLoadOptions *[]signature.LoadOption) (signature.SignerVerifier, error) {
-	// Decrypt first
 	p, _ := pem.Decode(key)
 	if p == nil {
 		return nil, errors.New("invalid pem block")
 	}
-	if p.Type != CosignPrivateKeyPemType && p.Type != SigstorePrivateKeyPemType {
-		return nil, fmt.Errorf("unsupported pem type: %s", p.Type)
-	}
 
 	// RHTAS FIPS - DO NOT REMOVE
 	// ========================================
-	if fips140.Enabled() {
-		return nil, fmt.Errorf("password-protected private keys are not supported in FIPS 140-3 mode: " +
-			"key decryption uses scrypt and NaCl SecretBox which are not FIPS-approved algorithms")
+	var x509Encoded []byte
+	switch p.Type {
+	case PrivateKeyPemType:
+		if !fips140.Enabled() {
+			return nil, fmt.Errorf("unsupported pem type: %s (unencrypted keys are only supported in FIPS 140-3 mode)", p.Type)
+		}
+		x509Encoded = p.Bytes
+	case CosignPrivateKeyPemType, SigstorePrivateKeyPemType:
+		if fips140.Enabled() {
+			return nil, fmt.Errorf("password-protected private keys are not supported in FIPS 140-3 mode: " +
+				"key decryption uses scrypt and NaCl SecretBox which are not FIPS-approved algorithms")
+		}
+		var err error
+		x509Encoded, err = encrypted.Decrypt(p.Bytes, pass)
+		if err != nil {
+			return nil, fmt.Errorf("decrypt: %w", err)
+		}
+	default:
+		return nil, fmt.Errorf("unsupported pem type: %s", p.Type)
 	}
 	// ========================================
 
-	x509Encoded, err := encrypted.Decrypt(p.Bytes, pass)
-	if err != nil {
-		return nil, fmt.Errorf("decrypt: %w", err)
-	}
 	pk, err := x509.ParsePKCS8PrivateKey(x509Encoded)
 	if err != nil {
 		return nil, fmt.Errorf("parsing private key: %w", err)
