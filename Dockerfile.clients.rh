@@ -1,5 +1,5 @@
 # cosign
-FROM quay.io/securesign/cosign-cli-stack@sha256:074ec2c606c83b0d606b8403fb81d0597e0a5e0e30532a0d1c4e7a067c7979d4 AS cosign
+FROM quay.io/securesign/cosign-cli-stack@sha256:4a83caf61726b6a187367492c76cae11a8b63764326025b1eed1811aec18ec24 AS cosign
 
 # gitsign
 FROM quay.io/securesign/gitsign-cli-stack@sha256:9d8a55e3fe273360f33460d76a61b38b47bffb5ba1cb8cbfb256a446797fafc8 AS gitsign
