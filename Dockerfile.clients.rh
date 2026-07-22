@@ -19,6 +19,9 @@ FROM quay.io/securesign/trillian-cli-stack@sha256:ea127fb00bd50a39b89512900e7d74
 # tuftool
 FROM quay.io/securesign/tuftool-cli-stack@sha256:722504fc7f8fa117a9fc8acebabafd6e7f3647921b62780daf3603d471ccd72c AS tuftool
 
+# tufcli
+FROM quay.io/securesign/tufcli-cli-stack@sha256:0205822de702e544c249a01f863994a62f81599288c0c1d82b00b257daebec34 AS tufcli
+
 FROM registry.redhat.io/ubi9/httpd-24@sha256:b660a5ca52c587e459969d34c7dafaa989159da3c7dd1828d9c7159915974163
 
 ENV APP_ROOT=/opt/app-root
@@ -35,6 +38,7 @@ COPY --from=rekor /binaries/ /tmp/rekor/
 COPY --from=fetch-tsa-certs /binaries/ /tmp/fetch-tsa-certs/
 COPY --from=trillian /binaries/ /tmp/trillian/
 COPY --from=tuftool /binaries/ /tmp/tuftool/
+COPY --from=tufcli /binaries/ /tmp/tufcli/
 
 # Repackage tar.gz archives to plain .gz for backward compatibility
 RUN set -e && \
@@ -97,8 +101,16 @@ RUN set -e && \
     repack /tmp/trillian/updatetree_windows_amd64.tar.gz /var/www/html/clients/windows/updatetree-amd64.gz && \
     # tuftool (linux amd64 only)
     repack /tmp/tuftool/tuftool_linux_amd64.tar.gz /var/www/html/clients/linux/tuftool-amd64.gz && \
+    # tufcli
+    repack /tmp/tufcli/tufcli_darwin_amd64.tar.gz /var/www/html/clients/darwin/tufcli-amd64.gz && \
+    repack /tmp/tufcli/tufcli_darwin_arm64.tar.gz /var/www/html/clients/darwin/tufcli-arm64.gz && \
+    repack /tmp/tufcli/tufcli_linux_amd64.tar.gz /var/www/html/clients/linux/tufcli-amd64.gz && \
+    repack /tmp/tufcli/tufcli_linux_arm64.tar.gz /var/www/html/clients/linux/tufcli-arm64.gz && \
+    repack /tmp/tufcli/tufcli_linux_ppc64le.tar.gz /var/www/html/clients/linux/tufcli-ppc64le.gz && \
+    repack /tmp/tufcli/tufcli_linux_s390x.tar.gz /var/www/html/clients/linux/tufcli-s390x.gz && \
+    repack /tmp/tufcli/tufcli_windows_amd64.tar.gz /var/www/html/clients/windows/tufcli-amd64.gz && \
     # cleanup
-    rm -rf /tmp/cosign /tmp/gitsign /tmp/rekor /tmp/fetch-tsa-certs /tmp/trillian /tmp/tuftool || true
+    rm -rf /tmp/cosign /tmp/gitsign /tmp/rekor /tmp/fetch-tsa-certs /tmp/trillian /tmp/tuftool /tmp/tufcli || true
 
 # Copy the ec binaries (kept in old .gz format)
 COPY --from=ec /usr/local/bin/ec_darwin_amd64.gz      /var/www/html/clients/darwin/ec-amd64.gz
@@ -115,9 +127,9 @@ LABEL \
       com.redhat.component="trusted-artifact-signer-serve-cli-container" \
       name="rhtas/client-server-rhel9" \
       version="1.3.0" \
-      summary="Red Hat serves Trusted Artifact Signer CLI binaries cosign, gitsign, rekor-cli, ec, fetch_tsa_certs, trillian-createtree and trillian-updatetree from an HTTP server" \
-      description="Serves Trusted Artifact Signer CLI binaries cosign, gitsign, rekor-cli, ec, fetch_tsa_certs, trillian-createtree and trillian-updatetree from an HTTP server" \
-      io.k8s.description="Serves Trusted Artifact Signer CLI binaries cosign, gitsign, rekor-cli, ec, fetch_tsa_certs, trillian-createtree and trillian-updatetree from an HTTP server" \
-      io.k8s.display-name="Red Hat serves Trusted Artifact Signer CLI binaries cosign, gitsign, rekor-cli, ec, fetch_tsa_certs, trillian-createtree and trillian-updatetree" \
-      io.openshift.tags=" cosign, gitsign, rekor-cli, ec, fetch_tsa_certs, trillian-createtree and trillian-updatetree, rhtas, trusted, artifact, signer, sigstore" \
+      summary="Red Hat serves Trusted Artifact Signer CLI binaries cosign, gitsign, rekor-cli, ec, fetch_tsa_certs, tufcli, trillian-createtree and trillian-updatetree from an HTTP server" \
+      description="Serves Trusted Artifact Signer CLI binaries cosign, gitsign, rekor-cli, ec, fetch_tsa_certs, tufcli, trillian-createtree and trillian-updatetree from an HTTP server" \
+      io.k8s.description="Serves Trusted Artifact Signer CLI binaries cosign, gitsign, rekor-cli, ec, fetch_tsa_certs, tufcli, trillian-createtree and trillian-updatetree from an HTTP server" \
+      io.k8s.display-name="Red Hat serves Trusted Artifact Signer CLI binaries cosign, gitsign, rekor-cli, ec, fetch_tsa_certs, tufcli, trillian-createtree and trillian-updatetree" \
+      io.openshift.tags="cosign, gitsign, rekor-cli, ec, fetch_tsa_certs, tufcli, trillian-createtree and trillian-updatetree, rhtas, trusted, artifact, signer, sigstore" \
       maintainer="trusted-artifact-signer@redhat.com"
