@@ -14,7 +14,7 @@ FROM quay.io/securesign/fetch-tsa-certs-cli-stack@sha256:c2c37fdb21dd36a3d5e08ac
 FROM registry.redhat.io/rhtas/ec-rhel9:0.8-1784063491@sha256:0bb72cef27ba4ec97f7e62d8f6599fd3be54127c0775fa0726560636b2ecffb8 AS ec
 
 # trillian-createtree and trillian-updatetree
-FROM quay.io/securesign/trillian-cli-stack@sha256:be64811e33022db2220737694a43a028bfd8e27d5e52cd0cf915529c67bebcd6 AS trillian
+FROM quay.io/securesign/trillian-cli-stack@sha256:24f98dada3aeee79ba0cdab2195a1849de5b095290b93770595d91b0aec23901 AS trillian
 
 # tuftool
 FROM quay.io/securesign/tuftool-cli-stack@sha256:dd2c1a414058449869735cf62e8f5b6eeace6e4bbfee2b34445c9afcfb0b4b93 AS tuftool
