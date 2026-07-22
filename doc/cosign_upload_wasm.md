@@ -33,9 +33,13 @@ cosign upload wasm [flags]
 ### Options inherited from parent commands
 
 ```
-      --output-file string   log output to a file
-  -t, --timeout duration     timeout for commands (default 3m0s)
-  -d, --verbose              log debug output
+      --output-file string        log output to a file
+  -t, --timeout duration          timeout for commands (default 3m0s)
+      --tracing-enabled           enable OpenTelemetry tracing
+      --tracing-endpoint string   OTLP gRPC collector endpoint (e.g. host:4317)
+      --tracing-insecure          use insecure gRPC connection for tracing (default true)
+      --tracing-stdout            export traces to stdout instead of OTLP
+  -d, --verbose                   log debug output
 ```
 
 ### SEE ALSO
