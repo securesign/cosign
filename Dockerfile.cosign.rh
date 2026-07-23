@@ -1,6 +1,6 @@
 # Build stage
 
-FROM registry.redhat.io/ubi9/go-toolset:9.8-1784190466@sha256:f99dd81b20e5971ef9f63a51ac27cf0aa591ff9921d021490548b67fd9b17144 AS build-env
+FROM registry.redhat.io/ubi9/go-toolset:9.8-1784751462@sha256:5f5c97d7e6d917b8328321bcf2c9d5700de65b72d434ecdbbba6f35aaebaad40 AS build-env
 
 ENV GOEXPERIMENT=strictfipsruntime
 ENV CGO_ENABLED=1
@@ -26,7 +26,7 @@ RUN git config --global --add safe.directory /cosign && \
     git update-index --no-assume-unchanged Dockerfile.cosign.rh
 
 # Install Cosign
-FROM registry.access.redhat.com/ubi9/ubi-minimal@sha256:932acc913841596b4bdb1dfb6280987b81c2d9f4d337d0a57c9a98fc749e10bd
+FROM registry.access.redhat.com/ubi9/ubi-minimal@sha256:5a68031c6c8f0af8da986896353ca62a78576fe70e8d0334733e25248df5cbde
 
 LABEL description="Cosign is a container signing tool that leverages simple, secure, and auditable signatures based on simple primitives and best practices."
 LABEL io.k8s.description="Cosign is a container signing tool that leverages simple, secure, and auditable signatures based on simple primitives and best practices."
