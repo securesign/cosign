@@ -45,7 +45,9 @@ import (
 	ociremote "github.com/sigstore/cosign/v3/pkg/oci/remote"
 	"github.com/sigstore/cosign/v3/pkg/oci/walk"
 	"github.com/sigstore/cosign/v3/pkg/types"
+	itracing "github.com/sigstore/cosign/v3/internal/tracing"
 	sigPayload "github.com/sigstore/sigstore/pkg/signature/payload"
+	"go.opentelemetry.io/otel"
 	"google.golang.org/protobuf/encoding/protojson"
 	"google.golang.org/protobuf/types/known/structpb"
 
@@ -65,6 +67,10 @@ func GetAttachedImageRef(ref name.Reference, attachment string, opts ...ociremot
 
 // nolint
 func SignCmd(ctx context.Context, ro *options.RootOptions, ko options.KeyOpts, signOpts options.SignOptions, imgs []string) error {
+	ctx, span := otel.Tracer("cosign").Start(ctx, "sign")
+	defer span.End()
+	itracing.ActiveCtx = ctx
+
 	if options.NOf(ko.KeyRef, ko.Sk) > 1 {
 		return &options.KeyParseError{}
 	}
