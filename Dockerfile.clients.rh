@@ -20,7 +20,7 @@ FROM quay.io/securesign/trillian-cli-stack@sha256:ea127fb00bd50a39b89512900e7d74
 FROM quay.io/securesign/tuftool-cli-stack@sha256:722504fc7f8fa117a9fc8acebabafd6e7f3647921b62780daf3603d471ccd72c AS tuftool
 
 # tufcli
-FROM quay.io/securesign/tufcli-cli-stack@sha256:0205822de702e544c249a01f863994a62f81599288c0c1d82b00b257daebec34 AS tufcli
+FROM quay.io/securesign/tufcli-cli-stack@sha256:d8156353c9ba3d415e6d2fc76977df02bdf98fcdd7e456a76827e7dada41fa2f AS tufcli
 
 FROM registry.redhat.io/ubi9/httpd-24@sha256:3f35063ff686e1881c47b9f542ae4b957ab3ce188f43f75a10386a584d0a2258
 
