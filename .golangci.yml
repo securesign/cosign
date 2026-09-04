@@ -88,6 +88,12 @@ linters:
         path: cmd/cosign/errors/
         # Allow 'errors' package name in cmd/cosign/errors - it doesn't conflict with std lib
         text: "var-naming: avoid package names that conflict with Go standard library package names"
+      - linters:
+          - gosec
+        path: test/helpers\.go
+        # copyFile's src is always a local test fixture path or an operator-set env var, never
+        # attacker-controlled input, so gosec's taint analysis is a false positive here
+        text: "G703"
     paths:
       - third_party$
       - builtin$
