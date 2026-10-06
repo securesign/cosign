@@ -116,7 +116,7 @@ func GetTransparencyLogID(pub crypto.PublicKey) (string, error) {
 }
 
 func dsseEntry(ctx context.Context, signature, pubKey []byte) (models.ProposedEntry, error) {
-	var pubKeyBytes [][]byte
+	pubKeyBytes := make([][]byte, 0, 1)
 
 	if len(pubKey) == 0 {
 		return nil, errors.New("public key provided has 0 length")
@@ -131,7 +131,7 @@ func dsseEntry(ctx context.Context, signature, pubKey []byte) (models.ProposedEn
 }
 
 func intotoEntry(ctx context.Context, signature, pubKey []byte) (models.ProposedEntry, error) {
-	var pubKeyBytes [][]byte
+	pubKeyBytes := make([][]byte, 0, 1)
 
 	if len(pubKey) == 0 {
 		return nil, errors.New("none of the Rekor public keys have been found")
