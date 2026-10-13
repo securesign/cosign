@@ -5,7 +5,7 @@ FROM quay.io/securesign/cosign-cli-stack@sha256:2b469ef74b6bed24a2ea7810a3dd1d10
 FROM quay.io/securesign/gitsign-cli-stack@sha256:14a65b7b68084d523a37012a5241974f8ce4b25fdbd2a734f383eab06333efcf AS gitsign
 
 # rekor-cli
-FROM quay.io/securesign/rekor-cli-stack@sha256:493b8c95574f34274ef38c46883ae782ef9111e1624efdf107a66bd4c111ee55 AS rekor
+FROM quay.io/securesign/rekor-cli-stack@sha256:2c1462e0ff5f1d61449946108d97900663bc9ee6deb089b5e2834fd14fc8b63e AS rekor
 
 # fetch-tsa-certs
 FROM quay.io/securesign/fetch-tsa-certs-cli-stack@sha256:ad761e21fd42a4994f1fe3de87f2e3cd5d560211a7f2b6660dbf4dab5f67c11a AS fetch-tsa-certs
