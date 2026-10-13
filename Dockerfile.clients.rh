@@ -2,7 +2,7 @@
 FROM quay.io/securesign/cosign-cli-stack@sha256:ae77733f304f2ccdbc37346682899c7750b12a55b822757b14c6275faa8995cf AS cosign
 
 # gitsign
-FROM quay.io/securesign/gitsign-cli-stack@sha256:4161f3eb77caa99a27d463dc8dad1e4c385231db9ea81c9aa2db44b52ad8cacb AS gitsign
+FROM quay.io/securesign/gitsign-cli-stack@sha256:00f21153f755939306a6142e385e253b26d59240449309a594e78159743aa089 AS gitsign
 
 # rekor-cli
 FROM quay.io/securesign/rekor-cli-stack@sha256:6d241c2120fab449851877a5095f20d6e81edfc474c5ade4d3245a976d5379e3 AS rekor
