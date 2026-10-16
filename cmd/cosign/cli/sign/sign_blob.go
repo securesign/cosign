@@ -32,6 +32,7 @@ import (
 	"github.com/sigstore/cosign/v3/cmd/cosign/cli/options"
 	"github.com/sigstore/cosign/v3/cmd/cosign/cli/signcommon"
 	internal "github.com/sigstore/cosign/v3/internal/pkg/cosign"
+	itracing "github.com/sigstore/cosign/v3/internal/tracing"
 	"github.com/sigstore/cosign/v3/internal/ui"
 	"github.com/sigstore/cosign/v3/pkg/cosign"
 	cbundle "github.com/sigstore/cosign/v3/pkg/cosign/bundle"
@@ -43,6 +44,7 @@ import (
 	"github.com/sigstore/sigstore/pkg/cryptoutils"
 	"github.com/sigstore/sigstore/pkg/signature"
 	signatureoptions "github.com/sigstore/sigstore/pkg/signature/options"
+	"go.opentelemetry.io/otel"
 )
 
 func getPayload(ctx context.Context, payloadPath string, hashFunction crypto.Hash) (internal.HashReader, func() error, error) {
@@ -59,6 +61,10 @@ func getPayload(ctx context.Context, payloadPath string, hashFunction crypto.Has
 
 // nolint
 func SignBlobCmd(ctx context.Context, ro *options.RootOptions, ko options.KeyOpts, payloadPath, certPath, certChainPath string, b64 bool, outputSignature string, outputCertificate string, tlogUpload bool) ([]byte, error) {
+	ctx, span := otel.Tracer("cosign").Start(ctx, "sign-blob")
+	defer span.End()
+	itracing.ActiveCtx = ctx
+
 	var payload internal.HashReader
 
 	ctx, cancel := context.WithTimeout(ctx, ro.Timeout)
