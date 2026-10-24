@@ -1,6 +1,6 @@
-FROM registry.redhat.io/rhtas/ec-rhel9:0.9-1790602124@sha256:04b5d090dd84a84784efbf30c159023cb9c2e952b76c3ddd298f6697f60195e4 AS ec
+FROM registry.redhat.io/rhtas/ec-rhel9:0.9-1791980108@sha256:5f7c80bf0d94c9495f8ca1e7dd578cb41a0fc8ee23ae81c67a1c092e009b065f AS ec
 
-FROM registry.redhat.io/ubi9/go-toolset:9.8-1791479310@sha256:6f246e8913d082df463b62a74c72f0d2b410583e1b2ac48add39cd7ede59ce62 AS packager
+FROM registry.redhat.io/ubi9/go-toolset:9.8-1792671270@sha256:edb9452603fa48e9882063f001ecd7d322add20f1564a4f05f38f6683be5ea94 AS packager
 USER root
 RUN mkdir -p /binaries
 
@@ -43,7 +43,7 @@ RUN gzip -d /tmp/ec_windows_amd64.exe.gz && \
     rm /tmp/ec_windows_amd64.exe
 
 # Final minimal image with all binaries
-FROM registry.redhat.io/ubi9/ubi-minimal@sha256:8fbe5ca09afa1990e9ff55fd8ee7cb073b823a7640c3c8381ece64f22401d2a2
+FROM registry.redhat.io/ubi9/ubi-minimal@sha256:2d4c4551af6831dcd26bbf86108c4385de5183ec8fe6b5868f6f9640fe47f4ed
 
 LABEL description="Flat image containing Conforma CLI binaries for all platforms and architectures"
 LABEL io.k8s.description="Flat image containing Conforma CLI binaries for all platforms and architectures"
