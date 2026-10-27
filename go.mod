@@ -275,6 +275,7 @@ require (
 	github.com/tjfoc/gmsm v1.4.1 // indirect
 	github.com/tjfoc/gmsm/v2 v2.0.0 // indirect
 	github.com/transparency-dev/formats v0.1.1 // indirect
+	github.com/urfave/negroni v1.0.0 // indirect
 	github.com/urfave/negroni/v3 v3.1.1 // indirect
 	github.com/valyala/fastjson v1.6.10 // indirect
 	github.com/vektah/gqlparser/v2 v2.5.64 // indirect
