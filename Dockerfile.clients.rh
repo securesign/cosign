@@ -8,7 +8,7 @@ FROM quay.io/securesign/gitsign-cli-stack@sha256:3ad133e46e2dbb01b6f67681c9f27f2
 FROM quay.io/securesign/rekor-cli-stack@sha256:2c1462e0ff5f1d61449946108d97900663bc9ee6deb089b5e2834fd14fc8b63e AS rekor
 
 # fetch-tsa-certs
-FROM quay.io/securesign/fetch-tsa-certs-cli-stack@sha256:57d65e50c6e987b5e8c12ecc36c0f184cdac0d85b74248fa8217b4761f5d1fb4 AS fetch-tsa-certs
+FROM quay.io/securesign/fetch-tsa-certs-cli-stack@sha256:3240b96b89b58fe730fdb6741f8f9bec649b61714c99b9e88d8f9000aa1da2d1 AS fetch-tsa-certs
 
 # ec
 FROM registry.redhat.io/rhtas/ec-rhel9:0.9-1790602124@sha256:04b5d090dd84a84784efbf30c159023cb9c2e952b76c3ddd298f6697f60195e4 AS ec
