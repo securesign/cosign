@@ -25,10 +25,27 @@ on:
       - '!**.txt'
       - '!images/**'
       - '!LICENSE'
+      - '!Dockerfile.clients.rh'
+      - '!Dockerfile.cli-stack.rh'
+      - '!Dockerfile.cosign.rh'
+      - '!Dockerfile.conforma-cli-stack.rh'
+      - '!specs/**'
       - 'test/**'
     branches:
-      - "main"
+      - 'main'
+      - 'release-*'
   pull_request:
+    paths-ignore:
+      - 'Dockerfile.clients.rh'
+      - 'Dockerfile.cli-stack.rh'
+      - 'Dockerfile.cosign.rh'
+      - 'Dockerfile.conforma-cli-stack.rh'
+      - '**.md'
+      - 'doc/**'
+      - '**.txt'
+      - 'images/**'
+      - 'LICENSE'
+      - 'specs/**'
   workflow_dispatch:
 
 jobs:
@@ -44,7 +61,7 @@ jobs:
           persist-credentials: false
 
       - name: Extract version of Go to use
-        run: echo "GOVERSION=$(awk -F'[:@]' '/FROM golang/{print $2; exit}' Dockerfile)" >> $GITHUB_ENV
+        run: echo "GOVERSION=$(awk '/^go /{print $2}' go.mod)" >> $GITHUB_ENV
 
       - uses: actions/setup-go@4b73464bb391d4059bd26b0524d20df3927bd417 # v6.3.0
         with:
@@ -64,7 +81,7 @@ jobs:
           persist-credentials: false
 
       - name: Extract version of Go to use
-        run: echo "GOVERSION=$(awk -F'[:@]' '/FROM golang/{print $2; exit}' Dockerfile)" >> $GITHUB_ENV
+        run: echo "GOVERSION=$(awk '/^go /{print $2}' go.mod)" >> $GITHUB_ENV
 
       - uses: actions/setup-go@4b73464bb391d4059bd26b0524d20df3927bd417 # v6.3.0
         with:
@@ -107,7 +124,7 @@ jobs:
         uses: cpanato/vault-installer@f7e2ad9737b49f351f233eba2df1bdfede939a21 # v1.3.0
 
       - name: Extract version of Go to use
-        run: echo "GOVERSION=$(awk -F'[:@]' '/FROM golang/{print $2; exit}' Dockerfile)" >> $GITHUB_ENV
+        run: echo "GOVERSION=$(awk '/^go /{print $2}' go.mod)" >> $GITHUB_ENV
 
       - uses: actions/setup-go@4b73464bb391d4059bd26b0524d20df3927bd417 # v6.3.0
         with:
@@ -140,7 +157,7 @@ jobs:
         persist-credentials: false
 
     - name: Extract version of Go to use
-      run: echo "GOVERSION=$(awk -F'[:@]' '/FROM golang/{print $2; exit}' Dockerfile)" >> $GITHUB_ENV
+      run: echo "GOVERSION=$(awk '/^go /{print $2}' go.mod)" >> $GITHUB_ENV
 
     - uses: actions/setup-go@4b73464bb391d4059bd26b0524d20df3927bd417 # v6.3.0
       with:
