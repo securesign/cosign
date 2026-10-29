@@ -20,6 +20,17 @@ on:
     branches:
       - main
       - release-*
+    paths-ignore:
+      - 'Dockerfile.clients.rh'
+      - 'Dockerfile.cli-stack.rh'
+      - 'Dockerfile.cosign.rh'
+      - 'Dockerfile.conforma-cli-stack.rh'
+      - '**.md'
+      - 'doc/**'
+      - '**.txt'
+      - 'images/**'
+      - 'LICENSE'
+      - 'specs/**'
 
 permissions: {}
 

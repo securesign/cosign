@@ -24,6 +24,11 @@ on:
       - '!**.txt'
       - '!images/**'
       - '!LICENSE'
+      - '!Dockerfile.clients.rh'
+      - '!Dockerfile.cli-stack.rh'
+      - '!Dockerfile.cosign.rh'
+      - '!Dockerfile.conforma-cli-stack.rh'
+      - '!specs/**'
       - 'test/**'
     branches:
       - main
@@ -51,7 +56,7 @@ jobs:
       - uses: sigstore/cosign-installer@faadad0cce49287aee09b3a48701e75088a2c6ad # v4.0.0
 
       - name: Extract version of Go to use
-        run: echo "GOVERSION=$(awk -F'[:@]' '/FROM golang/{print $2; exit}' Dockerfile)" >> $GITHUB_ENV
+        run: echo "GOVERSION=$(awk '/^go /{print $2}' go.mod)" >> $GITHUB_ENV
 
       - uses: actions/setup-go@4b73464bb391d4059bd26b0524d20df3927bd417 # v6.3.0
         with:
