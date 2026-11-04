@@ -235,6 +235,9 @@ jobs:
         }
         EOF
         # Run a registry.
+        # The kind cluster exhausts the default inotify instance limit and zot panics
+        # with "too many open files" when it starts its config watcher.
+        sudo sysctl -w fs.inotify.max_user_instances=512
         docker run -d  --restart=always \
           --name $INSECURE_OCI_REGISTRY_NAME \
           -v "$(pwd)"/insecure-certs:/insecure-certs \
