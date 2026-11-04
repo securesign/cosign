@@ -238,7 +238,7 @@ jobs:
           sleep 1
         done
       env:
-        ZOT_VERSION: v2.0.0-rc6
+        ZOT_VERSION: v2.1.22
         # https://github.com/google/go-containerregistry/pull/125 allows insecure registry for
         # '*.local' hostnames.
         INSECURE_OCI_REGISTRY_NAME: insecure-oci-registry.notlocal
