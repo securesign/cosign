@@ -225,6 +225,18 @@ jobs:
           -p $INSECURE_OCI_REGISTRY_PORT:$INSECURE_OCI_REGISTRY_PORT \
           ghcr.io/project-zot/zot-minimal-linux-amd64:$ZOT_VERSION
         sudo echo "127.0.0.1 $INSECURE_OCI_REGISTRY_NAME" | sudo tee -a /etc/hosts
+        # Wait until Zot is accepting connections before running the OCI 1.1 tests.
+        for attempt in {1..30}; do
+          if curl --silent --output /dev/null --connect-timeout 1 --insecure \
+            "https://127.0.0.1:${INSECURE_OCI_REGISTRY_PORT}/v2/"; then
+            break
+          fi
+          if [ "$attempt" -eq 30 ]; then
+            docker logs "$INSECURE_OCI_REGISTRY_NAME"
+            exit 1
+          fi
+          sleep 1
+        done
       env:
         ZOT_VERSION: v2.0.0-rc6
         # https://github.com/google/go-containerregistry/pull/125 allows insecure registry for
