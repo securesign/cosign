@@ -19,7 +19,7 @@ FROM quay.io/securesign/trillian-cli-stack@sha256:90cb9f5bd948a260d96b51b827d8f5
 # tuftool
 FROM quay.io/securesign/tuftool-cli-stack@sha256:ad96bb401fb659cd92b2d947547badca5de77eefcf85a30222b27eb35358b5f6 AS tuftool
 
-FROM registry.redhat.io/ubi9/httpd-24:1-1793639139@sha256:368ffd2362306a7d07ecd169dc52e2abba0f0ea120d47c52b3c0783eba659084
+FROM registry.redhat.io/ubi9/httpd-24:9.8-1793639139@sha256:368ffd2362306a7d07ecd169dc52e2abba0f0ea120d47c52b3c0783eba659084
 ENV APP_ROOT=/opt/app-root
 WORKDIR $APP_ROOT/src/
 
