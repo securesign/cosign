@@ -13,7 +13,7 @@ require (
 	github.com/depcheck-test/depcheck-test v0.0.0-20220607135614-199033aaa936
 	github.com/digitorus/timestamp v0.0.0-20250524132541-c45532741eea
 	github.com/dustin/go-humanize v1.0.1
-	github.com/go-jose/go-jose/v4 v4.1.4
+	github.com/go-jose/go-jose/v4 v4.1.6
 	github.com/go-openapi/runtime v0.32.3
 	github.com/go-openapi/strfmt v0.26.3
 	github.com/go-openapi/swag/conv v0.26.0
