@@ -8,7 +8,7 @@ require (
 	github.com/awslabs/amazon-ecr-credential-helper/ecr-login v0.12.0
 	github.com/buildkite/agent/v3 v3.115.2
 	github.com/chrismellard/docker-credential-acr-env v0.0.0-20230304212654-82a0ddb27589
-	github.com/coreos/go-oidc/v3 v3.17.0
+	github.com/coreos/go-oidc/v3 v3.18.0
 	github.com/cyberphone/json-canonicalization v0.0.0-20241213102144-19d51d7fe467
 	github.com/depcheck-test/depcheck-test v0.0.0-20220607135614-199033aaa936
 	github.com/digitorus/timestamp v0.0.0-20250524132541-c45532741eea
@@ -33,7 +33,7 @@ require (
 	github.com/nozzle/throttler v0.0.0-20180817012639-2ea982251481
 	github.com/open-policy-agent/opa v1.15.0
 	github.com/secure-systems-lab/go-securesystemslib v0.11.0
-	github.com/sigstore/fulcio v1.8.5
+	github.com/sigstore/fulcio v1.8.6
 	github.com/sigstore/protobuf-specs v0.5.1
 	github.com/sigstore/rekor v1.5.2
 	github.com/sigstore/rekor-tiles/v2 v2.2.2-0.20260601073857-5d098a2b6443
@@ -149,7 +149,7 @@ require (
 	github.com/emicklei/go-restful/v3 v3.13.0 // indirect
 	github.com/emicklei/proto v1.14.3 // indirect
 	github.com/felixge/httpsnoop v1.0.4 // indirect
-	github.com/fsnotify/fsnotify v1.9.0 // indirect
+	github.com/fsnotify/fsnotify v1.10.1 // indirect
 	github.com/fxamacker/cbor/v2 v2.9.0 // indirect
 	github.com/go-chi/chi/v5 v5.3.0 // indirect
 	github.com/go-logr/logr v1.4.3 // indirect
