@@ -11,7 +11,7 @@ FROM quay.io/securesign/rekor-cli-stack@sha256:6d423e27a69a99b6ebc2fb22b17afcfc0
 FROM quay.io/securesign/fetch-tsa-certs-cli-stack@sha256:116ee019fc536e084a57dbae012d85a8e85843345251afc4765cb14011ff1739 AS fetch-tsa-certs
 
 # ec
-FROM registry.redhat.io/rhtas/ec-rhel9:0.9-1793783641@sha256:30c84e9cd179d14930961eb7d950c9c692c2659ccc54c9fcbd618cf5f315dc41 AS ec
+FROM registry.redhat.io/rhtas/ec-rhel9:0.9-1794494179@sha256:ab1948b89a55c83a4cbd23a812fa476d45245481aac335d2bbff44b32f4d2b25 AS ec
 
 # trillian-createtree and trillian-updatetree
 FROM quay.io/securesign/trillian-cli-stack@sha256:90cb9f5bd948a260d96b51b827d8f5339d0edd2db1dc0e51d01f2bbc83f226bf AS trillian
@@ -19,7 +19,7 @@ FROM quay.io/securesign/trillian-cli-stack@sha256:90cb9f5bd948a260d96b51b827d8f5
 # tuftool
 FROM quay.io/securesign/tuftool-cli-stack@sha256:ad96bb401fb659cd92b2d947547badca5de77eefcf85a30222b27eb35358b5f6 AS tuftool
 
-FROM registry.redhat.io/ubi9/httpd-24:9.8-1793639139@sha256:368ffd2362306a7d07ecd169dc52e2abba0f0ea120d47c52b3c0783eba659084
+FROM registry.redhat.io/ubi9/httpd-24:9.9-1794521094@sha256:b56587a64751ddddf74f649a5c1dcac6025dd32a6018113141e5a1f733aba374
 ENV APP_ROOT=/opt/app-root
 WORKDIR $APP_ROOT/src/
 
