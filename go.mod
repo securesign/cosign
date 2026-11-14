@@ -3,24 +3,24 @@ module github.com/sigstore/cosign/v3
 go 1.26
 
 require (
-	cuelang.org/go v0.16.1
-	github.com/ThalesGroup/crypto11 v1.6.0
+	cuelang.org/go v0.17.1
+	github.com/ThalesGroup/crypto11 v1.6.8
 	github.com/awslabs/amazon-ecr-credential-helper/ecr-login v0.12.0
-	github.com/buildkite/agent/v3 v3.115.2
+	github.com/buildkite/agent/v4 v4.10.2
 	github.com/chrismellard/docker-credential-acr-env v0.0.0-20230304212654-82a0ddb27589
-	github.com/cyberphone/json-canonicalization v0.0.0-20241213102144-19d51d7fe467
+	github.com/cyberphone/json-canonicalization v0.0.0-20261011152517-32a48195b9b2
 	github.com/depcheck-test/depcheck-test v0.0.0-20220607135614-199033aaa936
-	github.com/digitorus/timestamp v0.0.0-20250524132541-c45532741eea
-	github.com/dustin/go-humanize v1.0.1
+	github.com/digitorus/timestamp v0.0.0-20260914073129-b4b58b92aa51
+	github.com/dustin/go-humanize v1.1.0
 	github.com/go-jose/go-jose/v4 v4.1.4
-	github.com/go-openapi/runtime v0.29.4
-	github.com/go-openapi/strfmt v0.27.0
-	github.com/go-openapi/swag/conv v0.26.0
+	github.com/go-openapi/runtime v0.33.4
+	github.com/go-openapi/strfmt v0.27.4
+	github.com/go-openapi/swag/conv v0.29.2
 	github.com/go-piv/piv-go/v2 v2.6.0
-	github.com/google/certificate-transparency-go v1.3.3
+	github.com/google/certificate-transparency-go v1.4.0
 	github.com/google/go-cmp v0.7.0
-	github.com/google/go-containerregistry v0.21.5
-	github.com/google/go-github/v73 v73.0.0
+	github.com/google/go-containerregistry v0.22.1
+	github.com/google/go-github/v93 v93.0.0
 	github.com/in-toto/attestation v1.2.0
 	github.com/in-toto/in-toto-golang v0.10.0
 	github.com/kelseyhightower/envconfig v1.4.0
@@ -28,41 +28,41 @@ require (
 	github.com/miekg/pkcs11 v1.1.2
 	github.com/mitchellh/go-wordwrap v1.0.1
 	github.com/moby/term v0.5.2
-	github.com/mozillazg/docker-credential-acr-helper v0.4.0
+	github.com/mozillazg/docker-credential-acr-helper v0.4.2
 	github.com/nozzle/throttler v0.0.0-20180817012639-2ea982251481
-	github.com/open-policy-agent/opa v1.15.2
-	github.com/secure-systems-lab/go-securesystemslib v0.11.0
+	github.com/open-policy-agent/opa v1.22.3
+	github.com/secure-systems-lab/go-securesystemslib v0.11.1
 	github.com/sigstore/fulcio v1.8.5
-	github.com/sigstore/protobuf-specs v0.5.1
+	github.com/sigstore/protobuf-specs v0.5.2
 	github.com/sigstore/rekor v1.5.1
-	github.com/sigstore/rekor-tiles/v2 v2.0.1
-	github.com/sigstore/sigstore v1.10.5
+	github.com/sigstore/rekor-tiles/v2 v2.4.2
+	github.com/sigstore/sigstore v1.11.3
 	github.com/sigstore/sigstore-go v1.1.4
-	github.com/sigstore/sigstore/pkg/signature/kms/aws v1.10.5
-	github.com/sigstore/sigstore/pkg/signature/kms/azure v1.10.5
-	github.com/sigstore/sigstore/pkg/signature/kms/gcp v1.10.5
-	github.com/sigstore/sigstore/pkg/signature/kms/hashivault v1.10.5
+	github.com/sigstore/sigstore/pkg/signature/kms/aws v1.11.3
+	github.com/sigstore/sigstore/pkg/signature/kms/azure v1.11.3
+	github.com/sigstore/sigstore/pkg/signature/kms/gcp v1.11.3
+	github.com/sigstore/sigstore/pkg/signature/kms/hashivault v1.11.3
 	github.com/sigstore/timestamp-authority/v2 v2.0.4
 	github.com/spf13/cobra v1.10.2
-	github.com/spf13/pflag v1.0.10
+	github.com/spf13/pflag v1.1.0
 	github.com/spf13/viper v1.21.0
-	github.com/spiffe/go-spiffe/v2 v2.7.0
-	github.com/stretchr/testify v1.11.1
+	github.com/spiffe/go-spiffe/v2 v2.9.0
+	github.com/stretchr/testify v1.12.1
 	github.com/theupdateframework/go-tuf/v2 v2.3.0
 	github.com/transparency-dev/merkle v0.0.2
 	github.com/withfig/autocomplete-tools/integrations/cobra v1.2.1
-	gitlab.com/gitlab-org/api/client-go v1.46.0
+	gitlab.com/gitlab-org/api/client-go/v3 v3.47.0
 	golang.org/x/crypto v0.55.0
-	golang.org/x/oauth2 v0.36.0
-	golang.org/x/sync v0.22.0
-	golang.org/x/term v0.45.0
-	google.golang.org/api v0.289.0
-	google.golang.org/protobuf v1.36.12-0.20260120151049-f2248ac996af
-	k8s.io/api v0.35.4
-	k8s.io/apimachinery v0.35.4
-	k8s.io/client-go v0.35.4
-	k8s.io/utils v0.0.0-20260319190234-28399d86e0b5
-	sigs.k8s.io/release-utils v0.12.4
+	golang.org/x/oauth2 v0.38.0
+	golang.org/x/sync v0.25.0
+	golang.org/x/term v0.48.0
+	google.golang.org/api v0.312.0
+	google.golang.org/protobuf v1.36.12
+	k8s.io/api v0.37.2
+	k8s.io/apimachinery v0.37.2
+	k8s.io/client-go v0.37.2
+	k8s.io/utils v0.0.0-20261023123148-ca04ba58ecab
+	sigs.k8s.io/release-utils v0.12.5
 )
 
 require (
