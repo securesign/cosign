@@ -1,0 +1,27 @@
+name: Validate renovate.json
+
+on:
+  pull_request:
+    branches:
+      - 'main'
+      - 'release-*'
+    # Run only when the Renovate config or this workflow changes
+    paths:
+      - 'renovate.json'
+      - '.github/workflows/renovate-config-validation.yaml'
+
+permissions:
+  contents: read
+
+jobs:
+  renovate-config-validation:
+    name: Validate Renovate config
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
+        with:
+          persist-credentials: false
+      - uses: konflux-ci/renovate-config-validator-action@ca6b202a90add38b1fc274c07507c77d2b1ce88e # main
+        with:
+          config_file: renovate.json
+          strict: true
