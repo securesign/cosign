@@ -10,6 +10,10 @@
     "release/**",
     ".github/workflows/**"
   ],
+  "vulnerabilityAlerts": {
+    "enabled": true,
+    "groupName": "{{{manager}}} security updates"
+  },
   "packageRules": [
     {
       "description": "Disable GitHub Actions updates",
@@ -27,6 +31,63 @@
       "matchPackageNames": [
         "golang"
       ],
+      "enabled": false
+    },
+    {
+      "description": "UBI9 base images: own PR group (separate from the org-wide Docker Images group, so other images cannot block it), automerge once CI passes, and skip the default 3-day release-age wait so fixes ship within 3 working days. rebaseWhen keeps the PR current, which automerge requires.",
+      "matchManagers": ["dockerfile"],
+      "matchPackageNames": [
+        "registry.redhat.io/ubi9/**",
+        "registry.access.redhat.com/ubi9/**"
+      ],
+      "matchUpdateTypes": ["digest", "pin", "pinDigest", "patch", "minor"],
+      "groupName": "UBI9 base images",
+      "groupSlug": "ubi9-base-images",
+      "automerge": true,
+      "minimumReleaseAge": null,
+      "rebaseWhen": "behind-base-branch"
+    },
+    {
+      "description": "go-toolset ships the Go compiler. Same-RHEL-minor rebuilds may automerge, but a new RHEL minor (e.g. 9.8 -> 9.9) can bring a newer Go, so it gets its own PR and stays manual.",
+      "matchManagers": ["dockerfile"],
+      "matchPackageNames": [
+        "registry.redhat.io/ubi9/go-toolset",
+        "registry.access.redhat.com/ubi9/go-toolset"
+      ],
+      "matchUpdateTypes": ["minor"],
+      "groupName": "UBI9 go-toolset minor",
+      "groupSlug": "ubi9-go-toolset-minor",
+      "automerge": false
+    },
+    {
+      "description": "Never open major-version updates for UBI9 base images; these need a human.",
+      "matchManagers": ["dockerfile"],
+      "matchPackageNames": [
+        "registry.redhat.io/ubi9/**",
+        "registry.access.redhat.com/ubi9/**"
+      ],
+      "matchUpdateTypes": ["major"],
+      "enabled": false
+    },
+    {
+      "description": "Valid tags for go-toolset, ubi, ubi-minimal and ubi-micro are <RHEL 9 minor>-<build>, e.g. 9.8-1787080706.",
+      "matchManagers": ["dockerfile"],
+      "matchPackageNames": [
+        "registry.redhat.io/ubi9/go-toolset",
+        "registry.redhat.io/ubi9/ubi{,-minimal,-micro}",
+        "registry.access.redhat.com/ubi9/ubi{,-minimal,-micro}"
+      ],
+      "allowedVersions": "/^9\\.\\d+-\\d+$/"
+    },
+    {
+      "description": "httpd-24 is tagged <stream>-<build>, e.g. 1-1793639139; do not let it flip to 9.x-<build> (same digest, only churn).",
+      "matchManagers": ["dockerfile"],
+      "matchPackageNames": ["registry.redhat.io/ubi9/httpd-24"],
+      "allowedVersions": "/^1-\\d+$/"
+    },
+    {
+      "description": "Security-only Go updates on every branch. main is merged weekly from sigstore/cosign (sync-upstream.yaml), so routine bumps conflict with upstream, and release branches should not take routine bumps (including majors). Security fixes still come through via vulnerabilityAlerts.enabled.",
+      "matchManagers": ["gomod"],
       "enabled": false
     }
   ]
