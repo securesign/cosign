@@ -42,6 +42,8 @@ spec:
     value: "true"
   - name: go_unit_test
     value: "true"
+  - name: go_base_image
+    value: registry.redhat.io/ubi9/go-toolset:9.9-1795320499@sha256:23c7cb17e9c53a65f9ab01f2edf1a4e07c9a9dc2258ed63d69e06925e7cea381
   - name: build-platforms
     value:
       - linux/x86_64
