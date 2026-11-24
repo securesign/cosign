@@ -80,8 +80,6 @@ github.com/DATA-DOG/go-sqlmock v1.5.2 h1:OcvFkGmslmlZibjAjaHm3L//6LiuBgolP7Oputl
 github.com/DATA-DOG/go-sqlmock v1.5.2/go.mod h1:88MAG/4G7SMwSE3CeA0ZKzrT5CiOU3OJ+JlNzwDqpNU=
 github.com/Microsoft/go-winio v0.6.2 h1:F2VQgta7ecxGYO8k3ZZz3RS8fVIXVxONVUPlNERoyfY=
 github.com/Microsoft/go-winio v0.6.2/go.mod h1:yd8OoFMLzJbo9gZq8j5qaps8bJ9aShtEA8Ipt1oGCvU=
-github.com/ThalesGroup/crypto11 v1.6.0 h1:Og9EMn44fBS4GNnGnH1aqHnF2wL6F7IU/RhpJajWX/4=
-github.com/ThalesGroup/crypto11 v1.6.0/go.mod h1:H6LRjN5R5SHxTrLqGNteisLDI0/IC6+SGx1pHtbwizE=
 github.com/agnivade/levenshtein v1.2.1 h1:EHBY3UOn1gwdy/VbFwgo4cxecRznFk7fKWN1KOX7eoM=
 github.com/agnivade/levenshtein v1.2.1/go.mod h1:QVVI16kDrtSuwcpd0p1+xMC6Z/VfhtCyDIjcwga4/DU=
 github.com/alibabacloud-go/alibabacloud-gateway-spi v0.0.2/go.mod h1:sCavSAvdzOjul4cEqeVtvlSaSScfNsTQ+46HwlTL1hc=
@@ -263,6 +261,10 @@ github.com/docker/go-units v0.5.0 h1:69rxXcBk27SvSaaxTtLh/8llcHD8vYHT7WSdRZ/jvr4
 github.com/docker/go-units v0.5.0/go.mod h1:fgPhTUdO+D/Jk86RDLlptpiXQzgHJF7gydDDbaIK4Dk=
 github.com/dustin/go-humanize v1.0.1 h1:GzkhY7T5VNhEkwH0PVJgjz+fX1rhBrR7pRT3mDkpeCY=
 github.com/dustin/go-humanize v1.0.1/go.mod h1:Mu1zIs6XwVuF/gI1OepvI0qD18qycQx+mFykh5fBlto=
+github.com/eclipse-keypont/crypto11/v2 v2.0.0-rc9 h1:OBzI0xNUX47QdWF6TBJfdZSny7bFHGTof0LKN+Q3iX0=
+github.com/eclipse-keypont/crypto11/v2 v2.0.0-rc9/go.mod h1:f7EUDNDEm1JV+5bSEGO0t+Jr0dX8DRQC2T5/5Wfa2ts=
+github.com/eclipse-keypont/pkcs11-go v1.2.0-rc4 h1:SulWtzH5Vxxfq0DdJWA2g6wumu9BGsV4RIo5uULqG0c=
+github.com/eclipse-keypont/pkcs11-go v1.2.0-rc4/go.mod h1:ac+LzvtNOZGVQzYdbzrjNgwkct47+UNS5x+bGMz+2Do=
 github.com/emicklei/go-restful/v3 v3.13.0 h1:C4Bl2xDndpU6nJ4bc1jXd+uTmYPVUwkD6bFY/oTyCes=
 github.com/emicklei/go-restful/v3 v3.13.0/go.mod h1:6n3XBCmQQb25CM2LCACGz8ukIrRry+4bhvbpWn3mrbc=
 github.com/emicklei/proto v1.14.3 h1:zEhlzNkpP8kN6utonKMzlPfIvy82t5Kb9mufaJxSe1Q=
@@ -697,8 +699,6 @@ github.com/syndtr/goleveldb v1.0.1-0.20220721030215-126854af5e6d h1:vfofYNRScrDd
 github.com/syndtr/goleveldb v1.0.1-0.20220721030215-126854af5e6d/go.mod h1:RRCYJbIwD5jmqPI9XoAFR0OcDxqUctll6zUj/+B4S48=
 github.com/tchap/go-patricia/v2 v2.3.3 h1:xfNEsODumaEcCcY3gI0hYPZ/PcpVv5ju6RMAhgwZDDc=
 github.com/tchap/go-patricia/v2 v2.3.3/go.mod h1:VZRHKAb53DLaG+nA9EaYYiaEx6YztwDlLElMsnSHD4k=
-github.com/thales-e-security/pool v0.0.2 h1:RAPs4q2EbWsTit6tpzuvTFlgFRJ3S8Evf5gtvVDbmPg=
-github.com/thales-e-security/pool v0.0.2/go.mod h1:qtpMm2+thHtqhLzTwgDBj/OuNnMpupY8mv0Phz0gjhU=
 github.com/theupdateframework/go-tuf v0.7.0 h1:CqbQFrWo1ae3/I0UCblSbczevCCbS31Qvs5LdxRWqRI=
 github.com/theupdateframework/go-tuf v0.7.0/go.mod h1:uEB7WSY+7ZIugK6R1hiBMBjQftaFzn7ZCDJcp1tCUug=
 github.com/theupdateframework/go-tuf/v2 v2.4.2-0.20260407074541-7e8f69f906ef h1:jJac5InhEfD0Z46/d5RayZjoavf/se7bPZpOgg8GLrM=
