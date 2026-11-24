@@ -114,7 +114,10 @@ builds:
       # zig does not auto-attach the macOS SDK, so point it at the one the image
       # ships. -isystem/-iframework (rather than -I/-F) mark the SDK as system
       # headers, which suppresses warnings zig cc otherwise promotes to errors.
-      - CGO_CFLAGS=-isysroot {{ .Env.OSX_SDK_PATH }} -isystem {{ .Env.OSX_SDK_PATH }}/usr/include -iframework {{ .Env.OSX_SDK_PATH }}/System/Library/Frameworks -mmacosx-version-min=11.0
+      # cryptoki's shim.c routes Apple to explicit_bzero, which macOS does not
+      # provide; map it to memset_s (declared only when __STDC_WANT_LIB_EXT1__
+      # is set). See eclipse-keypont/pkcs11-go#51.
+      - CGO_CFLAGS=-isysroot {{ .Env.OSX_SDK_PATH }} -isystem {{ .Env.OSX_SDK_PATH }}/usr/include -iframework {{ .Env.OSX_SDK_PATH }}/System/Library/Frameworks -mmacosx-version-min=11.0 -D__STDC_WANT_LIB_EXT1__=1 -Dexplicit_bzero(p,n)=memset_s(p,n,0,n)
       - CGO_LDFLAGS=-isysroot {{ .Env.OSX_SDK_PATH }} -L{{ .Env.OSX_SDK_PATH }}/usr/lib -F{{ .Env.OSX_SDK_PATH }}/System/Library/Frameworks
     main: ./cmd/cosign
     flags:
@@ -142,7 +145,10 @@ builds:
       # zig does not auto-attach the macOS SDK, so point it at the one the image
       # ships. -isystem/-iframework (rather than -I/-F) mark the SDK as system
       # headers, which suppresses warnings zig cc otherwise promotes to errors.
-      - CGO_CFLAGS=-isysroot {{ .Env.OSX_SDK_PATH }} -isystem {{ .Env.OSX_SDK_PATH }}/usr/include -iframework {{ .Env.OSX_SDK_PATH }}/System/Library/Frameworks -mmacosx-version-min=11.0
+      # cryptoki's shim.c routes Apple to explicit_bzero, which macOS does not
+      # provide; map it to memset_s (declared only when __STDC_WANT_LIB_EXT1__
+      # is set). See eclipse-keypont/pkcs11-go#51.
+      - CGO_CFLAGS=-isysroot {{ .Env.OSX_SDK_PATH }} -isystem {{ .Env.OSX_SDK_PATH }}/usr/include -iframework {{ .Env.OSX_SDK_PATH }}/System/Library/Frameworks -mmacosx-version-min=11.0 -D__STDC_WANT_LIB_EXT1__=1 -Dexplicit_bzero(p,n)=memset_s(p,n,0,n)
       - CGO_LDFLAGS=-isysroot {{ .Env.OSX_SDK_PATH }} -L{{ .Env.OSX_SDK_PATH }}/usr/lib -F{{ .Env.OSX_SDK_PATH }}/System/Library/Frameworks
     main: ./cmd/cosign
     flags:
