@@ -15,6 +15,7 @@
 package mock
 
 import (
+	"context"
 	"errors"
 
 	"github.com/go-openapi/runtime"
@@ -42,6 +43,10 @@ func (m *EntriesClient) CreateLogEntry(_ *entries.CreateLogEntryParams, _ ...ent
 	return nil, errors.New("entry not provided")
 }
 
+func (m *EntriesClient) CreateLogEntryContext(_ context.Context, params *entries.CreateLogEntryParams, opts ...entries.ClientOption) (*entries.CreateLogEntryCreated, error) { //nolint: revive
+	return m.CreateLogEntry(params, opts...)
+}
+
 func (m *EntriesClient) GetLogEntryByIndex(_ *entries.GetLogEntryByIndexParams, _ ...entries.ClientOption) (*entries.GetLogEntryByIndexOK, error) {
 	if m.Entries != nil {
 		return &entries.GetLogEntryByIndexOK{
@@ -51,6 +56,10 @@ func (m *EntriesClient) GetLogEntryByIndex(_ *entries.GetLogEntryByIndexParams, 
 	return nil, errors.New("entry not provided")
 }
 
+func (m *EntriesClient) GetLogEntryByIndexContext(_ context.Context, params *entries.GetLogEntryByIndexParams, opts ...entries.ClientOption) (*entries.GetLogEntryByIndexOK, error) { //nolint: revive
+	return m.GetLogEntryByIndex(params, opts...)
+}
+
 func (m *EntriesClient) GetLogEntryByUUID(params *entries.GetLogEntryByUUIDParams, opts ...entries.ClientOption) (*entries.GetLogEntryByUUIDOK, error) { //nolint: revive
 	if m.Entries != nil {
 		return &entries.GetLogEntryByUUIDOK{
@@ -58,6 +67,10 @@ func (m *EntriesClient) GetLogEntryByUUID(params *entries.GetLogEntryByUUIDParam
 		}, nil
 	}
 	return nil, errors.New("entry not provided")
+}
+
+func (m *EntriesClient) GetLogEntryByUUIDContext(_ context.Context, params *entries.GetLogEntryByUUIDParams, opts ...entries.ClientOption) (*entries.GetLogEntryByUUIDOK, error) { //nolint: revive
+	return m.GetLogEntryByUUID(params, opts...)
 }
 
 func (m *EntriesClient) SearchLogQuery(params *entries.SearchLogQueryParams, opts ...entries.ClientOption) (*entries.SearchLogQueryOK, error) { //nolint: revive
@@ -72,7 +85,11 @@ func (m *EntriesClient) SearchLogQuery(params *entries.SearchLogQueryParams, opt
 	}, nil
 }
 
+func (m *EntriesClient) SearchLogQueryContext(_ context.Context, params *entries.SearchLogQueryParams, opts ...entries.ClientOption) (*entries.SearchLogQueryOK, error) { //nolint: revive
+	return m.SearchLogQuery(params, opts...)
+}
+
 // TODO: Implement mock
-func (m *EntriesClient) SetTransport(transport runtime.ClientTransport) { //nolint: revive
+func (m *EntriesClient) SetTransport(transport runtime.ContextualTransport) { //nolint: revive
 	// noop
 }
