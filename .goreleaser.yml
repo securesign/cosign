@@ -97,6 +97,8 @@ builds:
     env:
       - CC=o64-clang
       - CXX=o64-clang++
+      # cryptoki uses explicit_bzero on macOS, which is unavailable in this SDK.
+      - CGO_CFLAGS=-D__STDC_WANT_LIB_EXT1__=1 -Dexplicit_bzero(p,n)=memset_s(p,n,0,n)
     main: ./cmd/cosign
     flags:
       - -trimpath
@@ -117,6 +119,7 @@ builds:
     env:
       - CC=aarch64-apple-darwin23-clang
       - CXX=aarch64-apple-darwin23-clang++
+      - CGO_CFLAGS=-D__STDC_WANT_LIB_EXT1__=1 -Dexplicit_bzero(p,n)=memset_s(p,n,0,n)
     main: ./cmd/cosign
     flags:
       - -trimpath
