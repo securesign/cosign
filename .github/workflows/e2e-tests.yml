@@ -242,7 +242,7 @@ jobs:
           ghcr.io/project-zot/zot-minimal-linux-amd64:$ZOT_VERSION
         sudo echo "127.0.0.1 $INSECURE_OCI_REGISTRY_NAME" | sudo tee -a /etc/hosts
       env:
-        ZOT_VERSION: v2.0.0-rc6
+        ZOT_VERSION: v2.1.22
         # https://github.com/google/go-containerregistry/pull/125 allows insecure registry for
         # '*.local' hostnames.
         INSECURE_OCI_REGISTRY_NAME: insecure-oci-registry.notlocal
